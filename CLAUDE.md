@@ -75,14 +75,24 @@ A "Buy Before You Sell" (BBYS) mortgage calculator for Flyhomes. Focus on unlock
 ## 5. Calculation Logic (Source of Truth)
 
 ### A. Total Estimated Upfront Cost Formula
-`Total Estimated Cost = (Loan Amount × Origination Fee %) + GBC Fee`
+`Total Estimated Cost = (Loan Amount × Origination Fee %) + (Loan Amount × Broker Fee %) + GBC Fee`
+
+### A1. Broker Fee % by Product
+- **Cash Offer**: 1%
+- **Instant Equity**: 0.5%
+- **Cross Collateral**: 1%
 
 ### B. Origination Fee % Rules
-- **BBYS + Cash Offer & Cross Collateral**:
-  - If **LTV > 90.00%**: 1.5%
+- **Cash Offer**:
+  - If **LTV 90.01%–95.00%**: 1.5%
   - If **LTV <= 90.00%**: 1.0%
 - **Instant Equity**:
-  - If **1st Lien**: 2.0% | **2nd Lien**: 2.5%
+  - **1st Lien**: 2.0%
+  - **2nd Lien**: 2.5%
+  - High Cost loans are not permitted.
+- **Cross Collateral** (LTV based on Acquiring Property):
+  - If **LTV > 90.00%**: 1.5%
+  - If **LTV <= 90.00%**: 1.0%
 
 ### C. GBC Fee Matrix (Standalone vs. Bundle)
 Determined by the **Departing Home Price**. Standalone applies if no Flyhomes loan is selected.

@@ -238,19 +238,41 @@
             </div>
           </div>
 
-          <!-- Middle: white — total cost -->
+          <!-- Middle: white — total cost (expandable) -->
           <div class="bg-white px-6 py-4">
-            <div class="flex items-center justify-between">
+            <div id="cost-toggle" class="flex items-center justify-between cursor-pointer select-none" role="button" aria-expanded="false" aria-controls="cost-breakdown" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
               <span class="tip text-sm font-medium text-gray-700 gap-1">
                 Estimated Cost
-                <button class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated cost" tabindex="0">
+                <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated cost" tabindex="0">
                   <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                 </button>
                 <div class="tip-box tip-left">
-                  Estimated costs include product fees and origination fees, but do not include broker fees, title, escrow, or appraisal costs. These numbers are estimates only and are based on the information you entered. Actual amounts may vary after evaluation.
+                  Estimated costs include product fees, origination fees, and broker fees, but do not include title, escrow, or appraisal costs. These numbers are estimates only and are based on the information you entered. Actual amounts may vary after evaluation.
                 </div>
               </span>
-              <span id="total-cost" class="text-sm font-bold text-gray-900">—</span>
+              <div class="flex items-center gap-1.5">
+                <span id="total-cost" class="text-sm font-bold text-gray-900">—</span>
+                <svg id="cost-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </div>
+            <!-- Breakdown rows -->
+            <div id="cost-breakdown" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
+              <div class="pt-3 mt-2 border-t border-gray-100 space-y-2">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs text-gray-500">Origination Fee</span>
+                  <span id="orig-fee-display" class="text-xs font-medium text-gray-700">—</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-xs text-gray-500">Broker Fee</span>
+                  <span id="broker-fee-display" class="text-xs font-medium text-gray-700">—</span>
+                </div>
+                <div id="gbc-fee-row" class="hidden flex justify-between items-center">
+                  <span class="text-xs text-gray-500">GBC Fee</span>
+                  <span id="gbc-fee-display" class="text-xs font-medium text-gray-700">—</span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -337,19 +359,33 @@
           </div>
           <!-- Cost/savings shown only when DTI is the sole challenge -->
           <div id="gbc-dti-costs" class="hidden">
-            <!-- White: estimated cost -->
+            <!-- White: estimated cost (expandable) -->
             <div class="bg-white px-6 py-4 border-t border-gray-100">
-              <div class="flex items-center justify-between">
+              <div id="gbc-cost-toggle" class="flex items-center justify-between cursor-pointer select-none" role="button" aria-expanded="false" aria-controls="gbc-cost-breakdown" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
                 <span class="tip text-sm font-medium text-gray-700 gap-1">
                   Estimated Cost
-                  <button class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated cost" tabindex="0">
+                  <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated cost" tabindex="0">
                     <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                   </button>
                   <div class="tip-box tip-left">
-                    Estimated costs include product fees and origination fees, but do not include broker fees, title, escrow, or appraisal costs. These numbers are estimates only and are based on the information you entered. Actual amounts may vary after evaluation.
+                    Estimated costs include product fees, origination fees, and broker fees, but do not include title, escrow, or appraisal costs. These numbers are estimates only and are based on the information you entered. Actual amounts may vary after evaluation.
                   </div>
                 </span>
-                <span id="gbc-dti-cost-value" class="text-sm font-bold text-gray-900">—</span>
+                <div class="flex items-center gap-1.5">
+                  <span id="gbc-dti-cost-value" class="text-sm font-bold text-gray-900">—</span>
+                  <svg id="gbc-cost-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </div>
+              </div>
+              <!-- Breakdown rows -->
+              <div id="gbc-cost-breakdown" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
+                <div class="pt-3 mt-2 border-t border-gray-100">
+                  <div class="flex justify-between items-center">
+                    <span class="text-xs text-gray-500">GBC Fee</span>
+                    <span id="gbc-dti-fee-display" class="text-xs font-medium text-gray-700">—</span>
+                  </div>
+                </div>
               </div>
             </div>
             <!-- Green: estimated savings -->
@@ -532,7 +568,7 @@
       // CLAUDE.md §5A: GBC cannot pair with Cross Collateral
       const gbcActive = S.gbc && !noCash;
 
-      let maxLoan, originationRate, productName, solutionName, grad;
+      let maxLoan, originationRate, brokerRate, productName, solutionName, grad;
 
       let productIntro;
       if (noCash) {
@@ -540,6 +576,7 @@
         maxLoan = (newPrice + homeValue) * 0.75 - mortgage;
         const ltvAcq    = newPrice > 0 ? maxLoan / newPrice : 0;
         originationRate = ltvAcq > 0.90 ? 0.015 : 0.010;
+        brokerRate      = 0.01; // §5A1: Cross Collateral broker fee 1%
         productName   = 'Cross Collateral';
         solutionName  = 'Move with $0 out of pocket';
         productIntro  = 'Unlocks equity from both homes, little or no cash needed';
@@ -549,6 +586,7 @@
         maxLoan = newPrice * 0.95;
         const ltv       = newPrice > 0 ? maxLoan / newPrice : 0;
         originationRate = ltv > 0.90 ? 0.015 : 0.010;
+        brokerRate      = 0.01; // §5A1: Cash Offer broker fee 1%
         productName   = 'Cash Offer';
         solutionName  = 'All-Cash Advantage';
         productIntro  = 'Offer like a cash buyer, close in as little as 10 days';
@@ -556,7 +594,8 @@
       } else {
         // §5B Instant Equity: departing * 0.78 * 0.9 − mortgage
         maxLoan = homeValue * 0.78 * 0.9 - mortgage;
-        originationRate = 0.02;   // 1st lien; 2nd lien (2.5%) requires LO confirmation
+        originationRate = 0.02;    // 1st lien; 2nd lien (2.5%) requires LO confirmation
+        brokerRate      = 0.005;   // §5A1: Instant Equity broker fee 0.5%
         productName   = 'Instant Equity';
         solutionName  = 'Equity for Down Payment';
         productIntro  = 'Unlocks home equity for down payment & closing costs before selling';
@@ -566,12 +605,36 @@
       maxLoan = Math.max(0, maxLoan);
 
       const originationFee = maxLoan * originationRate;
+      const brokerFee      = maxLoan * brokerRate;
       const gbcFee         = gbcActive ? getGbcFee(homeValue, S.flyhomesLoan) : 0;
       const gbcFeeNum      = gbcFee ?? 0; // treat exception as 0 for total calc
-      const total          = originationFee + gbcFeeNum;
+      const total          = originationFee + brokerFee + gbcFeeNum;
       const savings        = Math.max(0, maxLoan * 0.04 - total);
 
-      return { maxLoan, gbcActive, gbcFee, total, savings, cashEligible, cashThreshold, productName, solutionName, productIntro, grad };
+      return { maxLoan, originationFee, brokerFee, gbcActive, gbcFee, total, savings, cashEligible, cashThreshold, productName, solutionName, productIntro, grad };
+    }
+
+    // ── Cost breakdown toggle ────────────────────────────────────────────────
+    function initCostToggles() {
+      [['cost-toggle', 'cost-breakdown', 'cost-chevron'],
+       ['gbc-cost-toggle', 'gbc-cost-breakdown', 'gbc-cost-chevron']].forEach(([toggleId, breakdownId, chevronId]) => {
+        const toggle = $(toggleId);
+        if (!toggle) return;
+        toggle.addEventListener('click', () => {
+          const breakdown = $(breakdownId);
+          const chevron   = $(chevronId);
+          const isOpen    = toggle.getAttribute('aria-expanded') === 'true';
+          if (isOpen) {
+            breakdown.style.maxHeight = '0';
+            chevron.style.transform   = '';
+            toggle.setAttribute('aria-expanded', 'false');
+          } else {
+            breakdown.style.maxHeight = breakdown.scrollHeight + 'px';
+            chevron.style.transform   = 'rotate(180deg)';
+            toggle.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
     }
 
     // ── Render ───────────────────────────────────────────────────────────────
@@ -594,10 +657,32 @@
       pop('max-loan'); pop('savings');
       if (r.maxLoan > 0) triggerConfetti();
 
+      // Populate cost breakdown line items (Card 1)
+      $('orig-fee-display').textContent    = fmtMoney(r.originationFee);
+      $('broker-fee-display').textContent  = fmtMoney(r.brokerFee);
+      if (r.gbcActive) {
+        $('gbc-fee-row').classList.remove('hidden');
+        $('gbc-fee-display').textContent = r.gbcFee === null ? 'Exception — contact us' : fmtMoney(r.gbcFee);
+      } else {
+        $('gbc-fee-row').classList.add('hidden');
+      }
+
+      // Refresh breakdown panel height if already open
+      const bd = $('cost-breakdown');
+      if (bd.style.maxHeight !== '0px' && bd.style.maxHeight !== '0') {
+        bd.style.maxHeight = bd.scrollHeight + 'px';
+      }
+
       if (r.gbcActive) {
         $('gbc-dti-cost-value').textContent = r.gbcFee === null
           ? 'Exception — contact us'
           : fmtMoney(r.gbcFee);
+        $('gbc-dti-fee-display').textContent = r.gbcFee === null ? 'Exception — contact us' : fmtMoney(r.gbcFee);
+        // Refresh GBC breakdown panel height if already open
+        const gbcBd = $('gbc-cost-breakdown');
+        if (gbcBd.style.maxHeight !== '0px' && gbcBd.style.maxHeight !== '0') {
+          gbcBd.style.maxHeight = gbcBd.scrollHeight + 'px';
+        }
       }
 
       if (S.cash && !r.cashEligible) {
@@ -740,6 +825,7 @@
     syncStateFromChallenges();
     render();
     applyProductLabel();
+    initCostToggles();
   </script>
 </body>
 </html>
