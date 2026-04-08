@@ -44,15 +44,20 @@ A "Buy Before You Sell" (BBYS) mortgage calculator for Flyhomes. Focus on unlock
 
 ## 4. DREAM Solutions & Recommendation Engine
 
-### A. Challenge Selection (The 3-Option UI)
+### A. Challenge Selection (The 4-Option UI)
 1. **DTI Issue**: "Current mortgage hurting DTI"
    - *Subtitle*: Exclude your current mortgage to qualify for more.
 2. **Liquidity Issue**: "Low cash / Equity tied in home"
    - *Subtitle*: Unlock your home equity for your down payment and closing costs.
 3. **Strategy/Speed**: "Need a competitive cash offer"
    - *Subtitle*: Win with an all-cash offer and 10-day close. (Also supports mortgage-free downsizing.)
+4. **Retirement Focus**: "Want to downsize mortgage-free"
+   - *Subtitle*: Use equity to downsize, often without a new long-term mortgage.
 
 ### B. Trigger Rules (Solution Mapping)
+- **Rule 0: The Downsize Override (Priority)**
+  - **Condition**: IF (Option 4 IS checked)
+  - **Result**: Show **Retire & Downsize** solution ONLY. This selection overrides all other logic combinations.
 - **Rule 1: The "Cross Collateral" Winner**
   - **Condition**: IF (Option 2 IS checked AND Option 3 IS checked)
   - **Result**: Show **Cross Collateral** ONLY. (Hide IE/CO/GBC cards as CC is the integrated $0 cash/downsize king).
@@ -69,6 +74,13 @@ A "Buy Before You Sell" (BBYS) mortgage calculator for Flyhomes. Focus on unlock
 ### C. UI Badges & Labels
 - **"Most Likely Needed"**: Apply this badge to the **DTI Buster** card if Option 1 was **NOT** manually checked but Rule 2 or Rule 3 triggered it. 
 - **Downsize Hint**: If Option 3 is active, ensure UI emphasizes: "Perfect for mortgage-free downsizing."
+
+### D. Scenario Branding: "Retire & Downsize"
+- **Trigger**: Option 4 selected.
+- **UI Title**: "Retire & Downsize"
+- **Product Badge**: "Cross Collateral"
+- **Main Subtitle**: "Leverage home equity to downsize for retirement and enjoy greater financial freedom, often without taking on a new long-term mortgage."
+- **Logic Sync**: This is a marketing skin for the **Cross Collateral** product. It must use all formulas and data points defined for Cross Collateral in Section 5.D.
 
 ---
 
