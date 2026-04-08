@@ -206,6 +206,8 @@
                   <input id="inp-assets" type="text" inputmode="numeric" value="40,000"
                     class="field-input w-full py-2.5 pr-4 rounded-lg border border-gray-200 text-sm transition-all" />
                 </div>
+                <input id="sl-assets" type="range" min="0" max="2000000" step="10000" value="40000" class="w-full mt-3" />
+                <div class="flex justify-between text-[11px] text-gray-300 mt-0.5"><span>$0</span><span>$2M</span></div>
               </div>
             </div>
 
@@ -684,6 +686,7 @@
       gbc          : false,
       cash         : false,
       noCash       : false,
+      downsize     : false,
       flyhomesLoan : true,   // true = bundle rate, false = standalone rate
       // Savings sliders
       savCashPct    : 3.5,
@@ -726,9 +729,14 @@
         originationRate = ltvAcq > 0.90 ? 0.015 : 0.010;
         brokerRate      = 0.01; // §5A1: Cross Collateral broker fee 1%
         productName   = 'Cross Collateral';
-        solutionName  = 'Move with $0 out of pocket';
-        productIntro  = 'Unlocks equity from both homes, little or no cash needed';
         grad          = 'grad-c';
+        if (S.downsize) {
+          solutionName = 'Retire & Downsize';
+          productIntro = 'Leverage home equity to downsize for retirement and enjoy greater financial freedom, often without taking on a new long-term mortgage.';
+        } else {
+          solutionName = 'Move with $0 out of pocket';
+          productIntro = 'Unlocks equity from both homes, little or no cash needed';
+        }
       } else if (cash && cashEligible) {
         // §5C BBYS + Cash Offer: new home * 95%
         maxLoan = newPrice * 0.95;
@@ -767,26 +775,27 @@
       const body    = $(header.dataset.target);
       const chevron = $(header.dataset.chevron);
       const isOpen  = header.getAttribute('aria-expanded') === 'true';
+      const isOuter = header.dataset.target === 'sav-outer-body';
       if (isOpen) {
-        // Restore clipping before closing animation
-        body.style.overflow      = 'hidden';
-        body.style.maxHeight     = '0';
-        chevron.style.transform  = '';
+        // Anchor from current height before animating closed
+        if (body.style.maxHeight === 'none') {
+          body.style.maxHeight = body.scrollHeight + 'px';
+          body.offsetHeight; // force reflow to anchor animation start
+        }
+        body.style.overflow  = 'hidden';
+        body.style.maxHeight = '0';
+        chevron.style.transform = '';
         header.setAttribute('aria-expanded', 'false');
       } else {
-        body.style.maxHeight     = body.scrollHeight + 'px';
-        chevron.style.transform  = 'rotate(180deg)';
+        body.style.maxHeight = body.scrollHeight + 'px';
+        chevron.style.transform = 'rotate(180deg)';
         header.setAttribute('aria-expanded', 'true');
-        // Allow tooltips to escape after transition completes
-        if (header.dataset.target === 'sav-outer-body') {
-          setTimeout(() => { body.style.overflow = 'visible'; }, 360);
-        }
-      }
-      // After inner transition completes, refresh outer container height
-      if (header.dataset.target !== 'sav-outer-body') {
-        const outer = $('sav-outer-body');
-        if (outer && outer.style.maxHeight !== '0px' && outer.style.maxHeight !== '0') {
-          setTimeout(() => { outer.style.maxHeight = outer.scrollHeight + 'px'; }, 320);
+        // After open transition: allow natural height + tooltip overflow
+        if (isOuter) {
+          setTimeout(() => {
+            body.style.overflow  = 'visible';
+            body.style.maxHeight = 'none';
+          }, 360);
         }
       }
     }
@@ -827,8 +836,9 @@
       // Total
       $('total-savings').textContent = fmtSav(s.total);
 
-      // Re-expand any open accordion panels (height may change if items toggled)
-      ['sav-outer-body','sav-cash-body','sav-staged-body','sav-hpa-body','sav-move-body'].forEach(id => {
+      // Re-expand any open inner accordion panels (height may change when items toggle)
+      // sav-outer-body uses max-height:none once open, so it auto-sizes — skip it
+      ['sav-cash-body','sav-staged-body','sav-hpa-body','sav-move-body'].forEach(id => {
         const el = $(id);
         if (el && el.style.maxHeight !== '0px' && el.style.maxHeight !== '0') {
           el.style.maxHeight = el.scrollHeight + 'px';
@@ -1001,26 +1011,30 @@
     bindField('inp-homeValue', 'sl-homeValue', 'homeValue');
     bindField('inp-mortgage',  'sl-mortgage',  'mortgage');
     bindField('inp-newPrice',  'sl-newPrice',  'newPrice');
-    bindField('inp-assets',    null,           'assets');
+    bindField('inp-assets',    'sl-assets',    'assets');
 
     // ── Challenge card selection ──────────────────────────────────────────────
     const CHALLENGES = [
-      { id: 'dti',    label: 'Current mortgage hurting DTI',   desc: 'Exclude your current mortgage to qualify for more.' },
-      { id: 'equity', label: 'Low cash / Equity tied in home', desc: 'Unlock your home equity for your down payment and closing costs.' },
-      { id: 'cash',   label: 'Need a competitive cash offer',  desc: 'Win with an all-cash offer and 10-day close. (Also supports mortgage-free downsizing).' },
+      { id: 'dti',      label: 'Current mortgage hurting DTI',      desc: 'Exclude your current mortgage to qualify for more.' },
+      { id: 'equity',   label: 'Low cash / Equity tied in home',    desc: 'Unlock your home equity for your down payment and closing costs.' },
+      { id: 'cash',     label: 'Need a competitive cash offer',     desc: 'Win with an all-cash offer and 10-day close. (Also supports mortgage-free downsizing).' },
+      { id: 'downsize', label: 'Want to downsize mortgage-free',    desc: 'Use equity to downsize, often without a new long-term mortgage.' },
     ];
     const selected = new Set(['equity']);
 
     function syncStateFromChallenges() {
-      const isCrossCollateral = selected.has('equity') && selected.has('cash');
-      S.noCash = isCrossCollateral;
-      S.cash   = selected.has('cash') && !isCrossCollateral;
-      S.gbc    = selected.has('dti')  && !isCrossCollateral;
+      const isDownsize        = selected.has('downsize');
+      const isCrossCollateral = (selected.has('equity') && selected.has('cash')) || isDownsize;
+      S.downsize = isDownsize;
+      S.noCash   = isCrossCollateral;
+      S.cash     = selected.has('cash') && !isCrossCollateral;
+      S.gbc      = selected.has('dti')  && !isCrossCollateral;
     }
 
     function applyProductLabel() {
       const has             = id => selected.has(id);
-      const isCrossCollat   = has('equity') && has('cash');
+      const isDownsize      = has('downsize');
+      const isCrossCollat   = (has('equity') && has('cash')) || isDownsize;
       const dtiOnly         = selected.size === 1 && has('dti');
       const noneSelected    = selected.size === 0;
       const showGBC         = !noneSelected && !isCrossCollat;
@@ -1047,9 +1061,11 @@
       if (dtiOnly) { triggerConfetti('gbc-confetti-canvas'); return; }
       if (noneSelected) return;
 
-      // ── Main solution card labels ──────────────────────────────────────────
+      // ── Main solution card labels (downsize has highest priority) ──────────
       let solutionLabel, productLabel, intro;
-      if (isCrossCollat) {
+      if (isDownsize) {
+        solutionLabel = 'Retire & Downsize';          productLabel = 'Cross Collateral';  intro = 'Leverage home equity to downsize for retirement and enjoy greater financial freedom, often without taking on a new long-term mortgage.';
+      } else if (isCrossCollat) {
         solutionLabel = 'Move with $0 out of pocket'; productLabel = 'Cross Collateral';  intro = 'Unlocks equity from both homes, little or no cash needed';
       } else if (has('cash')) {
         solutionLabel = 'All-Cash Advantage';         productLabel = 'Cash Offer';         intro = 'Offer like a cash buyer, close in as little as 10 days';
