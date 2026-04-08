@@ -278,14 +278,14 @@
             </div>
           </div>
 
-          <!-- Green: Estimated Savings from BBYS -->
+          <!-- Green: Estimated Benefit from BBYS -->
           <div class="bg-emerald-50 border-t border-emerald-100 px-5 py-4">
             <!-- Section header (outer toggle) -->
             <div class="flex items-center justify-between cursor-pointer select-none"
                  onclick="savToggle(this)" data-target="sav-outer-body" data-chevron="sav-outer-chevron"
                  role="button" aria-expanded="false" tabindex="0"
                  onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
-              <span class="text-sm font-semibold text-emerald-800">Estimated Savings from BBYS</span>
+              <span class="text-sm font-semibold text-emerald-800">Estimated Benefit from BBYS</span>
               <div class="flex items-center gap-1.5">
                 <span id="total-savings" class="text-2xl font-bold text-emerald-600">—</span>
                 <svg id="sav-outer-chevron" class="w-4 h-4 text-emerald-500" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -330,7 +330,7 @@
               </div>
             </div>
 
-            <!-- 2. Staged Home Premium -->
+            <!-- 2. Estimated Net Benefit from Staging -->
             <div class="mb-2">
               <div class="rounded-lg bg-white border border-emerald-100">
                 <div class="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
@@ -338,8 +338,8 @@
                      role="button" aria-expanded="false" tabindex="0"
                      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
                   <span class="tip text-sm font-medium text-gray-700 gap-1">
-                    Staged Home Premium
-                    <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about staged home premium" tabindex="0">
+                    Estimated Net Benefit from Staging
+                    <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated net benefit from staging" tabindex="0">
                       <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                     </button>
                     <div class="tip-box tip-left">With Buy Before You Sell, you've already moved out. Your departing home is professionally staged and shown vacant — no family clutter, no scheduling around your life. Buyers can see themselves in the space.</div>
@@ -352,19 +352,20 @@
                 <div id="sav-staged-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
                   <div class="px-4 pt-2 pb-3 border-t border-gray-100">
                     <div class="flex justify-between items-center mb-1">
-                      <span class="text-xs text-gray-500">Premium rate</span>
+                      <span class="text-xs text-gray-500">Estimated Sale Price Increase Rate</span>
                       <span id="sav-staged-pct-label" class="text-xs font-medium text-gray-700">5%</span>
                     </div>
                     <input id="sl-sav-staged" type="range" min="1" max="10" step="0.5" value="5" class="w-full">
                     <div class="flex justify-between text-[10px] text-gray-400 mt-1 mb-3"><span>1%</span><span>10%</span></div>
+                    <!-- Increased sale price due to staging -->
+                    <div class="flex items-center justify-between py-2 border-t border-gray-100">
+                      <span class="text-xs text-gray-500">Increased Sale Price Due to Staging</span>
+                      <span id="sav-staged-price-increase" class="text-xs font-medium text-gray-700">—</span>
+                    </div>
                     <!-- Professional Staging Cost (deducted) -->
                     <div class="flex items-center justify-between py-2 border-t border-gray-100">
                       <span class="text-xs text-gray-500">Professional Staging Cost <span class="text-red-400">(deducted)</span></span>
-                      <div class="relative">
-                        <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs select-none">$</span>
-                        <input id="inp-sav-staging" type="text" inputmode="numeric"
-                          class="w-28 text-right text-xs py-1.5 pl-6 pr-2.5 border border-gray-200 rounded-md focus:outline-none focus:border-brand transition-colors" value="3,500" />
-                      </div>
+                      <span class="text-xs font-medium text-gray-700">$3,500</span>
                     </div>
                   </div>
                 </div>
@@ -692,7 +693,7 @@
       savCashPct    : 3.5,
       savStagedPct  : 5,
       savHpaPct     : 4,
-      savStagingCost: 3500,  // deducted from Staged Home Premium
+      savStagingCost: 3500,  // deducted from Estimated Net Benefit from Staging
       // Savings logistics (initialized from homeValue in initSavingsDefaults)
       savMovingFee : 0,
       savHousing   : 0,
@@ -828,6 +829,7 @@
 
       // Per-item values
       $('sav-staged-val').textContent = fmtSav(s.staged);
+      $('sav-staged-price-increase').textContent = '$' + Math.round(S.homeValue * (S.savStagedPct / 100)).toLocaleString();
       $('sav-hpa-val').textContent    = fmtSav(s.hpa);
       $('sav-hpa-val').className      = `text-sm font-semibold ${Math.round(s.hpa) < 0 ? 'text-red-500' : 'text-emerald-600'}`;
       $('sav-move-val').textContent      = fmtSav(s.logistics);
@@ -873,17 +875,6 @@
       $('sl-sav-hpa').addEventListener('input', function () {
         S.savHpaPct = parseFloat(this.value);
         $('sav-hpa-pct-label').textContent = S.savHpaPct + '%';
-        renderSavings();
-      });
-      // Staging cost field
-      const stagingInp = $('inp-sav-staging');
-      stagingInp.addEventListener('input', () => {
-        S.savStagingCost = parseInt((stagingInp.value || '').replace(/[^\d]/g, '')) || 0;
-        renderSavings();
-      });
-      stagingInp.addEventListener('blur', () => {
-        S.savStagingCost = parseInt((stagingInp.value || '').replace(/[^\d]/g, '')) || 0;
-        stagingInp.value = S.savStagingCost.toLocaleString();
         renderSavings();
       });
       // Logistics text fields
