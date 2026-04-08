@@ -352,7 +352,7 @@
                 <div id="sav-staged-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
                   <div class="px-4 pt-2 pb-3 border-t border-gray-100">
                     <div class="flex justify-between items-center mb-1">
-                      <span class="text-xs text-gray-500">Estimated Sale Price Increase Rate</span>
+                      <span class="text-xs text-gray-500">Estimated price increase rate from staging</span>
                       <span id="sav-staged-pct-label" class="text-xs font-medium text-gray-700">5%</span>
                     </div>
                     <input id="sl-sav-staged" type="range" min="1" max="10" step="0.5" value="5" class="w-full">
@@ -372,7 +372,7 @@
               </div>
             </div>
 
-            <!-- 3. Home Price Appreciation -->
+            <!-- 3. Estimated Market Timing Benefit -->
             <div class="mb-2">
               <div class="rounded-lg bg-white border border-emerald-100">
                 <div class="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
@@ -380,8 +380,8 @@
                      role="button" aria-expanded="false" tabindex="0"
                      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
                   <span class="tip text-sm font-medium text-gray-700 gap-1">
-                    Home Price Appreciation
-                    <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about home price appreciation" tabindex="0">
+                    Estimated Market Timing Benefit
+                    <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated market timing benefit" tabindex="0">
                       <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                     </button>
                     <div class="tip-box tip-left">Acting now locks in today's price on the buy side; waiting means paying more (or less, in a cooling market).</div>
@@ -394,11 +394,19 @@
                 <div id="sav-hpa-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
                   <div class="px-4 pt-2 pb-3 border-t border-gray-100">
                     <div class="flex justify-between items-center mb-1">
-                      <span class="text-xs text-gray-500">Annual rate</span>
+                      <span class="text-xs text-gray-500">Estimated annual home price increase rate</span>
                       <span id="sav-hpa-pct-label" class="text-xs font-medium text-gray-700">4%</span>
                     </div>
                     <input id="sl-sav-hpa" type="range" min="-10" max="10" step="0.5" value="4" class="w-full">
-                    <div class="flex justify-between text-[10px] text-gray-400 mt-1"><span>-10%</span><span>10%</span></div>
+                    <div class="flex justify-between text-[10px] text-gray-400 mt-1 mb-3"><span>-10%</span><span>10%</span></div>
+                    <div class="flex items-center justify-between py-2 border-t border-gray-100">
+                      <span class="text-xs text-gray-500">Buy-side price increase avoided</span>
+                      <span id="sav-hpa-buy" class="text-xs font-medium text-gray-700">—</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 border-t border-gray-100">
+                      <span class="text-xs text-gray-500">Sell-side sale price gain</span>
+                      <span id="sav-hpa-sell" class="text-xs font-medium text-gray-700">—</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -832,6 +840,12 @@
       $('sav-staged-price-increase').textContent = '$' + Math.round(S.homeValue * (S.savStagedPct / 100)).toLocaleString();
       $('sav-hpa-val').textContent    = fmtSav(s.hpa);
       $('sav-hpa-val').className      = `text-sm font-semibold ${Math.round(s.hpa) < 0 ? 'text-red-500' : 'text-emerald-600'}`;
+      const hpaMonthly2 = S.savHpaPct / 100 / 12 * 2;
+      const hpaBuy  = Math.round(S.newPrice  * hpaMonthly2);
+      const hpaSell = Math.round(S.homeValue * hpaMonthly2);
+      const fmtHpa  = n => (n < 0 ? '-$' : '$') + Math.abs(n).toLocaleString();
+      $('sav-hpa-buy').textContent  = fmtHpa(hpaBuy);
+      $('sav-hpa-sell').textContent = fmtHpa(hpaSell);
       $('sav-move-val').textContent      = fmtSav(s.logistics);
       $('sav-move-subtotal').textContent = fmtSav(s.logistics);
 
