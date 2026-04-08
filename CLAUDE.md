@@ -75,24 +75,14 @@ A "Buy Before You Sell" (BBYS) mortgage calculator for Flyhomes. Focus on unlock
 ## 5. Calculation Logic (Source of Truth)
 
 ### A. Total Estimated Upfront Cost Formula
-`Total Estimated Cost = (Loan Amount × Origination Fee %) + (Loan Amount × Broker Fee %) + GBC Fee`
-
-### A1. Broker Fee % by Product
-- **Cash Offer**: 1%
-- **Instant Equity**: 0.5%
-- **Cross Collateral**: 1%
+`Total Estimated Cost = (Loan Amount × Origination Fee %) + GBC Fee`
 
 ### B. Origination Fee % Rules
-- **Cash Offer**:
-  - If **LTV 90.01%–95.00%**: 1.5%
-  - If **LTV <= 90.00%**: 1.0%
-- **Instant Equity**:
-  - **1st Lien**: 2.0%
-  - **2nd Lien**: 2.5%
-  - High Cost loans are not permitted.
-- **Cross Collateral** (LTV based on Acquiring Property):
+- **BBYS + Cash Offer & Cross Collateral**:
   - If **LTV > 90.00%**: 1.5%
   - If **LTV <= 90.00%**: 1.0%
+- **Instant Equity**:
+  - If **1st Lien**: 2.0% | **2nd Lien**: 2.5%
 
 ### C. GBC Fee Matrix (Standalone vs. Bundle)
 Determined by the **Departing Home Price**. Standalone applies if no Flyhomes loan is selected.
@@ -111,6 +101,60 @@ Determined by the **Departing Home Price**. Standalone applies if no Flyhomes lo
 - **Instant Equity**: `(Departing Price * 0.78 * 0.9) - Current Mortgage`. Max LTV: 90% of GBC Price.
 - **BBYS + Cash Offer**: `New Home Price * 95%`. Max LTV: 95%. Min Down Payment: 5%.
 - **Cross Collateral**: `(New + Departing) * 0.75 - Current Mortgage`. Max LTV: 105% (Acquiring) | 75% CLTV (Combined).
+
+### E. Estimated Savings Logic
+Trigger: Display in "Review Results" section to replace the old "Moving Once" module.
+
+Data Provenance:
+
+departingHomePrice: Live-synced from Step 2 "Estimated Departing Home Value" input/slider.
+
+newHomePrice: Live-synced from Step 2 "Estimated Purchase Price" input/slider.
+
+isCashOfferSelected: Boolean flag from Step 1 selection.
+
+1. Cash Offer Discount (Conditional)
+Visibility: Only show if isCashOfferSelected is TRUE.
+
+Logic: Default 3.5% (Slider: 1% - 10%).
+
+Formula: newHomePrice * cashOfferDiscount%
+
+Tooltip: "Sellers prefer the certainty of cash — no appraisal contingency, no financing fall-through. Research shows this translates to a measurable discount on purchase price."
+
+2. Staged Home Premium
+Logic: Default 5% (Slider: 1% - 10%).
+
+Formula: departingHomePrice * stagedHomePremium%
+
+Tooltip: "With Buy Before You Sell, you've already moved out. Your departing home is professionally staged and shown vacant — no family clutter, no scheduling around your life. Buyers can see themselves in the space."
+
+3. Home Price Appreciation (HPA)
+Logic: Default 4% (Slider: -10% - 10%).
+
+Formula: (newHomePrice + departingHomePrice) * (hpaRate% / 6)
+
+Tooltip: "Acting now locks in today's price on the buy side; waiting means paying more (or less, in a cooling market)."
+
+4. "Move Once, Not Twice" (Logistics)
+Layout: Single accordion item containing three editable text fields.
+
+Tooltip: "Estimated savings are based on the extra cost of moving twice and two months of transition, compared with moving only once."
+
+Sub-Items (Auto-calculated but editable):
+
+Extra Moving Fee: (departingHomePrice * 0.003) + 500
+
+Temporary Housing: (departingHomePrice * 0.006) * 2
+
+Storage Fee: (150 + departingHomePrice * 0.0002) * 2
+
+Category Total: Sum of the three sub-fields above.
+
+5. Grand Total
+Calculation: Sum of all active items (Note: Cash Offer Discount = 0 if hidden).
+
+UI: Display "Total Estimated Savings" prominently at the bottom of the section.
 
 ---
 
