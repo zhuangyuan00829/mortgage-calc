@@ -241,7 +241,13 @@
 
           <!-- Transition days input -->
           <div class="bg-white px-6 py-3.5 border-t border-gray-100 flex items-center justify-between">
-            <span class="text-sm font-medium text-gray-700">Estimated transition days</span>
+            <span class="tip text-sm font-medium text-gray-700 gap-1">
+              Estimated transition days
+              <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated transition days" tabindex="0">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+              </button>
+              <div class="tip-box tip-left">Estimated transition days is the time gap between selling your current home and buying your next home. It is used to estimate the costs and savings of Buy Before You Sell versus the traditional sell-first, buy-later process.</div>
+            </span>
             <div class="flex items-center gap-2">
               <input id="inp-transition-days" type="text" inputmode="numeric" value="60"
                 class="w-14 text-center text-sm font-semibold py-1.5 px-2 border border-gray-200 rounded-lg focus:outline-none focus:border-brand transition-colors" />
