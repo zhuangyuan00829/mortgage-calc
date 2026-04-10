@@ -239,8 +239,18 @@
             </p>
           </div>
 
+          <!-- Transition days input -->
+          <div class="bg-white px-6 py-3.5 border-t border-gray-100 flex items-center justify-between">
+            <span class="text-sm font-medium text-gray-700">Estimated transition days</span>
+            <div class="flex items-center gap-2">
+              <input id="inp-transition-days" type="text" inputmode="numeric" value="60"
+                class="w-14 text-center text-sm font-semibold py-1.5 px-2 border border-gray-200 rounded-lg focus:outline-none focus:border-brand transition-colors" />
+              <span class="text-sm text-gray-500">days</span>
+            </div>
+          </div>
+
           <!-- Middle: white — total cost (expandable) -->
-          <div class="bg-white px-6 py-4">
+          <div class="bg-white px-6 py-4 border-t border-gray-100">
             <div id="cost-toggle" class="flex items-center justify-between cursor-pointer select-none" role="button" aria-expanded="false" aria-controls="cost-breakdown" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
               <span class="tip text-sm font-medium text-gray-700 gap-1">
                 Estimated Cost
@@ -824,7 +834,8 @@
       savCashPct    : 3.5,
       savStagedPct  : 5,
       savHpaPct     : 4,
-      savStagingCost: 3500,  // deducted from Estimated Net Benefit from Staging
+      savStagingCost  : 3500,  // deducted from Estimated Net Benefit from Staging
+      transitionDays  : 60,    // used for HPA and logistics defaults
       // Savings logistics (initialized from homeValue in initSavingsDefaults)
       savMovingFee : 0,
       savHousing   : 0,
@@ -951,7 +962,7 @@
       const isCash       = cash && assets >= newPrice * 0.05;
       const cashDiscount = isCash ? newPrice * (savCashPct / 100) : 0;
       const staged       = Math.max(0, homeValue * (savStagedPct / 100) - S.savStagingCost);
-      const hpa          = (newPrice + homeValue) * (savHpaPct / 100) / 6;
+      const hpa          = (newPrice + homeValue) * (savHpaPct / 100) * (S.transitionDays / 30) / 12;
       const logistics    = savMovingFee + savHousing + savStorage;
       return { isCash, cashDiscount, staged, hpa, logistics,
                total: cashDiscount + staged + hpa + logistics };
@@ -978,7 +989,7 @@
       $('sav-staged-price-increase').textContent = '$' + Math.round(S.homeValue * (S.savStagedPct / 100)).toLocaleString();
       $('sav-hpa-val').textContent    = fmtSav(s.hpa);
       $('sav-hpa-val').className      = `text-sm font-semibold ${Math.round(s.hpa) < 0 ? 'text-red-500' : 'text-emerald-600'}`;
-      const hpaMonthly2 = S.savHpaPct / 100 / 12 * 2;
+      const hpaMonthly2 = S.savHpaPct / 100 / 12 * (S.transitionDays / 30);
       const hpaBuy  = Math.round(S.newPrice  * hpaMonthly2);
       const hpaSell = Math.round(S.homeValue * hpaMonthly2);
       const fmtHpa  = n => (n < 0 ? '-$' : '$') + Math.abs(n).toLocaleString();
@@ -1020,8 +1031,8 @@
     // ── Savings defaults (recalculates from current homeValue) ───────────────
     function initSavingsDefaults() {
       S.savMovingFee = Math.round((S.homeValue * 0.003) + 500);
-      S.savHousing   = Math.round((S.homeValue * 0.006) * 2);
-      S.savStorage   = Math.round((150 + S.homeValue * 0.0002) * 2);
+      S.savHousing   = Math.round((S.homeValue * 0.006) * (S.transitionDays / 30));
+      S.savStorage   = Math.round((150 + S.homeValue * 0.0002) * (S.transitionDays / 30));
       // Don't overwrite a field the user is actively editing
       if (document.activeElement !== $('inp-sav-moving'))    $('inp-sav-moving').value    = S.savMovingFee.toLocaleString();
       if (document.activeElement !== $('inp-sav-housing'))   $('inp-sav-housing').value   = S.savHousing.toLocaleString();
@@ -1033,6 +1044,22 @@
 
     // ── Savings input bindings ────────────────────────────────────────────────
     function bindSavingsInputs() {
+      // Transition days
+      const tdInp = $('inp-transition-days');
+      tdInp.addEventListener('input', () => {
+        const v = parseInt(tdInp.value.replace(/[^\d]/g, '')) || 0;
+        S.transitionDays = v;
+        initSavingsDefaults();
+        renderSavings();
+      });
+      tdInp.addEventListener('blur', () => {
+        const v = Math.max(1, parseInt(tdInp.value.replace(/[^\d]/g, '')) || 60);
+        S.transitionDays = v;
+        tdInp.value = v;
+        initSavingsDefaults();
+        renderSavings();
+      });
+
       // Percentage sliders
       $('sl-sav-cash').addEventListener('input', function () {
         S.savCashPct = parseFloat(this.value);

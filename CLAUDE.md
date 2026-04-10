@@ -144,7 +144,9 @@ Tooltip: "With Buy Before You Sell, you've already moved out. Your departing hom
 3. Home Price Appreciation (HPA)
 Logic: Default 4% (Slider: -10% - 10%).
 
-Formula: (newHomePrice + departingHomePrice) * (hpaRate% / 6)
+Formula: (newHomePrice + departingHomePrice) * (hpaRate% / 12) * (transitionDays / 30)
+
+Note: Previously hardcoded as `/ 6` (= 2 months). Now driven by the user-editable `transitionDays` field (default 60 days).
 
 Tooltip: "Acting now locks in today's price on the buy side; waiting means paying more (or less, in a cooling market)."
 
@@ -157,11 +159,13 @@ Sub-Items (Auto-calculated but editable):
 
 Extra Moving Fee: (departingHomePrice * 0.003) + 500
 
-Temporary Housing: (departingHomePrice * 0.006) * 2
+Temporary Housing: (departingHomePrice * 0.006) * (transitionDays / 30)
 
-Storage Fee: (150 + departingHomePrice * 0.0002) * 2
+Storage Fee: (150 + departingHomePrice * 0.0002) * (transitionDays / 30)
 
 Category Total: Sum of the three sub-fields above.
+
+transitionDays: User-editable input field in the results panel (above Estimated Cost). Default: 60. Minimum: 1. Affects HPA, Temporary Housing, and Storage Fee calculations.
 
 5. Grand Total
 Calculation: Sum of all active items (Note: Cash Offer Discount = 0 if hidden).
