@@ -264,7 +264,7 @@
                   <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                 </button>
                 <div class="tip-box tip-left">
-                  Estimated costs include product fees, origination fees, and broker fees, but do not include title, escrow, or appraisal costs. These numbers are estimates only and are based on the information you entered. Actual amounts may vary after evaluation.
+                  Estimated costs include origination fee, product fee, broker fee and accrued interest, but do not include title, escrow, or appraisal costs. These numbers are estimates only and are based on the information you entered. Actual amounts may vary after evaluation.
                 </div>
               </span>
               <div class="flex items-center gap-1.5">
@@ -277,21 +277,19 @@
             <!-- Breakdown rows -->
             <div id="cost-breakdown" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
               <div class="pt-3 mt-2 border-t border-gray-100 space-y-2">
-                <div class="flex justify-between items-center">
-                  <span class="text-xs text-gray-500">Origination Fee</span>
-                  <span id="orig-fee-display" class="text-xs font-medium text-gray-700">—</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-xs text-gray-500">Broker Fee</span>
-                  <span id="broker-fee-display" class="text-xs font-medium text-gray-700">—</span>
-                </div>
-                <div id="gbc-fee-row" class="hidden flex justify-between items-center">
-                  <span class="text-xs text-gray-500">GBC Fee</span>
-                  <span id="gbc-fee-display" class="text-xs font-medium text-gray-700">—</span>
-                </div>
                 <div id="accrued-interest-row" class="hidden flex justify-between items-center">
                   <span class="text-xs text-gray-500">Accrued Interest (9.99%)</span>
                   <span id="accrued-interest-display" class="text-xs font-medium text-gray-700">—</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="tip text-xs text-gray-500 gap-1">
+                    Other Costs
+                    <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about other costs" tabindex="0">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                    </button>
+                    <div class="tip-box tip-left">Other costs include origination fee, product fee, and broker fee.</div>
+                  </span>
+                  <span id="other-costs-display" class="text-xs font-medium text-gray-700">—</span>
                 </div>
               </div>
             </div>
@@ -543,7 +541,7 @@
                     <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                   </button>
                   <div class="tip-box tip-left">
-                    Estimated costs include product fees, origination fees, and broker fees, but do not include title, escrow, or appraisal costs. These numbers are estimates only and are based on the information you entered. Actual amounts may vary after evaluation.
+                    Estimated costs include origination fee, product fee, broker fee and accrued interest, but do not include title, escrow, or appraisal costs. These numbers are estimates only and are based on the information you entered. Actual amounts may vary after evaluation.
                   </div>
                 </span>
                 <div class="flex items-center gap-1.5">
@@ -1127,13 +1125,24 @@
           const chevron   = $(chevronId);
           const isOpen    = toggle.getAttribute('aria-expanded') === 'true';
           if (isOpen) {
+            // Anchor from natural height before animating closed
+            if (breakdown.style.maxHeight === 'none') {
+              breakdown.style.maxHeight = breakdown.scrollHeight + 'px';
+              breakdown.offsetHeight; // force reflow
+            }
+            breakdown.style.overflow  = 'hidden';
             breakdown.style.maxHeight = '0';
             chevron.style.transform   = '';
             toggle.setAttribute('aria-expanded', 'false');
           } else {
+            breakdown.style.overflow  = 'hidden';
             breakdown.style.maxHeight = breakdown.scrollHeight + 'px';
             chevron.style.transform   = 'rotate(180deg)';
             toggle.setAttribute('aria-expanded', 'true');
+            setTimeout(() => {
+              breakdown.style.overflow  = 'visible';
+              breakdown.style.maxHeight = 'none';
+            }, 310);
           }
         });
       });
@@ -1162,14 +1171,8 @@
       renderSavings();
 
       // Populate cost breakdown line items (Card 1)
-      $('orig-fee-display').textContent    = fmtMoney(r.originationFee);
-      $('broker-fee-display').textContent  = fmtMoney(r.brokerFee);
-      if (r.gbcActive) {
-        $('gbc-fee-row').classList.remove('hidden');
-        $('gbc-fee-display').textContent = r.gbcFee === null ? 'Exception — contact us' : fmtMoney(r.gbcFee);
-      } else {
-        $('gbc-fee-row').classList.add('hidden');
-      }
+      const gbcFeeNum = r.gbcFee === null ? 0 : (r.gbcFee ?? 0);
+      $('other-costs-display').textContent = fmtMoney(r.originationFee + r.brokerFee + gbcFeeNum);
 
       // Accrued Interest row (only when there is a loan amount)
       if (r.maxLoan > 0) {
@@ -1179,9 +1182,9 @@
         $('accrued-interest-row').classList.add('hidden');
       }
 
-      // Refresh breakdown panel height if already open
+      // Refresh breakdown panel height if already open (skip if max-height:none — auto-sizes)
       const bd = $('cost-breakdown');
-      if (bd.style.maxHeight !== '0px' && bd.style.maxHeight !== '0') {
+      if (bd.style.maxHeight !== '0px' && bd.style.maxHeight !== '0' && bd.style.maxHeight !== 'none') {
         bd.style.maxHeight = bd.scrollHeight + 'px';
       }
 
