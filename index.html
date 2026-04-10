@@ -283,6 +283,10 @@
                   <span class="text-xs text-gray-500">GBC Fee</span>
                   <span id="gbc-fee-display" class="text-xs font-medium text-gray-700">—</span>
                 </div>
+                <div id="accrued-interest-row" class="hidden flex justify-between items-center">
+                  <span class="text-xs text-gray-500">Accrued Interest (9.99%)</span>
+                  <span id="accrued-interest-display" class="text-xs font-medium text-gray-700">—</span>
+                </div>
               </div>
             </div>
           </div>
@@ -903,14 +907,15 @@
 
       maxLoan = Math.max(0, maxLoan);
 
-      const originationFee = maxLoan * originationRate;
-      const brokerFee      = maxLoan * brokerRate;
-      const gbcFee         = gbcActive ? getGbcFee(homeValue, S.flyhomesLoan) : 0;
-      const gbcFeeNum      = gbcFee ?? 0; // treat exception as 0 for total calc
-      const total          = originationFee + brokerFee + gbcFeeNum;
-      const savings        = Math.max(0, maxLoan * 0.04 - total);
+      const originationFee    = maxLoan * originationRate;
+      const brokerFee         = maxLoan * brokerRate;
+      const gbcFee            = gbcActive ? getGbcFee(homeValue, S.flyhomesLoan) : 0;
+      const gbcFeeNum         = gbcFee ?? 0; // treat exception as 0 for total calc
+      const accruedInterest   = maxLoan * 0.0999 * (S.transitionDays / 365);
+      const total             = originationFee + brokerFee + gbcFeeNum + accruedInterest;
+      const savings           = Math.max(0, maxLoan * 0.04 - total);
 
-      return { maxLoan, originationFee, brokerFee, gbcActive, gbcFee, total, savings, cashEligible, cashThreshold, productName, solutionName, productIntro, grad };
+      return { maxLoan, originationFee, brokerFee, gbcActive, gbcFee, accruedInterest, total, savings, cashEligible, cashThreshold, productName, solutionName, productIntro, grad };
     }
 
     // ── Savings accordion toggle ─────────────────────────────────────────────
@@ -1049,15 +1054,13 @@
       tdInp.addEventListener('input', () => {
         const v = parseInt(tdInp.value.replace(/[^\d]/g, '')) || 0;
         S.transitionDays = v;
-        initSavingsDefaults();
-        renderSavings();
+        render();
       });
       tdInp.addEventListener('blur', () => {
         const v = Math.max(1, parseInt(tdInp.value.replace(/[^\d]/g, '')) || 60);
         S.transitionDays = v;
         tdInp.value = v;
-        initSavingsDefaults();
-        renderSavings();
+        render();
       });
 
       // Percentage sliders
@@ -1160,6 +1163,14 @@
         $('gbc-fee-display').textContent = r.gbcFee === null ? 'Exception — contact us' : fmtMoney(r.gbcFee);
       } else {
         $('gbc-fee-row').classList.add('hidden');
+      }
+
+      // Accrued Interest row (only when there is a loan amount)
+      if (r.maxLoan > 0) {
+        $('accrued-interest-row').classList.remove('hidden');
+        $('accrued-interest-display').textContent = fmtMoney(r.accruedInterest);
+      } else {
+        $('accrued-interest-row').classList.add('hidden');
       }
 
       // Refresh breakdown panel height if already open
