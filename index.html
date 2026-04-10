@@ -234,6 +234,9 @@
               </span>
               <div id="max-loan" class="text-white text-3xl font-bold pop">—</div>
             </div>
+            <p id="roi-sentence" class="text-white/90 text-sm font-medium mt-3 mb-1 hidden">
+              For every <strong>$1</strong> in BBYS cost, you get <span id="roi-value" class="text-emerald-300 font-semibold">—</span> back
+            </p>
           </div>
 
           <!-- Middle: white — total cost (expandable) -->
@@ -803,6 +806,9 @@
     const fmtMoney = n  => n <= 0 ? '—' : `$${Math.round(n).toLocaleString()}`;
     const fmtNum   = n  => Math.round(n).toLocaleString();
 
+    // ── Last computed cost total (kept in sync by render, read by renderRoi) ──
+    let lastCostTotal = 0;
+
     // ── State ────────────────────────────────────────────────────────────────
     const S = {
       homeValue : 1_200_000,
@@ -926,6 +932,18 @@
       }
     }
 
+    // ── ROI sentence render ───────────────────────────────────────────────────
+    function renderRoi() {
+      const roiSentence = $('roi-sentence');
+      if (lastCostTotal > 0) {
+        const roi = calcSavings().total / lastCostTotal;
+        $('roi-value').textContent = '$' + roi.toFixed(2);
+        roiSentence.classList.remove('hidden');
+      } else {
+        roiSentence.classList.add('hidden');
+      }
+    }
+
     // ── Savings calculation ───────────────────────────────────────────────────
     function calcSavings() {
       const { newPrice, homeValue, cash, assets, savCashPct, savStagedPct, savHpaPct,
@@ -995,6 +1013,8 @@
           el.style.maxHeight = el.scrollHeight + 'px';
         }
       });
+
+      renderRoi();
     }
 
     // ── Savings defaults (recalculates from current homeValue) ───────────────
@@ -1101,6 +1121,7 @@
       $('total-cost').textContent = fmtMoney(r.total);
       pop('max-loan');
       if (r.maxLoan > 0) triggerConfetti();
+      lastCostTotal = r.total;
       initSavingsDefaults();
       renderSavings();
 
