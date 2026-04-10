@@ -87,7 +87,13 @@ A "Buy Before You Sell" (BBYS) mortgage calculator for Flyhomes. Focus on unlock
 ## 5. Calculation Logic (Source of Truth)
 
 ### A. Total Estimated Upfront Cost Formula
-`Total Estimated Cost = (Loan Amount × Origination Fee %) + GBC Fee`
+`Total Estimated Cost = (Loan Amount × Origination Fee %) + GBC Fee + Accrued Interest`
+
+**Accrued Interest**
+- Rate: 9.99% per annum
+- Formula: `Loan Amount × 9.99% × (transitionDays / 365)`
+- Only shown when `Loan Amount > 0` (hidden in DTI-only scenario where there is no loan).
+- Displayed as a separate line item in the Estimated Cost dropdown alongside "Other Costs".
 
 ### B. Origination Fee % Rules
 - **BBYS + Cash Offer & Cross Collateral**:
