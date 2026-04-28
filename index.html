@@ -934,8 +934,15 @@
     // ── Calculation (source of truth: CLAUDE.md §5) ───────────────────────────
     function calc() {
       const { homeValue, mortgage, newPrice, assets, cash, noCash } = S;
+
+      // Available equity from departing home — reacts to mortgage slider (§5D IE formula)
+      const availableEquity   = Math.max(0, homeValue * 0.78 * 0.9 - mortgage);
+      // Combined down-payment resources: cash assets + unlockable equity
+      const combinedResources = assets + availableEquity;
+
       const cashThreshold = newPrice * 0.05;
-      const cashEligible  = assets >= cashThreshold;
+      // Eligible when combined resources (not just cash) can cover the min 5% down payment
+      const cashEligible  = combinedResources >= cashThreshold;
 
       // CLAUDE.md §5A: GBC cannot pair with Cross Collateral
       const gbcActive = S.gbc && !noCash;
@@ -948,7 +955,7 @@
         maxLoan = (newPrice + homeValue) * 0.75 - mortgage;
         const ltvAcq    = newPrice > 0 ? maxLoan / newPrice : 0;
         originationRate = ltvAcq > 0.90 ? 0.015 : 0.010;
-        brokerRate      = 0.01; // §5A1: Cross Collateral broker fee 1%
+        brokerRate      = 0.01;
         productName   = 'Cross Collateral';
         grad          = 'grad-c';
         if (S.downsize) {
@@ -959,20 +966,22 @@
           productIntro = 'Unlocks equity from both homes, little or no cash needed';
         }
       } else if (cash && cashEligible) {
-        // §5C BBYS + Cash Offer: new home * 95%
-        maxLoan = newPrice * 0.95;
+        // §5D Cash Offer: Max Purchase Price = combinedResources / 5%, capped by entered newPrice
+        // maxLoan reacts to mortgage slider via availableEquity → combinedResources
+        const maxPurchasePrice = combinedResources / 0.05;
+        maxLoan = Math.min(newPrice, maxPurchasePrice) * 0.95;
         const ltv       = newPrice > 0 ? maxLoan / newPrice : 0;
         originationRate = ltv > 0.90 ? 0.015 : 0.010;
-        brokerRate      = 0.01; // §5A1: Cash Offer broker fee 1%
+        brokerRate      = 0.01;
         productName   = 'Cash Offer';
         solutionName  = 'All-Cash Advantage';
         productIntro  = 'Offer like a cash buyer, close in as little as 10 days';
         grad          = 'grad-b';
       } else {
-        // §5B Instant Equity: departing * 0.78 * 0.9 − mortgage
+        // §5D Instant Equity: departing * 0.78 * 0.9 − mortgage
         maxLoan = homeValue * 0.78 * 0.9 - mortgage;
         originationRate = 0.02;    // 1st lien; 2nd lien (2.5%) requires LO confirmation
-        brokerRate      = 0.005;   // §5A1: Instant Equity broker fee 0.5%
+        brokerRate      = 0.005;
         productName   = 'Instant Equity';
         solutionName  = 'Equity for Down Payment';
         productIntro  = 'Unlocks home equity for down payment & closing costs before selling';
@@ -989,7 +998,8 @@
       const total             = originationFee + brokerFee + gbcFeeNum + accruedInterest;
       const savings           = Math.max(0, maxLoan * 0.04 - total);
 
-      return { maxLoan, originationFee, brokerFee, gbcActive, gbcFee, accruedInterest, total, savings, cashEligible, cashThreshold, productName, solutionName, productIntro, grad };
+      return { maxLoan, originationFee, brokerFee, gbcActive, gbcFee, accruedInterest, total, savings,
+               cashEligible, cashThreshold, combinedResources, productName, solutionName, productIntro, grad };
     }
 
     // ── Savings accordion toggle ─────────────────────────────────────────────
@@ -1272,8 +1282,8 @@
 
       if (S.cash && !r.cashEligible) {
         $('cash-warning').classList.remove('hidden');
-        const gap = r.cashThreshold - S.assets;
-        $('cash-shortfall').textContent = `You need $${Math.round(gap).toLocaleString()} more.`;
+        const gap = r.cashThreshold - r.combinedResources;
+        $('cash-shortfall').textContent = `You need $${Math.round(gap).toLocaleString()} more in cash or home equity.`;
       } else {
         $('cash-warning').classList.add('hidden');
       }
