@@ -6,7 +6,7 @@
   <title>Buy Before You Sell Calculator | Flyhomes</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -26,13 +26,13 @@
               800: '#1C2F3C',
             }
           },
-          fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui'] }
+          fontFamily: { sans: ['Libre Franklin', 'ui-sans-serif', 'system-ui'] }
         }
       }
     }
   </script>
   <style>
-    body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+    body { font-family: 'Libre Franklin', sans-serif; -webkit-font-smoothing: antialiased; }
 
     /* ── Tooltip ── */
     .tip { position: relative; display: inline-flex; align-items: center; }
@@ -104,16 +104,56 @@
 <body class="bg-slate-50 text-gray-900 min-h-screen">
 
   <!-- ══ NAV ══════════════════════════════════════════════════════════════════ -->
-  <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
-    <div class="max-w-5xl mx-auto px-5 sm:px-8 h-14 flex items-center justify-between">
-      <div class="flex items-center gap-2.5">
-        <div class="w-7 h-7 rounded-lg bg-brand flex items-center justify-center shrink-0">
-          <svg width="15" height="15" viewBox="0 0 18 18" fill="none">
-            <path d="M9 1.5L1.5 7.5V16.5H6.75V11.25H11.25V16.5H16.5V7.5L9 1.5Z" fill="white" stroke="white" stroke-width="0.5" stroke-linejoin="round"/>
+  <header class="bg-[#1a1a1a] sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" class="flex items-center shrink-0" aria-label="Flyhomes home">
+        <svg viewBox="0 0 1412 330" class="h-6 w-auto" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M92.05 129.6V238.6L114.85 245.9V250.2H34.75V245.9L53.05 238.6V129.6H25.65V124.4L53.05 110.7V100C53.05 84.8 55.35 72.3 60.05 62.5C64.75 52.8 71.55 44.3 80.45 37.2C86.35 32.5 92.75 29.2 99.75 27.3C106.75 25.4 113.85 24.4 120.95 24.4C127.25 24.4 132.75 25.3 137.55 27C142.35 28.7 146.25 30.9 149.45 33.5C152.55 36.1 154.95 39.1 156.45 42.3C157.95 45.6 158.75 48.8 158.75 52C158.75 58.1 157.15 63 154.05 66.6C150.85 70.3 146.05 72.1 139.55 72.1C133.05 72.1 127.25 69 122.05 62.8C116.85 56.6 113.15 47.5 110.95 35.5C107.45 37.1 104.55 39.2 102.15 41.6C99.75 44 97.75 47.2 96.25 51C94.75 54.9 93.65 59.5 93.05 64.9C92.35 70.5 92.05 77 92.05 84.5V111.6H130.15V129.6H92.05Z" fill="white"/>
+          <path d="M237.95 24.5L180.35 40.9V44L200.15 58.3V238.6L180.95 245.9V250.2H257.45V245.9L239.15 238.6V25.4L237.95 24.5Z" fill="white"/>
+          <path d="M362.85 242.3C352.65 267.3 343.35 285.3 334.65 296.5C326.05 307.7 316.55 313.3 306.15 313.3C297.05 313.3 290.25 311.2 285.85 306.9C281.45 302.6 279.35 297.6 279.35 291.7C279.35 289.1 279.95 286.6 281.05 284.2C282.15 281.9 283.65 279.8 285.65 278C287.55 276.2 289.75 274.7 292.15 273.6C294.55 272.5 297.15 271.9 299.75 271.9C305.65 271.9 310.45 273.2 314.25 275.7C318.05 278.2 321.95 281.8 325.95 286.5C327.35 284.7 328.95 282.5 330.65 280.1C332.35 277.7 334.15 275.1 335.85 272.5C337.55 269.9 339.05 267.3 340.45 264.9C341.75 262.5 342.85 260.4 343.65 258.8L345.15 255.4L290.65 124.1L272.35 116.2V111.9H351.25V116.2L333.25 124.1L363.45 207.9H364.95L392.05 126.3L375.95 116.2V111.9H428.65V116.2L409.75 126.9L362.85 242.3Z" fill="white"/>
+          <path d="M544.65 140.4C541.65 134.8 535.75 132 526.95 132C521.65 132 516.85 132.4 512.65 133.2C508.35 134 503.65 135.5 498.35 137.8V238.6L513.55 245.9V250.2H441.05V245.9L459.35 238.6V58.3L439.25 44V41L497.15 24.6L498.35 25.5V131.2L499.55 131.8C508.65 123.3 517.35 117.1 525.45 113.2C533.55 109.3 541.75 107.4 550.15 107.4C557.05 107.4 562.85 108.6 567.65 110.9C572.45 113.2 576.35 116.4 579.35 120.3C582.35 124.3 584.65 128.7 586.05 133.7C587.45 138.7 588.15 143.9 588.15 149.4V238.6L606.45 245.9V250.2H533.95V245.9L549.15 238.6V161.5C549.25 153 547.65 146 544.65 140.4Z" fill="white"/>
+          <path d="M728.65 181.2C728.65 171.7 728.05 163 726.85 155.2C725.65 147.4 723.75 140.7 721.25 135C718.75 129.3 715.45 125 711.55 121.9C707.55 118.9 702.85 117.3 697.35 117.3C691.85 117.3 687.15 118.8 683.15 121.9C679.15 124.9 675.95 129.3 673.45 135C670.95 140.7 669.05 147.4 667.85 155.2C666.65 163 666.05 171.7 666.05 181.2C666.05 190.7 666.65 199.4 667.85 207.2C669.05 215 670.95 221.7 673.45 227.4C675.95 233.1 679.25 237.4 683.15 240.5C687.15 243.5 691.85 245.1 697.35 245.1C702.85 245.1 707.55 243.6 711.55 240.5C715.55 237.5 718.75 233.1 721.25 227.4C723.75 221.7 725.65 215 726.85 207.2C728.05 199.4 728.65 190.7 728.65 181.2ZM770.35 181.1C770.35 190.2 768.75 199.2 765.45 208.1C762.25 216.9 757.45 224.9 751.15 231.9C744.85 238.9 737.05 244.5 727.65 248.8C718.35 253.1 707.55 255.2 695.35 255.2C683.15 255.2 672.55 253.2 663.55 249.1C654.55 245 647.15 239.6 641.35 232.8C635.55 226 631.25 218.1 628.45 209.2C625.65 200.3 624.15 190.9 624.15 181.2C624.15 172.1 625.75 163.1 629.05 154.2C632.25 145.4 637.05 137.5 643.35 130.6C649.65 123.7 657.45 118.1 666.85 113.8C676.15 109.5 686.95 107.4 699.15 107.4C711.35 107.4 721.95 109.4 730.95 113.5C739.95 117.6 747.35 122.9 753.15 129.6C758.95 136.3 763.25 144.1 766.05 153.1C768.95 162 770.35 171.3 770.35 181.1Z" fill="white"/>
+          <path d="M982.85 149.4C982.35 145.7 981.25 142.7 979.65 140.1C978.05 137.6 975.75 135.5 972.75 134C969.85 132.5 965.95 131.7 961.35 131.7C956.05 131.7 951.75 132.5 948.45 134C945.05 135.5 940.85 137.3 935.85 139.3V238.6L951.05 245.9V250.2H881.65V245.9L896.85 238.6V161.2C896.85 156.9 896.65 153 896.25 149.3C895.85 145.6 894.95 142.6 893.55 140C892.15 137.5 890.05 135.4 887.35 133.9C884.65 132.4 880.95 131.6 876.25 131.6C870.95 131.6 866.65 132.1 863.35 133C860.05 133.9 855.75 135.4 850.75 137.4V238.5L865.95 245.8V250.1H793.45V245.8L811.75 238.5V136.5L793.45 122.2V119.2L847.65 106.4L848.85 107.3L848.25 131.7L849.45 132.3C858.55 123.8 867.05 117.4 874.85 113.3C882.65 109.1 890.75 107.1 899.05 107.1C909.45 107.1 917.35 109.4 922.95 114.1C928.55 118.8 932.25 124.9 934.05 132.4L935.25 133C944.35 124.5 952.95 117.9 960.95 113.4C968.95 108.8 977.15 106.5 985.45 106.5C992.35 106.5 998.15 107.7 1002.85 110.2C1007.55 112.6 1011.35 115.8 1014.25 119.8C1017.15 123.8 1019.35 128.3 1020.65 133.4C1021.95 138.5 1022.65 143.8 1022.65 149.2V238.8L1040.95 246.1V250.4H968.35V246.1L983.55 238.8V161.4C983.55 157 983.35 153 982.85 149.4Z" fill="white"/>
+          <path d="M1157.45 161.6C1157.05 146.5 1154.85 135.3 1150.75 128.2C1146.65 121 1140.35 117.5 1131.85 117.5C1123.75 117.5 1117.05 121.8 1111.85 130.4C1106.65 139 1103.65 150.5 1102.85 165.1L1157.45 161.6ZM1102.65 173.7C1102.65 183 1103.25 191.4 1104.45 198.8C1105.65 206.2 1107.85 212.5 1111.15 217.7C1114.35 222.9 1118.75 226.9 1124.25 229.7C1129.75 232.5 1136.85 234 1145.55 234C1153.25 234 1160.65 233.3 1167.65 232C1174.65 230.7 1182.95 228.7 1192.45 226.1L1194.25 230.1C1185.15 237.2 1174.95 243.2 1163.75 247.9C1152.55 252.7 1142.15 255.1 1132.35 255.1C1121.35 255.1 1111.45 253.4 1102.65 249.9C1093.85 246.5 1086.35 241.6 1080.25 235.4C1074.15 229.2 1069.45 221.7 1066.25 213C1063.05 204.3 1061.35 194.6 1061.35 184.1C1061.35 173.1 1063.45 162.9 1067.55 153.5C1071.75 144.1 1077.15 135.9 1083.85 129.1C1090.55 122.3 1098.25 117 1106.95 113.1C1115.65 109.2 1124.65 107.3 1133.75 107.3C1144.35 107.3 1153.55 109 1161.45 112.3C1169.35 115.7 1175.85 120.3 1180.95 126.2C1186.05 132.1 1189.75 139.1 1192.25 147.2C1194.65 155.3 1195.85 164.2 1195.65 173.7H1102.65Z" fill="white"/>
+          <path d="M1332.35 208.8C1332.35 215.9 1330.75 222.3 1327.65 228C1324.45 233.7 1320.25 238.5 1315.05 242.6C1309.75 246.7 1303.75 249.7 1296.95 251.9C1290.15 254 1283.05 255.1 1275.75 255.1C1257.85 255.1 1241.95 252.4 1227.95 247.1L1227.05 205.4L1233.15 204.8C1238.65 212.3 1243.55 218.7 1247.95 223.8C1252.35 229 1256.45 233.1 1260.25 236.3C1264.15 239.5 1267.75 241.7 1271.25 243C1274.75 244.3 1278.45 245 1282.55 245C1288.65 245 1293.45 243.1 1296.85 239.2C1300.25 235.3 1302.05 230.3 1302.05 224.1C1302.05 220.2 1301.15 216.9 1299.35 214.1C1297.55 211.3 1295.05 208.9 1291.85 206.7C1288.65 204.5 1285.05 202.6 1281.05 200.9C1276.95 199.2 1272.85 197.4 1268.55 195.5C1263.65 193.5 1258.75 191.2 1253.75 188.8C1248.75 186.4 1244.35 183.5 1240.55 180.1C1236.65 176.8 1233.55 172.8 1231.15 168.1C1228.75 163.4 1227.45 157.8 1227.45 151.1C1227.45 145 1228.85 139.3 1231.75 134.1C1234.55 128.8 1238.45 124.2 1243.45 120.3C1248.45 116.3 1254.35 113.2 1261.25 110.9C1268.15 108.6 1275.75 107.4 1284.05 107.4C1287.05 107.4 1290.35 107.5 1293.75 107.8C1297.15 108.1 1300.75 108.5 1304.25 109C1307.85 109.5 1311.15 110 1314.15 110.6C1317.15 111.2 1319.85 111.9 1322.05 112.7L1322.95 150.3L1316.85 151.5C1312.15 145.4 1308.15 140.2 1304.65 135.8C1301.15 131.4 1297.95 127.9 1294.95 125.1C1291.95 122.4 1288.95 120.4 1285.95 119.2C1283.05 118 1279.75 117.4 1276.05 117.4C1270.15 117.4 1265.55 119.3 1262.35 123.2C1259.15 127.1 1257.45 131.4 1257.45 136.1C1257.45 140 1258.45 143.4 1260.35 146.2C1262.25 149.1 1264.85 151.6 1267.95 153.7C1271.05 155.9 1274.65 157.8 1278.75 159.5C1282.85 161.2 1286.95 163 1291.25 164.9C1296.15 166.9 1301.05 169.1 1306.05 171.4C1311.05 173.7 1315.45 176.6 1319.25 179.9C1323.15 183.2 1326.25 187.2 1328.65 191.8C1331.15 196.5 1332.35 202.2 1332.35 208.8Z" fill="white"/>
+          <path d="M1367.45 128.3C1367.45 126.9 1367.05 125.9 1366.35 125.2C1365.65 124.5 1364.75 124.1 1363.55 124L1361.75 123.9V132.6H1363.55C1364.75 132.6 1365.75 132.2 1366.35 131.4C1367.15 130.6 1367.45 129.6 1367.45 128.3ZM1373.65 127.3C1373.65 130.2 1371.75 132 1367.85 132.8V133.7C1369.45 133.9 1370.65 134.3 1371.35 134.9C1372.05 135.5 1372.55 136.4 1372.85 137.7C1373.25 139.3 1373.75 140.4 1374.25 141.1C1374.85 141.8 1375.75 142.2 1377.05 142.4V144H1371.65C1370.25 144 1369.15 143.6 1368.35 142.9C1367.55 142.2 1366.95 141.1 1366.55 139.7L1365.55 136.7C1365.25 135.8 1364.85 135.3 1364.35 135C1363.85 134.7 1363.05 134.6 1362.15 134.6H1361.75V141.4L1364.85 142.4V144H1351.75V142.4L1355.45 141.4V124.7L1351.75 123.5V121.9H1365.65C1368.35 121.9 1370.25 122.4 1371.65 123.5C1373.05 124.5 1373.65 125.8 1373.65 127.3ZM1363.65 152.7C1366.35 152.7 1368.75 152.2 1371.15 151.2C1373.45 150.2 1375.45 148.9 1377.15 147.2C1378.85 145.5 1380.15 143.5 1381.15 141.1C1382.05 138.7 1382.55 136.2 1382.55 133.4C1382.55 130.7 1382.05 128.1 1381.15 125.7C1380.25 123.3 1378.85 121.3 1377.15 119.6C1375.45 117.9 1373.45 116.5 1371.15 115.6C1368.85 114.6 1366.35 114.1 1363.65 114.1C1360.95 114.1 1358.35 114.6 1356.15 115.6C1353.85 116.6 1351.85 117.9 1350.15 119.6C1348.45 121.3 1347.15 123.3 1346.15 125.7C1345.25 128.1 1344.75 130.6 1344.75 133.4C1344.75 136.1 1345.25 138.7 1346.15 141.1C1347.05 143.5 1348.45 145.5 1350.15 147.2C1351.85 148.9 1353.85 150.3 1356.15 151.2C1358.35 152.2 1360.85 152.7 1363.65 152.7ZM1363.65 155C1360.55 155 1357.65 154.5 1355.05 153.4C1352.45 152.3 1350.15 150.8 1348.25 148.9C1346.35 147 1344.75 144.7 1343.75 142.1C1342.65 139.5 1342.15 136.6 1342.15 133.5C1342.15 130.4 1342.65 127.5 1343.75 124.9C1344.85 122.3 1346.35 120 1348.25 118.1C1350.15 116.2 1352.45 114.6 1355.05 113.6C1357.65 112.5 1360.55 112 1363.65 112C1366.75 112 1369.65 112.5 1372.25 113.6C1374.85 114.7 1377.15 116.2 1379.05 118.1C1380.95 120 1382.55 122.3 1383.55 124.9C1384.65 127.5 1385.15 130.4 1385.15 133.5C1385.15 136.6 1384.65 139.5 1383.55 142.1C1382.45 144.7 1380.95 147 1379.05 148.9C1377.15 150.8 1374.85 152.4 1372.25 153.4C1369.55 154.4 1366.75 155 1363.65 155Z" fill="white"/>
+        </svg>
+      </a>
+
+      <!-- Center nav -->
+      <nav class="hidden lg:flex items-center gap-8 text-sm text-gray-200">
+        <button type="button" class="flex items-center gap-1 hover:text-white transition-colors">
+          Solutions
+          <svg class="w-3 h-3 opacity-70" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button type="button" class="flex items-center gap-1 hover:text-white transition-colors">
+          By Role / Audience
+          <svg class="w-3 h-3 opacity-70" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button type="button" class="flex items-center gap-1 hover:text-white transition-colors">
+          Resources
+          <svg class="w-3 h-3 opacity-70" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <a href="#" class="hover:text-white transition-colors">Case Studies</a>
+        <button type="button" class="flex items-center gap-1 hover:text-white transition-colors">
+          Our Company
+          <svg class="w-3 h-3 opacity-70" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </nav>
+
+      <!-- Right utilities -->
+      <div class="flex items-center gap-5 text-sm text-gray-200">
+        <button type="button" aria-label="Search" class="hover:text-white transition-colors">
+          <svg class="w-[18px] h-[18px]" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M17 17L13.5 13.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
           </svg>
-        </div>
-        <span class="font-bold text-gray-900 tracking-tight text-base">Flyhomes</span>
-        <span class="hidden sm:inline text-xs font-semibold text-brand bg-brand-50 px-2 py-0.5 rounded-full">BBYS Calculator</span>
+        </button>
+        <a href="#" class="hidden sm:inline hover:text-white transition-colors">Login</a>
+        <a href="#" class="inline-flex items-center px-5 py-2 rounded-full bg-[#D9848B] hover:bg-[#CB7178] text-[#232226] text-sm font-medium transition-colors">
+          Get Started
+        </a>
       </div>
     </div>
   </header>
@@ -126,7 +166,7 @@
       <div class="space-y-5">
 
         <!-- Challenge Selector -->
-        <p class="text-xs font-semibold text-[#4C7994] uppercase tracking-widest">Step 1: Select challenge</p>
+        <p class="text-xs font-semibold text-[#232226] uppercase tracking-widest">Step 1: Select challenge</p>
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm">
           <div class="px-6 pt-5 pb-4">
             <p class="text-sm font-medium text-gray-700 mb-0.5">What challenge are you facing?</p>
@@ -145,7 +185,7 @@
         </div>
 
         <!-- Home details -->
-        <p class="text-xs font-semibold text-[#4C7994] uppercase tracking-widest">Step 2: Enter scenario details</p>
+        <p class="text-xs font-semibold text-[#232226] uppercase tracking-widest">Step 2: Enter scenario details</p>
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm">
           <div class="p-6 space-y-5">
 
@@ -214,7 +254,7 @@
 
       <!-- ── RIGHT: RESULTS ─────────────────────────────────────────────────── -->
       <div class="sticky-panel space-y-4">
-        <p class="text-xs font-semibold text-[#4C7994] uppercase tracking-widest">Step 3: Review results</p>
+        <p class="text-xs font-semibold text-[#232226] uppercase tracking-widest">Step 3: Review results</p>
 
         <!-- Card 1: Numbers -->
         <div id="number-card" style="overflow:visible">
@@ -537,7 +577,7 @@
           <!-- Bottom: disclaimer + CTA -->
           <div class="bg-white px-6 pt-3 pb-5" style="border-left:1px solid #E5E7EB;border-right:1px solid #E5E7EB;border-bottom:1px solid #E5E7EB;border-radius:0 0 12px 12px">
             <p class="text-xs text-red-500 leading-relaxed mb-3.5">Loan amount and costs are estimated based on the home value provided. Actual amounts may vary.</p>
-            <a href="#" class="flex items-center justify-center w-full text-white font-medium py-3.5 rounded-lg text-[15px]" style="background:#4C7994">Submit scenario to get official offer</a>
+            <a href="#" class="flex items-center justify-center w-full font-medium py-3.5 rounded-lg text-[15px] transition-colors" style="background:#D9848B;color:#232226" onmouseover="this.style.background='#CB7178'" onmouseout="this.style.background='#D9848B'">Submit scenario to get official offer</a>
             <button onclick="window.print()" class="flex items-center justify-center w-full font-medium py-3 rounded-lg text-[15px] mt-2.5 border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">Save as PDF</button>
           </div>
 
@@ -804,7 +844,7 @@
   <footer class="max-w-5xl mx-auto px-5 sm:px-8 pt-4 pb-10">
     <div class="border-t border-gray-100 pt-6">
       <p class="text-[11.5px] text-gray-400 leading-relaxed">
-        <strong class="text-gray-500 font-medium">Disclaimer:</strong> This calculator is for illustrative purposes only and does not constitute financial, legal, or tax advice. Results are estimates based on simplified assumptions and may not reflect actual loan amounts, eligibility, fees, or terms. Subject to Flyhomes underwriting review and approval. Not available in all markets. &copy; 2024 Flyhomes, Inc.
+        <strong class="text-gray-500 font-medium">Disclaimer:</strong> This calculator is for illustrative purposes only and does not constitute financial, legal, or tax advice. Results are estimates based on simplified assumptions and may not reflect actual loan amounts, eligibility, fees, or terms. Subject to Flyhomes underwriting review and approval. Not available in all markets. &copy; 2026 Flyhomes, Inc.
       </p>
     </div>
   </footer>
