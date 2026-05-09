@@ -116,9 +116,14 @@ Determined by the **Departing Home Price**. Standalone applies if no Flyhomes lo
 | Above $2,000,000 | $10,000+ | **$10,000+** |
 
 ### D. Core Product Formulas
-- **Instant Equity**: `(Departing Price * 0.78 * 0.9) - Current Mortgage`. Max LTV: 90% of GBC Price.
-- **BBYS + Cash Offer**: `New Home Price * 95%`. Max LTV: 95%. Min Down Payment: 5%.
-- **Cross Collateral**: `(New + Departing) * 0.75 - Current Mortgage`. Max LTV: 105% (Acquiring) | 75% CLTV (Combined).
+Instant Equity: (Departing Price * 0.78 * 0.9) - Current Mortgage. Max LTV: 90% of GBC Price.
+
+Max Purchase Price: (Liquid Assets + Instant Equity) / 0.05. Ensures 5% Down Payment can be funded by both Cash and Home Equity.
+
+BBYS + Cash Offer: New Home Price * 95%. Max LTV: 95%. Min Down Payment: 5%.
+
+Cross Collateral: (New + Departing) * 0.75 - Current Mortgage. Max LTV: 105% (Acquiring) | 75% CLTV (Combined).
+
 
 ### E. Estimated Savings Logic
 Trigger: Display in "Review Results" section to replace the old "Moving Once" module.
