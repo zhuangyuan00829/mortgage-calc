@@ -37,6 +37,9 @@ A "Buy Before You Sell" (BBYS) mortgage calculator for Flyhomes. Focus on unlock
 
 ## 3. Branding & Design System
 - **Primary Color**: `#4C7994` (Flyhomes Blue).
+- **Primary CTA**: Background `#D9848B` (pink), text `#232226` (near-black). Hover `#CB7178`. Apply to ALL primary CTAs (e.g., nav "Get Started", "Submit scenario to get official offer"). Do not use the brand blue for primary CTAs.
+- **Top Nav**: Dark background `#1a1a1a`, white Flyhomes wordmark logo, gray-200 link text, hover white.
+- **Typography**: `Libre Franklin` (Google Fonts, weights 300/400/500/600/700) is the project font. Do not use Inter.
 - **Tokens**: Success (#10B981), Warning (#F59E0B), Border (#E5E7EB).
 - **Style**: Ant Design patterns, generous whitespace, high-trust minimalist UI.
 
