@@ -128,7 +128,7 @@ Max Purchase Price: (Liquid Assets + Instant Equity) / 0.05. Ensures 5% Down Pay
 
 BBYS + Cash Offer: New Home Price * 95%. Max LTV: 95%. Min Down Payment: 5%.
 
-Cross Collateral: (New + Departing) * 0.75 - Current Mortgage. Max LTV: 105% (Acquiring) | 75% CLTV (Combined).
+Cross Collateral: `Math.min(NewHomePrice * 1.05, (New + Departing) * 0.75 - CurrentMortgage)`. Hard cap: 105% Acquiring LTV | 75% CLTV (Combined). The 105% cap takes priority when the CLTV formula would otherwise exceed it.
 
 
 ### E. Estimated Savings Logic

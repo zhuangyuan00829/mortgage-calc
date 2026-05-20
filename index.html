@@ -1011,8 +1011,9 @@
 
       let productIntro;
       if (noCash) {
-        // §5D Cross Collateral: (new + departing) * 75% − mortgage
-        maxLoan = (newPrice + homeValue) * 0.75 - mortgage;
+        // §5D Cross Collateral: CLTV formula capped at 105% acquiring LTV (hard risk cap)
+        const ccCltv = (newPrice + homeValue) * 0.75 - mortgage;
+        maxLoan = Math.min(newPrice * 1.05, ccCltv);
         const ltvAcq    = newPrice > 0 ? maxLoan / newPrice : 0;
         originationRate = ltvAcq > 0.90 ? 0.015 : 0.010;
         brokerRate      = 0.01;
