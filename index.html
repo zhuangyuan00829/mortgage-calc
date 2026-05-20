@@ -949,6 +949,10 @@
       cash         : false,
       noCash       : false,
       downsize     : false,
+      // Raw user-intent flags (set by syncStateFromChallenges; resolved by applyRule3Gating)
+      cashIntent   : false,
+      noCash_base  : false,
+      gbc_base     : false,
       flyhomesLoan : true,   // true = bundle rate, false = standalone rate
       // Savings sliders
       savCashPct    : 3.5,
@@ -1274,6 +1278,7 @@
 
     // ── Render ───────────────────────────────────────────────────────────────
     function render() {
+      applyRule3Gating();   // re-evaluate Rule 3 with current slider values before calc()
       const r = calc();
 
       $('card-header').className      = `px-5 pt-4 pb-4`;
@@ -1331,6 +1336,8 @@
       } else {
         $('cash-warning').classList.add('hidden');
       }
+
+      applyProductLabel();  // always sync card visibility + GBC badge after calc()
     }
 
     // ── Input binding ────────────────────────────────────────────────────────
@@ -1373,22 +1380,43 @@
     const selected = new Set(['equity']);
 
     function syncStateFromChallenges() {
+      // Rule 0: downsize overrides everything (highest priority)
       const isDownsize        = selected.has('downsize');
+      // Rule 1: equity + cash → Cross Collateral
       const isCrossCollateral = (selected.has('equity') && selected.has('cash')) || isDownsize;
-      S.downsize = isDownsize;
-      S.noCash   = isCrossCollateral;
-      S.cash     = selected.has('cash') && !isCrossCollateral;
-      S.gbc      = selected.has('dti')  && !isCrossCollateral;
+      S.downsize    = isDownsize;
+      S.noCash_base = isCrossCollateral;
+      // cashIntent: user explicitly wants a cash offer, but not already resolved to CC via Rule 0/1
+      S.cashIntent  = selected.has('cash') && !isCrossCollateral;
+      // gbc_base: user's raw DTI intent, before Rule 3 gating may suppress it
+      S.gbc_base    = selected.has('dti')  && !isCrossCollateral;
+      applyRule3Gating();
+    }
+
+    // Rule 3 auto-gating: when user wants a cash offer, evaluate projectedFinalLTV.
+    // If ≤ 0.75, Cross Collateral is a better fit — flip S.noCash/S.cash reactively.
+    // Called on every render() so slider changes (newPrice, mortgage, homeValue) are reflected.
+    function applyRule3Gating() {
+      let isRule3CC = false;
+      if (S.cashIntent && S.newPrice > 0) {
+        const projectedFinalLTV = (S.newPrice + S.mortgage - S.homeValue * 0.9) / S.newPrice;
+        isRule3CC = projectedFinalLTV <= 0.75;
+      }
+      S.noCash = S.noCash_base || isRule3CC;
+      S.cash   = S.cashIntent && !isRule3CC;
+      // Suppress GBC when Rule 3 gates to CC (CC cannot pair with GBC per §5C)
+      S.gbc    = isRule3CC ? false : S.gbc_base;
     }
 
     function applyProductLabel() {
-      const has             = id => selected.has(id);
-      const isDownsize      = has('downsize');
-      const isCrossCollat   = (has('equity') && has('cash')) || isDownsize;
-      const dtiOnly         = selected.size === 1 && has('dti');
-      const noneSelected    = selected.size === 0;
-      const showGBC         = !noneSelected && !isCrossCollat;
-      const mostLikely      = showGBC && !has('dti');
+      const has           = id => selected.has(id);
+      // Read resolved flags (applyRule3Gating() always runs before this in render())
+      const isDownsize    = S.downsize;
+      const isCrossCollat = S.noCash;  // includes Rule 0, Rule 1, and Rule 3 auto-gating
+      const dtiOnly       = selected.size === 1 && has('dti');
+      const noneSelected  = selected.size === 0;
+      const showGBC       = !noneSelected && !isCrossCollat;
+      const mostLikely    = showGBC && !has('dti');
 
       // ── Card visibility ───────────────────────────────────────────────────
       $('number-card').classList.toggle('hidden',        dtiOnly || noneSelected);
@@ -1454,8 +1482,7 @@
           selected.has(c.id) ? selected.delete(c.id) : selected.add(c.id);
           syncStateFromChallenges();
           renderChallenges();
-          render();
-          applyProductLabel();
+          render();  // applyProductLabel() is called inside render()
         });
         cardsEl.appendChild(card);
       });
@@ -1472,8 +1499,7 @@
     syncStateFromChallenges();
     initSavingsDefaults();
     bindSavingsInputs();
-    render();
-    applyProductLabel();
+    render();  // applyProductLabel() is called inside render()
     initCostToggles();
   </script>
 </body>
