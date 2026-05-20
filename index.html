@@ -1088,9 +1088,11 @@
 
     // ── Savings calculation ───────────────────────────────────────────────────
     function calcSavings() {
-      const { newPrice, homeValue, cash, assets, savCashPct, savStagedPct, savHpaPct,
+      const { newPrice, homeValue, cash, assets, noCash, savCashPct, savStagedPct, savHpaPct,
               savMovingFee, savHousing, savStorage } = S;
-      const isCash       = cash && assets >= newPrice * 0.05;
+      // Show Cash Offer Price Advantage for explicit cash selection OR when active solution
+      // is Cross Collateral / Retire & Downsize (both set S.noCash = true)
+      const isCash       = (cash && assets >= newPrice * 0.05) || noCash;
       const cashDiscount = isCash ? newPrice * (savCashPct / 100) : 0;
       const staged       = Math.max(0, homeValue * (savStagedPct / 100) - S.savStagingCost);
       const hpa          = (newPrice + homeValue) * (savHpaPct / 100) * (S.transitionDays / 30) / 12;

@@ -142,12 +142,12 @@ newHomePrice: Live-synced from Step 2 "Estimated Purchase Price" input/slider.
 
 isCashOfferSelected: Boolean flag from Step 1 selection.
 
-1. Cash Offer Discount (Conditional)
-Visibility: Only show if isCashOfferSelected is TRUE.
+1. Cash Offer Price Advantage (Conditional)
+Visibility: Show if isCashOfferSelected is TRUE **OR** if the active solution is Cross Collateral or Retire & Downsize. Hide otherwise.
 
 Logic: Default 3.5% (Slider: 1% - 10%).
 
-Formula: newHomePrice * cashOfferDiscount%
+Formula: newHomePrice * cashOfferAdvantage%
 
 Tooltip: "Sellers prefer the certainty of cash — no appraisal contingency, no financing fall-through. Research shows this translates to a measurable discount on purchase price."
 
@@ -185,7 +185,7 @@ Category Total: Sum of the three sub-fields above.
 transitionDays: User-editable input field in the results panel (above Estimated Cost). Default: 60. Minimum: 1. Affects HPA, Temporary Housing, and Storage Fee calculations.
 
 5. Grand Total
-Calculation: Sum of all active items (Note: Cash Offer Discount = 0 if hidden).
+Calculation: Sum of all active items (Note: Cash Offer Price Advantage = 0 if hidden).
 
 UI: Display "Total Estimated Savings" prominently at the bottom of the section.
 
