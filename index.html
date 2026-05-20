@@ -585,6 +585,17 @@
 
         </div><!-- /card 1 -->
 
+        <!-- Option A: Switch offer type (shown when CC is the natural recommendation) -->
+        <div id="switch-offer-banner" class="hidden mt-3">
+          <button id="switch-offer-btn" onclick="toggleForceCashOffer()"
+            class="w-full flex items-start gap-2.5 text-left px-4 py-3 rounded-lg border transition-colors"
+            style="background:rgba(76,121,148,0.06);border-color:rgba(76,121,148,0.2)"
+            onmouseover="this.style.background='rgba(76,121,148,0.11)'" onmouseout="this.style.background='rgba(76,121,148,0.06)'">
+            <svg class="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style="color:#4C7994" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+            <span id="switch-offer-text" class="text-[13px] leading-snug" style="color:#374151"></span>
+          </button>
+        </div>
+
         <!-- Section header -->
         <p style="margin:1.75rem 0 0.75rem;font-size:14px;font-weight:500;letter-spacing:0.05em;color:#6B7280;text-transform:uppercase">Your customized solution</p>
 
@@ -953,6 +964,9 @@
       cashIntent   : false,
       noCash_base  : false,
       gbc_base     : false,
+      // Option A override: user switches CC → Standalone Cash Offer
+      forceCashOffer : false,
+      naturalIsCC    : false,  // true when CC would be shown without force override
       flyhomesLoan : true,   // true = bundle rate, false = standalone rate
       // Savings sliders
       savCashPct    : 3.5,
@@ -1088,6 +1102,22 @@
       } else {
         roiSentence.classList.add('hidden');
       }
+    }
+
+    // ── Option A: Switch offer type banner ───────────────────────────────────
+    function renderSwitchBanner() {
+      const banner = $('switch-offer-banner');
+      const show   = S.naturalIsCC && !S.downsize;
+      banner.classList.toggle('hidden', !show);
+      if (!show) return;
+      $('switch-offer-text').innerHTML = S.forceCashOffer
+        ? 'Want to lower your long-term debt? <br><strong class="font-semibold" style="color:#374151;white-space:nowrap">Switch back to Cross Collateral <svg style="display:inline;vertical-align:-2px" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></strong>'
+        : 'Want to keep more cash from your sale and carry a higher mortgage? <br><strong class="font-semibold" style="color:#374151;white-space:nowrap">Switch to Standalone Cash Offer <svg style="display:inline;vertical-align:-2px" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></strong>';
+    }
+
+    function toggleForceCashOffer() {
+      S.forceCashOffer = !S.forceCashOffer;
+      render();
     }
 
     // ── Savings calculation ───────────────────────────────────────────────────
@@ -1298,6 +1328,7 @@
       lastCostTotal = r.total;
       initSavingsDefaults();
       renderSavings();
+      renderSwitchBanner();
 
       // Populate cost breakdown line items (Card 1)
       const gbcFeeNum = r.gbcFee === null ? 0 : (r.gbcFee ?? 0);
@@ -1390,6 +1421,8 @@
       S.cashIntent  = selected.has('cash') && !isCrossCollateral;
       // gbc_base: user's raw DTI intent, before Rule 3 gating may suppress it
       S.gbc_base    = selected.has('dti')  && !isCrossCollateral;
+      // Reset Option A override whenever challenge selection changes
+      S.forceCashOffer = false;
       applyRule3Gating();
     }
 
@@ -1402,10 +1435,20 @@
         const projectedFinalLTV = (S.newPrice + S.mortgage - S.homeValue * 0.9) / S.newPrice;
         isRule3CC = projectedFinalLTV <= 0.75;
       }
-      S.noCash = S.noCash_base || isRule3CC;
-      S.cash   = S.cashIntent && !isRule3CC;
-      // Suppress GBC when Rule 3 gates to CC (CC cannot pair with GBC per §5C)
-      S.gbc    = isRule3CC ? false : S.gbc_base;
+      // naturalIsCC: true when CC would be shown without any force override (excludes downsize branding)
+      S.naturalIsCC = S.noCash_base || isRule3CC;
+
+      if (S.naturalIsCC && !S.downsize && S.forceCashOffer) {
+        // Option A override: user chose Standalone Cash Offer over CC
+        S.noCash = false;
+        S.cash   = true;
+        S.gbc    = S.gbc_base;
+      } else {
+        S.noCash = S.naturalIsCC;
+        S.cash   = S.cashIntent && !isRule3CC;
+        // Suppress GBC when Rule 3 gates to CC (CC cannot pair with GBC per §5C)
+        S.gbc    = isRule3CC ? false : S.gbc_base;
+      }
     }
 
     function applyProductLabel() {
