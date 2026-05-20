@@ -67,9 +67,12 @@ A "Buy Before You Sell" (BBYS) mortgage calculator for Flyhomes. Focus on unlock
 - **Rule 2: Equity Focused**
   - **Condition**: IF (Option 2 checked ONLY) OR (Option 1 + 2 checked)
   - **Result**: Show **Equity for Down Payment** (IE) + **DTI Buster** (GBC).
-- **Rule 3: Cash Offer Focused**
+- **Rule 3: Cash Offer Focused (Auto-Gating)**
   - **Condition**: IF (Option 3 checked ONLY) OR (Option 1 + 3 checked)
-  - **Result**: Show **All-Cash Advantage** (CO) + **DTI Buster** (GBC).
+  - **Evaluation**: Calculate `projectedFinalLTV = (NewHomePrice + CurrentMortgage - (DepartingPrice * 0.9)) / NewHomePrice`.
+  - **Result**: 
+    - IF `projectedFinalLTV <= 0.75`: Show **Cross Collateral** ONLY.
+    - IF `projectedFinalLTV > 0.75`: Show **All-Cash Advantage** (CO) + **DTI Buster** (GBC).
 - **Rule 4: Pure DTI**
   - **Condition**: IF (Option 1 checked ONLY)
   - **Result**: Show **DTI Buster** (GBC) only.
