@@ -1008,16 +1008,16 @@
       // CLAUDE.md §5A: GBC cannot pair with Cross Collateral
       const gbcActive = S.gbc && !noCash;
 
-      let maxLoan, originationRate, brokerRate, productName, solutionName, grad;
+      let maxLoan, originationRate, brokerFee, productName, solutionName, grad;
 
       let productIntro;
       if (noCash) {
         // §5D Cross Collateral: CLTV formula capped at 105% acquiring LTV (hard risk cap)
         const ccCltv = (newPrice + homeValue) * 0.75 - mortgage;
-        maxLoan = Math.min(newPrice * 1.05, ccCltv);
+        maxLoan = Math.max(0, Math.min(newPrice * 1.05, ccCltv));
         const ltvAcq    = newPrice > 0 ? maxLoan / newPrice : 0;
         originationRate = ltvAcq > 0.90 ? 0.015 : 0.010;
-        brokerRate      = 0.01;
+        brokerFee       = maxLoan * 0.01;   // CC track: 1% of capped loan
         productName   = 'Cross Collateral';
         grad          = 'grad-c';
         if (S.downsize) {
@@ -1031,29 +1031,26 @@
         // §5D Cash Offer: Max Purchase Price = combinedResources / 5%, capped by entered newPrice
         // maxLoan reacts to mortgage slider via availableEquity → combinedResources
         const maxPurchasePrice = combinedResources / 0.05;
-        maxLoan = Math.min(newPrice, maxPurchasePrice) * 0.95;
+        maxLoan = Math.max(0, Math.min(newPrice, maxPurchasePrice) * 0.95);
         const ltv       = newPrice > 0 ? maxLoan / newPrice : 0;
         originationRate = ltv > 0.90 ? 0.015 : 0.010;
-        brokerRate      = 0.01;
+        brokerFee       = maxLoan * 0.01;   // Cash Offer track: 1% of FCO loan amount
         productName   = 'Cash Offer';
         solutionName  = 'All-Cash Advantage';
         productIntro  = 'Offer like a cash buyer, close in as little as 10 days';
         grad          = 'grad-b';
       } else {
         // §5D Instant Equity: departing * 0.78 * 0.9 − mortgage
-        maxLoan = homeValue * 0.78 * 0.9 - mortgage;
+        maxLoan = Math.max(0, homeValue * 0.78 * 0.9 - mortgage);
         originationRate = 0.02;    // 1st lien; 2nd lien (2.5%) requires LO confirmation
-        brokerRate      = 0.005;
+        brokerFee       = maxLoan * 0.005;  // IE track: 0.5% of advance amount
         productName   = 'Instant Equity';
         solutionName  = 'Equity for Down Payment';
         productIntro  = 'Unlocks home equity for down payment & closing costs before selling';
         grad          = 'grad-a';
       }
 
-      maxLoan = Math.max(0, maxLoan);
-
       const originationFee    = maxLoan * originationRate;
-      const brokerFee         = maxLoan * brokerRate;
       const gbcFee            = gbcActive ? getGbcFee(homeValue, S.flyhomesLoan) : 0;
       const gbcFeeNum         = gbcFee ?? 0; // treat exception as 0 for total calc
       const accruedInterest   = maxLoan * 0.0999 * (S.transitionDays / 365);
