@@ -997,7 +997,7 @@
       const { homeValue, mortgage, newPrice, assets, cash, noCash } = S;
 
       // Available equity from departing home — reacts to mortgage slider (§5D IE formula)
-      const availableEquity   = Math.max(0, homeValue * 0.78 * 0.9 - mortgage);
+      const availableEquity   = Math.max(0, homeValue * 0.75 * 0.9 - mortgage);
       // Combined down-payment resources: cash assets + unlockable equity
       const combinedResources = assets + availableEquity;
 
@@ -1040,8 +1040,8 @@
         productIntro  = 'Offer like a cash buyer, close in as little as 10 days';
         grad          = 'grad-b';
       } else {
-        // §5D Instant Equity: departing * 0.78 * 0.9 − mortgage
-        maxLoan = Math.max(0, homeValue * 0.78 * 0.9 - mortgage);
+        // §5D Instant Equity: departing * 0.75 * 0.9 − mortgage
+        maxLoan = Math.max(0, homeValue * 0.75 * 0.9 - mortgage);
         originationRate = 0.02;    // 1st lien; 2nd lien (2.5%) requires LO confirmation
         brokerFee       = maxLoan * 0.005;  // IE track: 0.5% of advance amount
         productName   = 'Instant Equity';
