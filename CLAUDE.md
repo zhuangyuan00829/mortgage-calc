@@ -67,12 +67,15 @@ A "Buy Before You Sell" (BBYS) mortgage calculator for Flyhomes. Focus on unlock
 - **Rule 2: Equity Focused**
   - **Condition**: IF (Option 2 checked ONLY) OR (Option 1 + 2 checked)
   - **Result**: Show **Equity for Down Payment** (IE) + **DTI Buster** (GBC).
-- **Rule 3: Cash Offer Focused (Auto-Gating)**
+- **Rule 3: Cash Offer Focused (Auto-Gating with Toggle Override)**
   - **Condition**: IF (Option 3 checked ONLY) OR (Option 1 + 3 checked)
-  - **Evaluation**: Calculate `projectedFinalLTV = (NewHomePrice + CurrentMortgage - (DepartingPrice * 0.9)) / NewHomePrice`.
+  - **Evaluation**: 
+    - Check the state of the "Keep More Cash" override flag (`S.forceCashOffer`).
+    - Calculate `projectedFinalLTV = (NewHomePrice + CurrentMortgage - (DepartingPrice * 0.9)) / NewHomePrice`.
   - **Result**: 
-    - IF `projectedFinalLTV <= 0.75`: Show **Cross Collateral** ONLY.
-    - IF `projectedFinalLTV > 0.75`: Show **All-Cash Advantage** (CO) + **DTI Buster** (GBC).
+    - IF `S.forceCashOffer` is TRUE: Show **All-Cash Advantage** (CO) + **DTI Buster** (GBC) immediately.
+    - IF `S.forceCashOffer` is FALSE AND `projectedFinalLTV <= 0.75`: Show **Cross Collateral** ONLY.
+    - IF `S.forceCashOffer` is FALSE AND `projectedFinalLTV > 0.75`: Show **All-Cash Advantage** (CO) + **DTI Buster** (GBC).
 - **Rule 4: Pure DTI**
   - **Condition**: IF (Option 1 checked ONLY)
   - **Result**: Show **DTI Buster** (GBC) only.
@@ -121,17 +124,34 @@ Determined by the **Departing Home Price**. Standalone applies if no Flyhomes lo
 | $1,500,001 - $2,000,000 | $10,000 | **$7,500** |
 | Above $2,000,000 | $10,000+ | **$10,000+** |
 
-### D. Core Product Formulas
-Instant Equity: (Departing Price * 0.78 * 0.9) - Current Mortgage. Max LTV: 90% of GBC Price.
+### D. LO Broker Fee Rules (Estimated Average)
+Programmatically derive the Broker Fee based on the active product track and its corresponding loan/advance base amount:
+
+- **BBYS + Cash Offer Track**: 
+  `BrokerFee = FCO_LoanAmount * 0.01` (1% of the standalone Cash Offer loan amount)
+  
+- **Instant Equity Track**: 
+  `BrokerFee = IE_AdvanceAmount * 0.005` (0.5% of the unlocked equity advance amount)
+  
+- **Cross Collateral Track**: 
+  `BrokerFee = CC_CappedLoanAmount * 0.01` (1% of the final dual-capped Cross Collateral loan amount)
+
+*UI & Multi-panel Guidelines:*
+1. **Encapsulation**: These calculated fees must not be shown as a standalone raw line item to the buyer. They must be rolled into the `Other Costs` parent element.
+2. **Tooltip Rendering**: Inside the `Other Costs` disclosure tooltip, map this value to the professional label: `Loan Processing & Underwriting: $[Calculated_Value]`.
+3. **Reactivity**: Any change to input variables (e.g., purchase price or departing home value) that shifts the underlying loan amount must instantly re-run these percentage models to keep the totals synchronized.
+
+### E. Core Product Formulas
+Instant Equity: (Departing Price * 0.75 * 0.9) - Current Mortgage. Max LTV: 90% of GBC Price.
 
 Max Purchase Price: (Liquid Assets + Instant Equity) / 0.05. Ensures 5% Down Payment can be funded by both Cash and Home Equity.
 
 BBYS + Cash Offer: New Home Price * 95%. Max LTV: 95%. Min Down Payment: 5%.
 
-Cross Collateral: `Math.min(NewHomePrice * 1.05, (New + Departing) * 0.75 - CurrentMortgage)`. Hard cap: 105% Acquiring LTV | 75% CLTV (Combined). The 105% cap takes priority when the CLTV formula would otherwise exceed it.
+Cross Collateral: MIN((New Home Price * 1.05), ((New Home Price + Departing Price) * 0.75 - Current Mortgage)). Hard risk caps: 105% Acquiring LTV maximum and 75% Combined CLTV maximum.
 
 
-### E. Estimated Savings Logic
+### F. Estimated Savings Logic
 Trigger: Display in "Review Results" section to replace the old "Moving Once" module.
 
 Data Provenance:
@@ -143,11 +163,11 @@ newHomePrice: Live-synced from Step 2 "Estimated Purchase Price" input/slider.
 isCashOfferSelected: Boolean flag from Step 1 selection.
 
 1. Cash Offer Price Advantage (Conditional)
-Visibility: Show if isCashOfferSelected is TRUE **OR** if the active solution is Cross Collateral or Retire & Downsize. Hide otherwise.
+Visibility: Show if `isCashOfferSelected` is TRUE, OR if the recommended product is **Cross Collateral** (including **Retire & Downsize**), OR if `S.forceCashOffer` is TRUE.
 
 Logic: Default 3.5% (Slider: 1% - 10%).
 
-Formula: newHomePrice * cashOfferAdvantage%
+Formula: `newHomePrice * cashOfferDiscount%`
 
 Tooltip: "Sellers prefer the certainty of cash — no appraisal contingency, no financing fall-through. Research shows this translates to a measurable discount on purchase price."
 
@@ -185,7 +205,7 @@ Category Total: Sum of the three sub-fields above.
 transitionDays: User-editable input field in the results panel (above Estimated Cost). Default: 60. Minimum: 1. Affects HPA, Temporary Housing, and Storage Fee calculations.
 
 5. Grand Total
-Calculation: Sum of all active items (Note: Cash Offer Price Advantage = 0 if hidden).
+Calculation: Sum of all active items (Note: Cash Offer Discount = 0 if hidden).
 
 UI: Display "Total Estimated Savings" prominently at the bottom of the section.
 
