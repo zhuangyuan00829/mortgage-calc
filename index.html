@@ -982,14 +982,19 @@
     };
 
     // ── GBC Fee Matrix (CLAUDE.md §5C) ───────────────────────────────────────
-    // Returns fee in dollars, or null for the >$2M standalone exception.
+    // Net Bundle Fee = Standalone Fee − Bundle Credit
+    // Returns fee in dollars, or null for the >$2M exception (both tracks require manual review).
     function getGbcFee(homeValue, isBundle) {
-      if (homeValue <= 500_000)   return isBundle ? 2_500  : 2_500;
-      if (homeValue <= 750_000)   return isBundle ? 2_500  : 3_500;
-      if (homeValue <= 1_000_000) return isBundle ? 2_500  : 5_000;
-      if (homeValue <= 1_500_000) return isBundle ? 5_000  : 7_500;
-      if (homeValue <= 2_000_000) return isBundle ? 7_500  : 10_000;
-      return isBundle ? 10_000 : null; // null = exception, requires manual review
+      let standaloneFee, bundleCredit;
+
+      if      (homeValue <= 500_000)   { standaloneFee = 2_500;  bundleCredit = 0;     }
+      else if (homeValue <= 750_000)   { standaloneFee = 3_500;  bundleCredit = 1_000; }
+      else if (homeValue <= 1_000_000) { standaloneFee = 5_000;  bundleCredit = 2_500; }
+      else if (homeValue <= 1_500_000) { standaloneFee = 7_500;  bundleCredit = 2_500; }
+      else if (homeValue <= 2_000_000) { standaloneFee = 10_000; bundleCredit = 2_500; }
+      else { return null; } // >$2M: both standalone and bundle are exceptions — requires manual review
+
+      return isBundle ? standaloneFee - bundleCredit : standaloneFee;
     }
 
     // ── Calculation (source of truth: CLAUDE.md §5) ───────────────────────────
@@ -1051,7 +1056,9 @@
       }
 
       const originationFee    = maxLoan * originationRate;
-      const gbcFee            = gbcActive ? getGbcFee(homeValue, S.flyhomesLoan) : 0;
+      // isBundle = false when no Flyhomes loan product is shown alongside GBC (DTI-only, Rule 4)
+      const dtiOnly  = selected.size === 1 && selected.has('dti');
+      const gbcFee   = gbcActive ? getGbcFee(homeValue, !dtiOnly && S.flyhomesLoan) : 0;
       const gbcFeeNum         = gbcFee ?? 0; // treat exception as 0 for total calc
       const accruedInterest   = maxLoan * 0.0999 * (S.transitionDays / 365);
       const total             = originationFee + brokerFee + gbcFeeNum + accruedInterest;

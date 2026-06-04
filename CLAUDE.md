@@ -115,14 +115,18 @@ A "Buy Before You Sell" (BBYS) mortgage calculator for Flyhomes. Focus on unlock
 Determined by the **Departing Home Price**. Standalone applies if no Flyhomes loan is selected.
 *Note: Cross Collateral CANNOT be combined with GBC Fee.*
 
-| Guaranteed Price Range | Standalone Fee (No Loan) | Net Bundle Fee (With Loan) |
-| :--- | :--- | :--- |
-| Up to $500,000 | $2,500 | **$2,500** |
-| $500,001 - $750,000 | $3,500 | **$2,500** |
-| $750,001 - $1,000,000 | $5,000 | **$2,500** |
-| $1,000,001 - $1,500,000 | $7,500 | **$5,000** |
-| $1,500,001 - $2,000,000 | $10,000 | **$7,500** |
-| Above $2,000,000 | $10,000+ | **$10,000+** |
+**Formula:** `Net Bundle Fee = Standalone Fee − Bundle Credit`
+
+| Guaranteed Price Range | Standalone Fee (No Loan) | Bundle Credit | Net Bundle Fee (With Loan) |
+| :--- | :--- | :--- | :--- |
+| Up to $500,000 | $2,500 | $0 | **$2,500** |
+| $500,001 – $750,000 | $3,500 | $1,000 | **$2,500** |
+| $750,001 – $1,000,000 | $5,000 | $2,500 | **$2,500** |
+| $1,000,001 – $1,500,000 | $7,500 | $2,500 | **$5,000** |
+| $1,500,001 – $2,000,000 | $10,000 | $2,500 | **$7,500** |
+| Above $2,000,000 | Exception | Exception | **$10,000+** (exception — requires manual handling; not auto-calculated) |
+
+**Exception rule for Above $2,000,000:** Both the Standalone Fee and Bundle Credit fall outside the standard tier table. The system must flag this as an exception. Default display value is $10,000+, but the actual fee must be confirmed manually and is not programmatically computed.
 
 ### D. LO Broker Fee Rules (Estimated Average)
 Programmatically derive the Broker Fee based on the active product track and its corresponding loan/advance base amount:
