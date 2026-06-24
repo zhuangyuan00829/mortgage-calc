@@ -191,10 +191,28 @@
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm">
           <div class="p-6 space-y-5">
 
-            <div>
-              <label for="inp-address" class="block text-xs font-medium text-gray-700 mb-1.5">Departing Home Address</label>
-              <input id="inp-address" type="text" placeholder="e.g. 1234 Elm St, Seattle, WA 98101"
-                class="field-input w-full px-3.5 py-2.5 rounded-lg border border-gray-200 text-sm placeholder-gray-300 transition-all" />
+            <!-- Row 0: State Dropdowns -->
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="inp-currentState" class="block text-xs font-medium text-gray-700 mb-1.5">What state is your current home in?</label>
+                <div class="relative">
+                  <select id="inp-currentState" class="field-input w-full px-3.5 py-2.5 pr-9 rounded-lg border border-gray-200 text-sm text-gray-700 transition-all bg-white appearance-none cursor-pointer">
+                    <option value="" disabled selected>Select a state</option>
+                    <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option disabled style="color:#9CA3AF">Delaware (Not yet available)</option><option>Florida</option><option>Georgia</option><option disabled style="color:#9CA3AF">Hawaii (Not yet available)</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option disabled style="color:#9CA3AF">Missouri (Not yet available)</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option disabled style="color:#9CA3AF">New Jersey (Not yet available)</option><option>New Mexico</option><option disabled style="color:#9CA3AF">New York (Not yet available)</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option><option disabled style="color:#9CA3AF">Virginia (Not yet available)</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
+                  </select>
+                  <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                </div>
+              </div>
+              <div>
+                <label for="inp-buyingState" class="block text-xs font-medium text-gray-700 mb-1.5">What state will you be buying in?</label>
+                <div class="relative">
+                  <select id="inp-buyingState" class="field-input w-full px-3.5 py-2.5 pr-9 rounded-lg border border-gray-200 text-sm text-gray-700 transition-all bg-white appearance-none cursor-pointer">
+                    <option value="" disabled selected>Select a state</option>
+                    <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option disabled style="color:#9CA3AF">Delaware (Not yet available)</option><option>Florida</option><option>Georgia</option><option disabled style="color:#9CA3AF">Hawaii (Not yet available)</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option disabled style="color:#9CA3AF">Missouri (Not yet available)</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option disabled style="color:#9CA3AF">New Jersey (Not yet available)</option><option>New Mexico</option><option disabled style="color:#9CA3AF">New York (Not yet available)</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option><option disabled style="color:#9CA3AF">Virginia (Not yet available)</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
+                  </select>
+                  <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                </div>
+              </div>
             </div>
 
             <!-- Row 1: Home Value + Mortgage -->
@@ -305,7 +323,13 @@
             <div id="cost-breakdown" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
               <div class="pt-3 mt-2 border-t border-gray-100 space-y-2">
                 <div id="accrued-interest-row" class="hidden flex justify-between items-center">
-                  <span class="text-xs text-gray-500">Accrued Interest (9.99%)</span>
+                  <span class="tip text-xs text-gray-500 gap-1">
+                    Accrued Interest (9.99%)
+                    <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about accrued interest" tabindex="0">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                    </button>
+                    <div class="tip-box tip-left">Interest accrues daily on the loan amount during your transition period. Formula: Loan Amount × 9.99% × (Transition Days ÷ 365).</div>
+                  </span>
                   <span id="accrued-interest-display" class="text-xs font-medium text-gray-700">—</span>
                 </div>
                 <div class="flex justify-between items-center">
@@ -581,7 +605,7 @@
           <div class="bg-white px-6 pt-3 pb-5" style="border-left:1px solid #E5E7EB;border-right:1px solid #E5E7EB;border-bottom:1px solid #E5E7EB;border-radius:0 0 12px 12px">
             <a href="#" class="flex items-center justify-center w-full font-medium py-3.5 rounded-lg text-[15px] transition-colors" style="background:#D9848B;color:#232226" onmouseover="this.style.background='#CB7178'" onmouseout="this.style.background='#D9848B'">Submit scenario as LO to unlock offer</a>
             <button onclick="window.print()" class="flex items-center justify-center w-full font-medium py-3 rounded-lg text-[15px] mt-2.5 border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">Save as PDF</button>
-            <p class="text-xs text-red-500 leading-relaxed mt-3">Loan amount and costs are estimated based on the home value provided. Actual amounts may vary.</p>
+            <p class="text-xs text-red-500 leading-relaxed mt-3">Loan amount and costs are estimated based on the home value provided. Actual amounts may vary. For accurate numbers, please submit a scenario.</p>
           </div>
 
         </div><!-- /card 1 -->
@@ -968,6 +992,7 @@
       // Option A override: user switches CC → Standalone Cash Offer
       forceCashOffer : false,
       naturalIsCC    : false,  // true when CC would be shown without force override
+      statesDiffer   : false,  // true when buying state ≠ current home state (both selected)
       flyhomesLoan : true,   // true = bundle rate, false = standalone rate
       // Savings sliders
       savCashPct    : 3.5,
@@ -1441,6 +1466,12 @@
         const projectedFinalLTV = (S.newPrice + S.mortgage - S.homeValue * 0.9) / S.newPrice;
         isRule3CC = projectedFinalLTV <= 0.75;
       }
+      // Cross Collateral requires same state for both homes — block it when states differ.
+      if (S.statesDiffer) {
+        S.noCash_base = false;
+        isRule3CC     = false;
+        if (!S.cashIntent) S.cashIntent = selected.has('cash');
+      }
       // naturalIsCC: true when CC would be shown without any force override (excludes downsize branding)
       S.naturalIsCC = S.noCash_base || isRule3CC;
 
@@ -1536,6 +1567,16 @@
         cardsEl.appendChild(card);
       });
     }
+
+    function updateStatesDiffer() {
+      const buying   = $('inp-buyingState').value;
+      const current  = $('inp-currentState').value;
+      S.statesDiffer = buying !== '' && current !== '' && buying !== current;
+      syncStateFromChallenges();
+      render();
+    }
+    $('inp-buyingState').addEventListener('change', updateStatesDiffer);
+    $('inp-currentState').addEventListener('change', updateStatesDiffer);
 
     document.addEventListener('change', e => {
       if (e.target.id === 'tog-flyhomes-loan') {

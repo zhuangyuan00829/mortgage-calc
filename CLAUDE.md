@@ -76,6 +76,9 @@ A "Buy Before You Sell" (BBYS) mortgage calculator for Flyhomes. Focus on unlock
     - IF `S.forceCashOffer` is TRUE: Show **All-Cash Advantage** (CO) + **DTI Buster** (GBC) immediately.
     - IF `S.forceCashOffer` is FALSE AND `projectedFinalLTV <= 0.75`: Show **Cross Collateral** ONLY.
     - IF `S.forceCashOffer` is FALSE AND `projectedFinalLTV > 0.75`: Show **All-Cash Advantage** (CO) + **DTI Buster** (GBC).
+- **Rule 5: Cross-State Block**
+  - **Condition**: IF the user selects different states for "What state is your current home in?" and "What state will you be buying in?" (both fields populated, values differ)
+  - **Result**: Do NOT recommend **Cross Collateral** regardless of any other rule. Fall back to **All-Cash Advantage** (CO) + **DTI Buster** (GBC) for cash/equity intents, or **DTI Buster** (GBC) alone for DTI-only intent. Cross Collateral requires both homes to be in the same state.
 - **Rule 4: Pure DTI**
   - **Condition**: IF (Option 1 checked ONLY)
   - **Result**: Show **DTI Buster** (GBC) only.
