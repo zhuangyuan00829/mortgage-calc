@@ -283,7 +283,269 @@
       <div class="sticky-panel space-y-4">
         <p class="text-xs font-semibold text-[#232226] uppercase tracking-widest">Step 3: Review results</p>
 
-        <!-- Card 1: Max Loan Amount -->
+        <!-- Card 1: GBC / DTI Buster -->
+        <!-- Combined Solution Card -->
+        <div id="solution-card-wrapper" class="hidden bg-white rounded-xl" style="border:1px solid #E5E7EB;position:relative">
+
+        <!-- GBC / DTI Buster section -->
+        <div id="gbc-solution-card" class="hidden">
+          <canvas id="gbc-confetti-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:10;border-radius:inherit"></canvas>
+          <div class="px-5 pt-4 pb-4">
+            <div class="tip flex items-center gap-2 mb-1 flex-wrap">
+              <span class="text-gray-900 text-[20px] font-bold leading-snug">DTI Buster</span>
+              <button onclick="event.stopPropagation()" class="flex-shrink-0 text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full mt-0.5" aria-label="More info about DTI Buster" tabindex="0">
+                <svg class="w-4 h-4" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+              </button>
+              <div class="tip-box tip-left tip-down">Exclude the current mortgage from debt ratio to qualify for more and remove home sale contingency.</div>
+              <span id="gbc-badge" class="inline-block text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border" style="background:rgba(245,158,11,0.12);color:#B45309;border-color:rgba(245,158,11,0.3)">Most likely needed</span>
+            </div>
+            <span class="inline-block text-xs text-gray-500 bg-white px-3 py-1 rounded-full border border-gray-200 mb-2">Guaranteed Backup Contract</span>
+          </div>
+          <!-- Cost/savings shown only when DTI is the sole challenge -->
+          <div id="gbc-dti-costs" class="hidden">
+            <!-- White: estimated cost (expandable) -->
+            <div class="bg-white px-6 py-4 border-t border-gray-100">
+              <div id="gbc-cost-toggle" class="flex items-center justify-between cursor-pointer select-none" role="button" aria-expanded="false" aria-controls="gbc-cost-breakdown" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
+                <span class="tip text-sm font-medium text-gray-700 gap-1">
+                  Estimated Cost
+                  <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated cost" tabindex="0">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                  </button>
+                  <div class="tip-box tip-left">
+                    Estimated costs include origination fee, product fee, broker fee and accrued interest, but do not include title, escrow, or appraisal costs. These numbers are estimates only and are based on the information you entered. Actual amounts may vary after evaluation.
+                  </div>
+                </span>
+                <div class="flex items-center gap-1.5">
+                  <span id="gbc-dti-cost-value" class="text-sm font-bold text-gray-900">—</span>
+                  <svg id="gbc-cost-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </div>
+              </div>
+              <!-- Breakdown rows -->
+              <div id="gbc-cost-breakdown" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
+                <div class="pt-3 mt-2 border-t border-gray-100">
+                  <div class="flex justify-between items-center">
+                    <span class="text-xs text-gray-500">GBC Fee</span>
+                    <span id="gbc-dti-fee-display" class="text-xs font-medium text-gray-700">—</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Green: full savings accordion (mirrors main card, g- prefix IDs) -->
+            <div class="bg-emerald-50 border-t border-emerald-100 px-5 py-4 rounded-b-xl">
+              <!-- Section header (outer toggle) -->
+              <div class="flex items-center justify-between cursor-pointer select-none"
+                   onclick="savToggle(this)" data-target="g-sav-outer-body" data-chevron="g-sav-outer-chevron"
+                   role="button" aria-expanded="false" tabindex="0"
+                   onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
+                <span class="text-sm font-semibold text-emerald-800">Estimated Benefit from BBYS</span>
+                <div class="flex items-center gap-1.5">
+                  <span id="g-total-savings" class="text-2xl font-bold text-emerald-600">—</span>
+                  <svg id="g-sav-outer-chevron" class="w-4 h-4 text-emerald-500" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Collapsible items container -->
+              <div id="g-sav-outer-body" style="max-height:0;overflow:hidden;transition:max-height 0.35s ease">
+              <div class="mt-3">
+
+              <!-- 1. Net Benefit from Staging -->
+              <div class="mb-2">
+                <div class="rounded-lg bg-white border border-emerald-100">
+                  <div class="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
+                       onclick="savToggle(this)" data-target="g-sav-staged-body" data-chevron="g-sav-staged-chevron"
+                       role="button" aria-expanded="false" tabindex="0"
+                       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
+                    <span class="tip text-sm font-medium text-gray-700 gap-1">
+                      Net Benefit from Staging
+                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about net benefit from staging" tabindex="0">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                      </button>
+                      <div class="tip-box tip-left">With Buy Before You Sell, you've already moved out. Your departing home is professionally staged and shown vacant — no family clutter, no scheduling around your life. Buyers can see themselves in the space.</div>
+                    </span>
+                    <div class="flex items-center gap-1.5">
+                      <span id="g-sav-staged-val" class="text-sm font-semibold text-emerald-600">—</span>
+                      <svg id="g-sav-staged-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                    </div>
+                  </div>
+                  <div id="g-sav-staged-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
+                    <div class="px-4 pt-2 pb-3 border-t border-gray-100">
+                      <p class="text-xs text-gray-400 mb-2">Your home can be staged and shown vacant, helping buyers picture themselves living there.</p>
+                      <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs text-gray-500">Estimated price increase rate from staging</span>
+                        <span id="g-sav-staged-pct-label" class="text-xs font-medium text-gray-700">5%</span>
+                      </div>
+                      <input id="g-sl-sav-staged" type="range" min="1" max="10" step="0.5" value="5" class="w-full">
+                      <div class="flex justify-between text-[10px] text-gray-400 mt-1 mb-3"><span>1%</span><span>10%</span></div>
+                      <div class="flex items-center justify-between py-2 border-t border-gray-100">
+                        <span class="text-xs text-gray-500">Increased Sale Price Due to Staging</span>
+                        <span id="g-sav-staged-price-increase" class="text-xs font-medium text-gray-700">—</span>
+                      </div>
+                      <div class="flex items-center justify-between py-2 border-t border-gray-100">
+                        <span class="text-xs text-gray-500">Professional Staging Cost <span class="text-red-400">(deducted)</span></span>
+                        <span class="text-xs font-medium text-gray-700">$3,500</span>
+                      </div>
+                      <!-- Research reference dropdown -->
+                      <div class="border-t border-gray-100 pt-2 mt-1">
+                        <button onclick="this.nextElementSibling.classList.toggle('hidden');this.querySelector('svg').classList.toggle('rotate-180');var p=$('g-sav-staged-body');if(p.style.maxHeight&&p.style.maxHeight!=='0px')p.style.maxHeight=p.scrollHeight+'px';"
+                          class="flex items-center gap-1 text-[11px] text-gray-400 hover:text-gray-600 transition-colors select-none w-full">
+                          <svg class="w-3 h-3 flex-shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                          Research reference
+                        </button>
+                        <p class="hidden text-[11px] text-gray-400 leading-relaxed mt-1.5 pl-4">NAR 2025 Profile of Home Staging: 29% of agents reported 1–10% higher offers on staged homes. 83% of buyer's agents said staging helped buyers visualize the property as their own.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 2. Market Timing Benefit -->
+              <div class="mb-2">
+                <div class="rounded-lg bg-white border border-emerald-100">
+                  <div class="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
+                       onclick="savToggle(this)" data-target="g-sav-hpa-body" data-chevron="g-sav-hpa-chevron"
+                       role="button" aria-expanded="false" tabindex="0"
+                       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
+                    <span class="tip text-sm font-medium text-gray-700 gap-1">
+                      Market Timing Benefit
+                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about market timing benefit" tabindex="0">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                      </button>
+                      <div class="tip-box tip-left">Acting now locks in today's price on the buy side; waiting means paying more (or less, in a cooling market).</div>
+                    </span>
+                    <div class="flex items-center gap-1.5">
+                      <span id="g-sav-hpa-val" class="text-sm font-semibold text-emerald-600">—</span>
+                      <svg id="g-sav-hpa-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                    </div>
+                  </div>
+                  <div id="g-sav-hpa-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
+                    <div class="px-4 pt-2 pb-3 border-t border-gray-100">
+                      <p class="text-xs text-gray-400 mb-2">Buying now locks today's price; waiting usually means paying more.</p>
+                      <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs text-gray-500">Estimated annual home price increase rate</span>
+                        <span id="g-sav-hpa-pct-label" class="text-xs font-medium text-gray-700">4%</span>
+                      </div>
+                      <input id="g-sl-sav-hpa" type="range" min="-10" max="10" step="0.5" value="4" class="w-full">
+                      <div class="flex justify-between text-[10px] text-gray-400 mt-1 mb-3"><span>-10%</span><span>10%</span></div>
+                      <div class="flex items-center justify-between py-2 border-t border-gray-100">
+                        <span class="text-xs text-gray-500">Buy-side price increase avoided</span>
+                        <span id="g-sav-hpa-buy" class="text-xs font-medium text-gray-700">—</span>
+                      </div>
+                      <div class="flex items-center justify-between py-2 border-t border-gray-100">
+                        <span class="text-xs text-gray-500">Sell-side sale price gain</span>
+                        <span id="g-sav-hpa-sell" class="text-xs font-medium text-gray-700">—</span>
+                      </div>
+                      <!-- Research reference dropdown -->
+                      <div class="border-t border-gray-100 pt-2 mt-1">
+                        <button onclick="this.nextElementSibling.classList.toggle('hidden');this.querySelector('svg').classList.toggle('rotate-180');var p=$('g-sav-hpa-body');if(p.style.maxHeight&&p.style.maxHeight!=='0px')p.style.maxHeight=p.scrollHeight+'px';"
+                          class="flex items-center gap-1 text-[11px] text-gray-400 hover:text-gray-600 transition-colors select-none w-full">
+                          <svg class="w-3 h-3 flex-shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                          Research reference
+                        </button>
+                        <p class="hidden text-[11px] text-gray-400 leading-relaxed mt-1.5 pl-4">FHFA House Price Index: national average +5.8% YoY (Q4 2024). Regional variation ranges from -3% to +12% annually depending on metro area.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 3. Move Once, Not Twice -->
+              <div class="mb-0">
+                <div class="rounded-lg bg-white border border-emerald-100">
+                  <div class="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
+                       onclick="savToggle(this)" data-target="g-sav-move-body" data-chevron="g-sav-move-chevron"
+                       role="button" aria-expanded="false" tabindex="0"
+                       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
+                    <span class="tip text-sm font-medium text-gray-700 gap-1">
+                      Move Once, Not Twice
+                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about move once savings" tabindex="0">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                      </button>
+                      <div class="tip-box tip-left">Estimated savings are based on the extra cost of moving twice and two months of transition, compared with moving only once.</div>
+                    </span>
+                    <div class="flex items-center gap-1.5">
+                      <span id="g-sav-move-val" class="text-sm font-semibold text-emerald-600">—</span>
+                      <svg id="g-sav-move-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                    </div>
+                  </div>
+                  <div id="g-sav-move-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
+                    <div class="px-4 pt-1 pb-3 border-t border-gray-100">
+                      <p class="text-xs text-gray-400 py-2">BBYS helps you avoid a second move, temporary housing, and storage costs.</p>
+                      <!-- Extra Moving Fee -->
+                      <div class="flex items-center justify-between py-2.5 border-b border-gray-100">
+                        <span class="text-xs text-gray-500">Extra Moving Fee</span>
+                        <div class="relative">
+                          <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs select-none">$</span>
+                          <input id="g-inp-sav-moving" type="text" inputmode="numeric"
+                            class="w-28 text-right text-xs py-1.5 pl-6 pr-2.5 border border-gray-200 rounded-md focus:outline-none focus:border-brand transition-colors" />
+                        </div>
+                      </div>
+                      <!-- Temporary Housing -->
+                      <div class="flex items-center justify-between py-2.5 border-b border-gray-100">
+                        <span class="text-xs text-gray-500">Temporary Housing</span>
+                        <div class="relative">
+                          <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs select-none">$</span>
+                          <input id="g-inp-sav-housing" type="text" inputmode="numeric"
+                            class="w-28 text-right text-xs py-1.5 pl-6 pr-2.5 border border-gray-200 rounded-md focus:outline-none focus:border-brand transition-colors" />
+                        </div>
+                      </div>
+                      <!-- Storage Fee -->
+                      <div class="flex items-center justify-between py-2.5 border-b border-gray-100">
+                        <span class="text-xs text-gray-500">Storage Fee</span>
+                        <div class="relative">
+                          <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs select-none">$</span>
+                          <input id="g-inp-sav-storage" type="text" inputmode="numeric"
+                            class="w-28 text-right text-xs py-1.5 pl-6 pr-2.5 border border-gray-200 rounded-md focus:outline-none focus:border-brand transition-colors" />
+                        </div>
+                      </div>
+                      <!-- Subtotal -->
+                      <div class="flex justify-between items-center pt-2.5">
+                        <span class="text-xs font-medium text-gray-600">Subtotal</span>
+                        <span id="g-sav-move-subtotal" class="text-xs font-semibold text-emerald-600">—</span>
+                      </div>
+                      <!-- Research reference dropdown -->
+                      <div class="border-t border-gray-100 pt-2 mt-2">
+                        <button onclick="this.nextElementSibling.classList.toggle('hidden');this.querySelector('svg').classList.toggle('rotate-180');var p=$('g-sav-move-body');if(p.style.maxHeight&&p.style.maxHeight!=='0px')p.style.maxHeight=p.scrollHeight+'px';"
+                          class="flex items-center gap-1 text-[11px] text-gray-400 hover:text-gray-600 transition-colors select-none w-full">
+                          <svg class="w-3 h-3 flex-shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                          Research reference
+                        </button>
+                        <p class="hidden text-[11px] text-gray-400 leading-relaxed mt-1.5 pl-4">NAR 2025: median days on market is 40–70 depending on price tier. Add 30–45 days for closing. Most traditional sell-then-buy transitions take 2–4 months.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              </div><!-- /mt-3 -->
+              </div><!-- /g-sav-outer-body -->
+            </div>
+          </div>
+        </div><!-- /gbc-solution-card -->
+
+        <!-- Divider between GBC and main solution (only when both are visible) -->
+        <div id="solution-divider" class="hidden border-t border-gray-100"></div>
+
+        <!-- Main solution section -->
+        <div id="main-solution-card" class="hidden">
+          <div id="card-header" class="px-5 pt-4 pb-4">
+            <div class="tip flex items-center gap-1.5 mb-1">
+              <span id="solution-name" class="text-gray-900 text-[20px] font-bold leading-snug">Equity for Down Payment</span>
+              <button onclick="event.stopPropagation()" class="flex-shrink-0 text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full mt-0.5" aria-label="More info about this solution" tabindex="0">
+                <svg class="w-4 h-4" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+              </button>
+              <div class="tip-box tip-left tip-down" id="solution-tooltip-text">Unlocks home equity for down payment &amp; closing costs before selling</div>
+            </div>
+            <span id="product-name" class="inline-block text-xs text-gray-500 bg-white px-3 py-1 rounded-full border border-gray-200 mb-2">Instant Equity</span>
+          </div>
+        </div><!-- /main-solution-card -->
+
+        </div><!-- /solution-card-wrapper -->
+
+        <!-- Card 2: Max Loan Amount -->
         <div id="number-card" style="overflow:visible">
           <div class="grad-a px-6 pt-5 pb-6 rounded-2xl" style="position:relative">
             <canvas id="confetti-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;border-radius:1rem"></canvas>
@@ -300,7 +562,7 @@
               <div id="max-loan" class="text-white text-3xl font-bold pop">—</div>
             </div>
           </div>
-        </div><!-- /card 1 -->
+        </div><!-- /card 2 -->
 
         <!-- Card 2: Estimated Cost + Estimated Benefit from BBYS -->
         <div id="cost-benefit-card" class="rounded-2xl overflow-visible" style="border:1px solid #E5E7EB">
@@ -643,266 +905,9 @@
         </div>
 
         <!-- Section header -->
-        <p style="margin:1.75rem 0 0.75rem;font-size:14px;font-weight:500;letter-spacing:0.05em;color:#6B7280;text-transform:uppercase">Your customized solution</p>
 
-        <!-- Card 2: Product name + intro -->
-        <div id="main-solution-card" class="bg-white rounded-xl" style="border:1px solid #E5E7EB">
-          <div id="card-header" class="px-5 pt-4 pb-4">
-            <div class="mb-1.5">
-              <span class="inline-block text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full border" style="background:rgba(76,121,148,0.1);color:#4C7994;border-color:rgba(76,121,148,0.25)">Your solution</span>
-            </div>
-            <div class="tip flex items-center gap-1.5 mb-1">
-              <span id="solution-name" class="text-gray-900 text-[20px] font-bold leading-snug">Equity for Down Payment</span>
-              <button onclick="event.stopPropagation()" class="flex-shrink-0 text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full mt-0.5" aria-label="More info about this solution" tabindex="0">
-                <svg class="w-4 h-4" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-              </button>
-              <div class="tip-box tip-left tip-down" id="solution-tooltip-text">Unlocks home equity for down payment &amp; closing costs before selling</div>
-            </div>
-            <span id="product-name" class="inline-block text-xs text-gray-500 bg-white px-3 py-1 rounded-full border border-gray-200 mb-2">Instant Equity</span>
-          </div>
-        </div><!-- /card 2 -->
 
         <!-- Card 3: GBC (shown only when GBC is active) -->
-        <div id="gbc-solution-card" class="hidden bg-white rounded-xl overflow-hidden" style="border:1px solid #E5E7EB;position:relative">
-          <canvas id="gbc-confetti-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:10"></canvas>
-          <div class="px-5 pt-4 pb-4">
-            <div class="mb-1.5 flex items-center gap-2 flex-wrap">
-              <span id="gbc-your-solution-badge" class="hidden text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full border" style="background:rgba(76,121,148,0.1);color:#4C7994;border-color:rgba(76,121,148,0.25)">Your solution</span>
-              <span id="gbc-badge" class="inline-block text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full border" style="background:rgba(245,158,11,0.12);color:#B45309;border-color:rgba(245,158,11,0.3)">Most likely needed</span>
-            </div>
-            <div class="tip flex items-center gap-1.5 mb-1">
-              <span class="text-gray-900 text-[20px] font-bold leading-snug">DTI Buster</span>
-              <button onclick="event.stopPropagation()" class="flex-shrink-0 text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full mt-0.5" aria-label="More info about DTI Buster" tabindex="0">
-                <svg class="w-4 h-4" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-              </button>
-              <div class="tip-box tip-left tip-down">Exclude the current mortgage from debt ratio to qualify for more and remove home sale contingency.</div>
-            </div>
-            <span class="inline-block text-xs text-gray-500 bg-white px-3 py-1 rounded-full border border-gray-200 mb-2">Guaranteed Backup Contract</span>
-          </div>
-          <!-- Cost/savings shown only when DTI is the sole challenge -->
-          <div id="gbc-dti-costs" class="hidden">
-            <!-- White: estimated cost (expandable) -->
-            <div class="bg-white px-6 py-4 border-t border-gray-100">
-              <div id="gbc-cost-toggle" class="flex items-center justify-between cursor-pointer select-none" role="button" aria-expanded="false" aria-controls="gbc-cost-breakdown" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
-                <span class="tip text-sm font-medium text-gray-700 gap-1">
-                  Estimated Cost
-                  <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated cost" tabindex="0">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                  </button>
-                  <div class="tip-box tip-left">
-                    Estimated costs include origination fee, product fee, broker fee and accrued interest, but do not include title, escrow, or appraisal costs. These numbers are estimates only and are based on the information you entered. Actual amounts may vary after evaluation.
-                  </div>
-                </span>
-                <div class="flex items-center gap-1.5">
-                  <span id="gbc-dti-cost-value" class="text-sm font-bold text-gray-900">—</span>
-                  <svg id="gbc-cost-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
-                  </svg>
-                </div>
-              </div>
-              <!-- Breakdown rows -->
-              <div id="gbc-cost-breakdown" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
-                <div class="pt-3 mt-2 border-t border-gray-100">
-                  <div class="flex justify-between items-center">
-                    <span class="text-xs text-gray-500">GBC Fee</span>
-                    <span id="gbc-dti-fee-display" class="text-xs font-medium text-gray-700">—</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- Green: full savings accordion (mirrors main card, g- prefix IDs) -->
-            <div class="bg-emerald-50 border-t border-emerald-100 px-5 py-4 rounded-b-xl">
-              <!-- Section header (outer toggle) -->
-              <div class="flex items-center justify-between cursor-pointer select-none"
-                   onclick="savToggle(this)" data-target="g-sav-outer-body" data-chevron="g-sav-outer-chevron"
-                   role="button" aria-expanded="false" tabindex="0"
-                   onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
-                <span class="text-sm font-semibold text-emerald-800">Estimated Benefit from BBYS</span>
-                <div class="flex items-center gap-1.5">
-                  <span id="g-total-savings" class="text-2xl font-bold text-emerald-600">—</span>
-                  <svg id="g-sav-outer-chevron" class="w-4 h-4 text-emerald-500" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
-                  </svg>
-                </div>
-              </div>
-
-              <!-- Collapsible items container -->
-              <div id="g-sav-outer-body" style="max-height:0;overflow:hidden;transition:max-height 0.35s ease">
-              <div class="mt-3">
-
-              <!-- 1. Net Benefit from Staging -->
-              <div class="mb-2">
-                <div class="rounded-lg bg-white border border-emerald-100">
-                  <div class="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
-                       onclick="savToggle(this)" data-target="g-sav-staged-body" data-chevron="g-sav-staged-chevron"
-                       role="button" aria-expanded="false" tabindex="0"
-                       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
-                    <span class="tip text-sm font-medium text-gray-700 gap-1">
-                      Net Benefit from Staging
-                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about net benefit from staging" tabindex="0">
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                      </button>
-                      <div class="tip-box tip-left">With Buy Before You Sell, you've already moved out. Your departing home is professionally staged and shown vacant — no family clutter, no scheduling around your life. Buyers can see themselves in the space.</div>
-                    </span>
-                    <div class="flex items-center gap-1.5">
-                      <span id="g-sav-staged-val" class="text-sm font-semibold text-emerald-600">—</span>
-                      <svg id="g-sav-staged-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
-                    </div>
-                  </div>
-                  <div id="g-sav-staged-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
-                    <div class="px-4 pt-2 pb-3 border-t border-gray-100">
-                      <p class="text-xs text-gray-400 mb-2">Your home can be staged and shown vacant, helping buyers picture themselves living there.</p>
-                      <div class="flex justify-between items-center mb-1">
-                        <span class="text-xs text-gray-500">Estimated price increase rate from staging</span>
-                        <span id="g-sav-staged-pct-label" class="text-xs font-medium text-gray-700">5%</span>
-                      </div>
-                      <input id="g-sl-sav-staged" type="range" min="1" max="10" step="0.5" value="5" class="w-full">
-                      <div class="flex justify-between text-[10px] text-gray-400 mt-1 mb-3"><span>1%</span><span>10%</span></div>
-                      <div class="flex items-center justify-between py-2 border-t border-gray-100">
-                        <span class="text-xs text-gray-500">Increased Sale Price Due to Staging</span>
-                        <span id="g-sav-staged-price-increase" class="text-xs font-medium text-gray-700">—</span>
-                      </div>
-                      <div class="flex items-center justify-between py-2 border-t border-gray-100">
-                        <span class="text-xs text-gray-500">Professional Staging Cost <span class="text-red-400">(deducted)</span></span>
-                        <span class="text-xs font-medium text-gray-700">$3,500</span>
-                      </div>
-                      <!-- Research reference dropdown -->
-                      <div class="border-t border-gray-100 pt-2 mt-1">
-                        <button onclick="this.nextElementSibling.classList.toggle('hidden');this.querySelector('svg').classList.toggle('rotate-180');var p=$('g-sav-staged-body');if(p.style.maxHeight&&p.style.maxHeight!=='0px')p.style.maxHeight=p.scrollHeight+'px';"
-                          class="flex items-center gap-1 text-[11px] text-gray-400 hover:text-gray-600 transition-colors select-none w-full">
-                          <svg class="w-3 h-3 flex-shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
-                          Research reference
-                        </button>
-                        <p class="hidden text-[11px] text-gray-400 leading-relaxed mt-1.5 pl-4">NAR 2025 Profile of Home Staging: 29% of agents reported 1–10% higher offers on staged homes. 83% of buyer's agents said staging helped buyers visualize the property as their own.</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 2. Market Timing Benefit -->
-              <div class="mb-2">
-                <div class="rounded-lg bg-white border border-emerald-100">
-                  <div class="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
-                       onclick="savToggle(this)" data-target="g-sav-hpa-body" data-chevron="g-sav-hpa-chevron"
-                       role="button" aria-expanded="false" tabindex="0"
-                       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
-                    <span class="tip text-sm font-medium text-gray-700 gap-1">
-                      Market Timing Benefit
-                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about market timing benefit" tabindex="0">
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                      </button>
-                      <div class="tip-box tip-left">Acting now locks in today's price on the buy side; waiting means paying more (or less, in a cooling market).</div>
-                    </span>
-                    <div class="flex items-center gap-1.5">
-                      <span id="g-sav-hpa-val" class="text-sm font-semibold text-emerald-600">—</span>
-                      <svg id="g-sav-hpa-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
-                    </div>
-                  </div>
-                  <div id="g-sav-hpa-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
-                    <div class="px-4 pt-2 pb-3 border-t border-gray-100">
-                      <p class="text-xs text-gray-400 mb-2">Buying now locks today's price; waiting usually means paying more.</p>
-                      <div class="flex justify-between items-center mb-1">
-                        <span class="text-xs text-gray-500">Estimated annual home price increase rate</span>
-                        <span id="g-sav-hpa-pct-label" class="text-xs font-medium text-gray-700">4%</span>
-                      </div>
-                      <input id="g-sl-sav-hpa" type="range" min="-10" max="10" step="0.5" value="4" class="w-full">
-                      <div class="flex justify-between text-[10px] text-gray-400 mt-1 mb-3"><span>-10%</span><span>10%</span></div>
-                      <div class="flex items-center justify-between py-2 border-t border-gray-100">
-                        <span class="text-xs text-gray-500">Buy-side price increase avoided</span>
-                        <span id="g-sav-hpa-buy" class="text-xs font-medium text-gray-700">—</span>
-                      </div>
-                      <div class="flex items-center justify-between py-2 border-t border-gray-100">
-                        <span class="text-xs text-gray-500">Sell-side sale price gain</span>
-                        <span id="g-sav-hpa-sell" class="text-xs font-medium text-gray-700">—</span>
-                      </div>
-                      <!-- Research reference dropdown -->
-                      <div class="border-t border-gray-100 pt-2 mt-1">
-                        <button onclick="this.nextElementSibling.classList.toggle('hidden');this.querySelector('svg').classList.toggle('rotate-180');var p=$('g-sav-hpa-body');if(p.style.maxHeight&&p.style.maxHeight!=='0px')p.style.maxHeight=p.scrollHeight+'px';"
-                          class="flex items-center gap-1 text-[11px] text-gray-400 hover:text-gray-600 transition-colors select-none w-full">
-                          <svg class="w-3 h-3 flex-shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
-                          Research reference
-                        </button>
-                        <p class="hidden text-[11px] text-gray-400 leading-relaxed mt-1.5 pl-4">FHFA House Price Index: national average +5.8% YoY (Q4 2024). Regional variation ranges from -3% to +12% annually depending on metro area.</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 3. Move Once, Not Twice -->
-              <div class="mb-0">
-                <div class="rounded-lg bg-white border border-emerald-100">
-                  <div class="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
-                       onclick="savToggle(this)" data-target="g-sav-move-body" data-chevron="g-sav-move-chevron"
-                       role="button" aria-expanded="false" tabindex="0"
-                       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
-                    <span class="tip text-sm font-medium text-gray-700 gap-1">
-                      Move Once, Not Twice
-                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about move once savings" tabindex="0">
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                      </button>
-                      <div class="tip-box tip-left">Estimated savings are based on the extra cost of moving twice and two months of transition, compared with moving only once.</div>
-                    </span>
-                    <div class="flex items-center gap-1.5">
-                      <span id="g-sav-move-val" class="text-sm font-semibold text-emerald-600">—</span>
-                      <svg id="g-sav-move-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
-                    </div>
-                  </div>
-                  <div id="g-sav-move-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
-                    <div class="px-4 pt-1 pb-3 border-t border-gray-100">
-                      <p class="text-xs text-gray-400 py-2">BBYS helps you avoid a second move, temporary housing, and storage costs.</p>
-                      <!-- Extra Moving Fee -->
-                      <div class="flex items-center justify-between py-2.5 border-b border-gray-100">
-                        <span class="text-xs text-gray-500">Extra Moving Fee</span>
-                        <div class="relative">
-                          <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs select-none">$</span>
-                          <input id="g-inp-sav-moving" type="text" inputmode="numeric"
-                            class="w-28 text-right text-xs py-1.5 pl-6 pr-2.5 border border-gray-200 rounded-md focus:outline-none focus:border-brand transition-colors" />
-                        </div>
-                      </div>
-                      <!-- Temporary Housing -->
-                      <div class="flex items-center justify-between py-2.5 border-b border-gray-100">
-                        <span class="text-xs text-gray-500">Temporary Housing</span>
-                        <div class="relative">
-                          <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs select-none">$</span>
-                          <input id="g-inp-sav-housing" type="text" inputmode="numeric"
-                            class="w-28 text-right text-xs py-1.5 pl-6 pr-2.5 border border-gray-200 rounded-md focus:outline-none focus:border-brand transition-colors" />
-                        </div>
-                      </div>
-                      <!-- Storage Fee -->
-                      <div class="flex items-center justify-between py-2.5 border-b border-gray-100">
-                        <span class="text-xs text-gray-500">Storage Fee</span>
-                        <div class="relative">
-                          <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs select-none">$</span>
-                          <input id="g-inp-sav-storage" type="text" inputmode="numeric"
-                            class="w-28 text-right text-xs py-1.5 pl-6 pr-2.5 border border-gray-200 rounded-md focus:outline-none focus:border-brand transition-colors" />
-                        </div>
-                      </div>
-                      <!-- Subtotal -->
-                      <div class="flex justify-between items-center pt-2.5">
-                        <span class="text-xs font-medium text-gray-600">Subtotal</span>
-                        <span id="g-sav-move-subtotal" class="text-xs font-semibold text-emerald-600">—</span>
-                      </div>
-                      <!-- Research reference dropdown -->
-                      <div class="border-t border-gray-100 pt-2 mt-2">
-                        <button onclick="this.nextElementSibling.classList.toggle('hidden');this.querySelector('svg').classList.toggle('rotate-180');var p=$('g-sav-move-body');if(p.style.maxHeight&&p.style.maxHeight!=='0px')p.style.maxHeight=p.scrollHeight+'px';"
-                          class="flex items-center gap-1 text-[11px] text-gray-400 hover:text-gray-600 transition-colors select-none w-full">
-                          <svg class="w-3 h-3 flex-shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
-                          Research reference
-                        </button>
-                        <p class="hidden text-[11px] text-gray-400 leading-relaxed mt-1.5 pl-4">NAR 2025: median days on market is 40–70 depending on price tier. Add 30–45 days for closing. Most traditional sell-then-buy transitions take 2–4 months.</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              </div><!-- /mt-3 -->
-              </div><!-- /g-sav-outer-body -->
-            </div>
-          </div>
-        </div><!-- /card 3 -->
 
       </div><!-- /right -->
 
@@ -1529,25 +1534,26 @@
       const mostLikely    = showGBC && !has('dti');
 
       // ── Card visibility ───────────────────────────────────────────────────
-      $('number-card').classList.toggle('hidden',        dtiOnly || noneSelected);
-      $('cost-benefit-card').classList.toggle('hidden',  dtiOnly || noneSelected);
-      $('cta-card').classList.toggle('hidden',           dtiOnly || noneSelected);
-      $('main-solution-card').classList.toggle('hidden', dtiOnly || noneSelected);
-      $('gbc-solution-card').classList.toggle('hidden',  !showGBC);
-      $('gbc-dti-costs').classList.toggle('hidden',      !dtiOnly);
+      const showMain = !dtiOnly && !noneSelected;
+      const showWrapper = showGBC || showMain;
+      $('number-card').classList.toggle('hidden',           dtiOnly || noneSelected);
+      $('cost-benefit-card').classList.toggle('hidden',     dtiOnly || noneSelected);
+      $('cta-card').classList.toggle('hidden',              dtiOnly || noneSelected);
+      $('solution-card-wrapper').classList.toggle('hidden', !showWrapper);
+      $('main-solution-card').classList.toggle('hidden',    !showMain);
+      $('gbc-solution-card').classList.toggle('hidden',     !showGBC);
+      $('solution-divider').classList.toggle('hidden',      !(showGBC && showMain));
+      $('gbc-dti-costs').classList.toggle('hidden',         !dtiOnly);
 
       // ── GBC badge ─────────────────────────────────────────────────────────
       const gbcBadge = $('gbc-badge');
+      gbcBadge.className   = 'inline-block text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full border';
       if (mostLikely) {
-        gbcBadge.className   = 'inline-block text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full border';
         gbcBadge.style.cssText = 'background:rgba(245,158,11,0.12);color:#B45309;border-color:rgba(245,158,11,0.3)';
-        gbcBadge.textContent = 'Most likely needed';
-        $('gbc-your-solution-badge').classList.remove('hidden');
+        gbcBadge.textContent   = 'Most likely needed';
       } else {
-        gbcBadge.className   = 'inline-block text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full border';
-        gbcBadge.style.cssText = 'background:rgba(76,121,148,0.1);color:#4C7994;border-color:rgba(76,121,148,0.25)';
-        gbcBadge.textContent = 'Your solution';
-        $('gbc-your-solution-badge').classList.add('hidden');
+        gbcBadge.style.cssText = '';
+        gbcBadge.textContent   = '';
       }
 
       if (dtiOnly) return;
