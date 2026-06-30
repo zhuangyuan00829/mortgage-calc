@@ -885,14 +885,8 @@
 
         </div><!-- /card 2 -->
 
-        <!-- Card 3: CTA + disclaimer -->
-        <div id="cta-card" class="bg-white rounded-2xl px-6 pt-4 pb-5" style="border:1px solid #E5E7EB">
-          <a href="#" class="flex items-center justify-center w-full font-medium py-3.5 rounded-lg text-[15px] transition-colors" style="background:#D9848B;color:#232226" onmouseover="this.style.background='#CB7178'" onmouseout="this.style.background='#D9848B'">Submit scenario as LO to unlock offer</a>
-          <button onclick="window.print()" class="flex items-center justify-center w-full font-medium py-3 rounded-lg text-[15px] mt-2.5 border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">Save as PDF</button>
-        </div><!-- /card 3 -->
-
         <!-- Option A: Switch offer type (shown when CC is the natural recommendation) -->
-        <div id="switch-offer-banner" class="hidden mt-3">
+        <div id="switch-offer-banner" class="hidden">
           <button id="switch-offer-btn" onclick="toggleForceCashOffer()"
             class="w-full flex items-start gap-2.5 text-left px-4 py-3 rounded-lg border transition-colors"
             style="background:rgba(76,121,148,0.06);border-color:rgba(76,121,148,0.2)"
@@ -901,6 +895,12 @@
             <span id="switch-offer-text" class="text-[13px] leading-snug" style="color:#374151"></span>
           </button>
         </div>
+
+        <!-- Card 3: CTA + disclaimer -->
+        <div id="cta-card" class="bg-white rounded-2xl px-6 pt-4 pb-5" style="border:1px solid #E5E7EB">
+          <a href="#" class="flex items-center justify-center w-full font-medium py-3.5 rounded-lg text-[15px] transition-colors" style="background:#D9848B;color:#232226" onmouseover="this.style.background='#CB7178'" onmouseout="this.style.background='#D9848B'">Submit scenario as LO to unlock offer</a>
+          <button onclick="window.print()" class="flex items-center justify-center w-full font-medium py-3 rounded-lg text-[15px] mt-2.5 border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">Save as PDF</button>
+        </div><!-- /card 3 -->
 
         <!-- Section header -->
 
