@@ -292,14 +292,13 @@
           <canvas id="gbc-confetti-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:10;border-radius:inherit"></canvas>
           <div class="px-5 pt-4 pb-4">
             <div class="tip flex items-center gap-2 mb-1 flex-wrap">
-              <span class="text-gray-900 text-[20px] font-bold leading-snug">DTI Buster</span>
+              <a href="https://flyhomes.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-brand text-[20px] font-bold leading-snug underline underline-offset-2 hover:opacity-80 transition-opacity">DTI Buster<svg class="w-3.5 h-3.5 flex-shrink-0 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
               <button onclick="event.stopPropagation()" class="flex-shrink-0 text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full mt-0.5" aria-label="More info about DTI Buster" tabindex="0">
                 <svg class="w-4 h-4" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
               </button>
-              <div class="tip-box tip-left tip-down">Exclude the current mortgage from debt ratio to qualify for more and remove home sale contingency.</div>
-              <span id="gbc-badge" class="inline-block text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border" style="background:rgba(245,158,11,0.12);color:#B45309;border-color:rgba(245,158,11,0.3)">Most likely needed</span>
+              <div class="tip-box tip-left tip-down">Exclude the current mortgage from debt ratio to qualify for more and remove home sale contingency. Guaranteed Backup Contract product is recommended for this scenario.</div>
+              <span id="gbc-badge" class="hidden inline-block text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border" style="background:rgba(245,158,11,0.12);color:#B45309;border-color:rgba(245,158,11,0.3)">Most likely needed</span>
             </div>
-            <span class="inline-block text-xs text-gray-500 bg-white px-3 py-1 rounded-full border border-gray-200 mb-2">Guaranteed Backup Contract</span>
           </div>
           <!-- Cost/savings shown only when DTI is the sole challenge -->
           <div id="gbc-dti-costs" class="hidden">
@@ -533,13 +532,12 @@
         <div id="main-solution-card" class="hidden">
           <div id="card-header" class="px-5 pt-4 pb-4">
             <div class="tip flex items-center gap-1.5 mb-1">
-              <span id="solution-name" class="text-gray-900 text-[20px] font-bold leading-snug">Equity for Down Payment</span>
+              <a href="https://flyhomes.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-brand text-[20px] font-bold leading-snug underline underline-offset-2 hover:opacity-80 transition-opacity"><span id="solution-name">Equity for Down Payment</span><svg class="w-3.5 h-3.5 flex-shrink-0 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
               <button onclick="event.stopPropagation()" class="flex-shrink-0 text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full mt-0.5" aria-label="More info about this solution" tabindex="0">
                 <svg class="w-4 h-4" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
               </button>
               <div class="tip-box tip-left tip-down" id="solution-tooltip-text">Unlocks home equity for down payment &amp; closing costs before selling</div>
             </div>
-            <span id="product-name" class="inline-block text-xs text-gray-500 bg-white px-3 py-1 rounded-full border border-gray-200 mb-2">Instant Equity</span>
           </div>
         </div><!-- /main-solution-card -->
 
@@ -1379,8 +1377,7 @@
 
       $('card-header').className      = `px-5 pt-4 pb-4`;
       $('solution-name').textContent         = r.solutionName;
-      $('solution-tooltip-text').textContent = r.productIntro;
-      $('product-name').textContent   = r.productName;
+      $('solution-tooltip-text').textContent = r.productIntro + ' ' + r.productName + ' product is recommended for this scenario.';
 
       const pop = id => {
         const el = $(id);
@@ -1551,9 +1548,9 @@
       if (mostLikely) {
         gbcBadge.style.cssText = 'background:rgba(245,158,11,0.12);color:#B45309;border-color:rgba(245,158,11,0.3)';
         gbcBadge.textContent   = 'Most likely needed';
+        gbcBadge.classList.remove('hidden');
       } else {
-        gbcBadge.style.cssText = '';
-        gbcBadge.textContent   = '';
+        gbcBadge.classList.add('hidden');
       }
 
       if (dtiOnly) return;
@@ -1574,8 +1571,7 @@
       }
 
       $('solution-name').textContent         = solutionLabel;
-      $('solution-tooltip-text').textContent = intro;
-$('product-name').textContent   = productLabel;
+      $('solution-tooltip-text').textContent = intro + ' ' + productLabel + ' product is recommended for this scenario.';
     }
 
     function renderChallenges() {
