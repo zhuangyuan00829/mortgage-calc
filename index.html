@@ -207,10 +207,12 @@
   <!-- ══ MAIN ══════════════════════════════════════════════════════════════════ -->
   <main class="max-w-5xl mx-auto px-5 sm:px-8 pt-4 pb-8 sm:pt-5 sm:pb-12">
 
+    <h1 class="text-2xl font-bold text-[#232226] mb-4">Buy Before You Sell Calculator</h1>
+
     <!-- Ant Design Warning Alert -->
     <div role="alert" style="display:flex;align-items:flex-start;gap:8px;padding:9px 16px;margin-bottom:20px;background:#fffbe6;border:1px solid #ffe58f;border-radius:8px;">
       <svg style="flex-shrink:0;margin-top:1px;color:#faad14" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm.75 10.25h-1.5V9.5h1.5v1.75zm0-3h-1.5v-4h1.5v4z"/></svg>
-      <span style="font-size:13px;color:#664d00;line-height:1.55">Loan amount and costs are estimated based on the home value provided. Actual amounts may vary. For accurate numbers, please submit a scenario.</span>
+      <span style="font-size:13px;color:#664d00;line-height:1.55">Estimates only. Your exact numbers are confirmed by your Flyhomes account executive after a quick review.</span>
     </div>
 
     <!-- Print-only: full-width title bar above both columns -->
@@ -236,18 +238,18 @@
         </div>
 
         <!-- Challenge Selector -->
-        <p class="text-xs font-semibold text-[#232226] uppercase tracking-widest">Step 1: Select challenge</p>
+        <p class="text-xs font-semibold text-[#232226] uppercase tracking-widest">Step 1: What are you trying to solve?</p>
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm">
           <div class="px-6 pt-5 pb-4">
-            <p class="text-sm font-medium text-gray-700 mb-0.5">What challenge are you facing?</p>
-            <p class="text-xs text-gray-400 mb-4">Select all that apply</p>
+            <p class="text-sm font-medium text-gray-700 mb-0.5">What's getting in the way of your next move?</p>
+            <p class="text-xs text-gray-400 mb-4">Select all that apply — most buyers face more than one.</p>
 
             <!-- 2×2 grid of challenge cards -->
             <div id="challenge-cards" class="grid grid-cols-1 md:grid-cols-2 gap-2.5 mb-4"></div>
 
             <!-- Cash ineligibility warning -->
             <div id="cash-warning" class="hidden rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 text-xs text-amber-700 leading-relaxed mb-3">
-              <strong>Not eligible for Cash Offer.</strong> Liquid assets must be at least 5% of the new home price.
+              A cash offer needs at least 5% of the purchase price in liquid assets. Based on your numbers, you're just short — adjust the inputs or pick another option.
               <span id="cash-shortfall" class="ml-1"></span>
             </div>
 
@@ -255,38 +257,53 @@
         </div>
 
         <!-- Home details -->
-        <p class="text-xs font-semibold text-[#232226] uppercase tracking-widest">Step 2: Enter scenario details</p>
+        <p class="text-xs font-semibold text-[#232226] uppercase tracking-widest">Step 2: Tell us about your move</p>
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm">
           <div class="p-6 space-y-5">
 
             <!-- Row 0: State Dropdowns -->
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label for="inp-currentState" class="block text-xs font-medium text-gray-700 mb-1.5">What state is your current home in?</label>
+                <div class="flex items-center gap-1 mb-1.5">
+                  <label for="inp-currentState" class="text-xs font-medium text-gray-700">What state is your current home in?</label>
+                  <span class="tip">
+                    <button onclick="event.stopPropagation()" class="flex-shrink-0 text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about state availability" tabindex="0">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                    </button>
+                    <div class="tip-box tip-down">Some Flyhomes loan options aren't available in every state yet. We'll flag any that don't fit — the Guaranteed Backup Contract works in all 50.</div>
+                  </span>
+                </div>
                 <div class="relative">
                   <select id="inp-currentState" class="field-input w-full px-3.5 py-2.5 pr-9 rounded-lg border border-gray-200 text-sm text-gray-700 transition-all bg-white appearance-none cursor-pointer">
                     <option value="" disabled>Select a state</option>
-                    <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option disabled style="color:#9CA3AF">Delaware (Not yet available)</option><option>Florida</option><option>Georgia</option><option disabled style="color:#9CA3AF">Hawaii (Not yet available)</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option disabled style="color:#9CA3AF">Missouri (Not yet available)</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option disabled style="color:#9CA3AF">New Jersey (Not yet available)</option><option>New Mexico</option><option disabled style="color:#9CA3AF">New York (Not yet available)</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option><option disabled style="color:#9CA3AF">Virginia (Not yet available)</option><option selected>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
+                    <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option disabled style="color:#9CA3AF">Delaware (Coming soon)</option><option>Florida</option><option>Georgia</option><option disabled style="color:#9CA3AF">Hawaii (Coming soon)</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option disabled style="color:#9CA3AF">Missouri (Coming soon)</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option disabled style="color:#9CA3AF">New Jersey (Coming soon)</option><option>New Mexico</option><option disabled style="color:#9CA3AF">New York (Coming soon)</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option><option disabled style="color:#9CA3AF">Virginia (Coming soon)</option><option selected>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
                   </select>
                   <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                 </div>
               </div>
               <div>
-                <label for="inp-buyingState" class="block text-xs font-medium text-gray-700 mb-1.5">What state will you be buying in?</label>
+                <div class="flex items-center gap-1 mb-1.5">
+                  <label for="inp-buyingState" class="text-xs font-medium text-gray-700">State you're buying in</label>
+                  <span class="tip">
+                    <button onclick="event.stopPropagation()" class="flex-shrink-0 text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about state availability" tabindex="0">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                    </button>
+                    <div class="tip-box tip-down">Some Flyhomes loan options aren't available in every state yet. We'll flag any that don't fit — the Guaranteed Backup Contract works in all 50.</div>
+                  </span>
+                </div>
                 <div class="relative">
                   <select id="inp-buyingState" class="field-input w-full px-3.5 py-2.5 pr-9 rounded-lg border border-gray-200 text-sm text-gray-700 transition-all bg-white appearance-none cursor-pointer">
                     <option value="" disabled>Select a state</option>
-                    <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option disabled style="color:#9CA3AF">Delaware (Not yet available)</option><option>Florida</option><option>Georgia</option><option disabled style="color:#9CA3AF">Hawaii (Not yet available)</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option disabled style="color:#9CA3AF">Missouri (Not yet available)</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option disabled style="color:#9CA3AF">New Jersey (Not yet available)</option><option>New Mexico</option><option disabled style="color:#9CA3AF">New York (Not yet available)</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option><option disabled style="color:#9CA3AF">Virginia (Not yet available)</option><option selected>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
+                    <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option disabled style="color:#9CA3AF">Delaware (Coming soon)</option><option>Florida</option><option>Georgia</option><option disabled style="color:#9CA3AF">Hawaii (Coming soon)</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option disabled style="color:#9CA3AF">Missouri (Coming soon)</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option disabled style="color:#9CA3AF">New Jersey (Coming soon)</option><option>New Mexico</option><option disabled style="color:#9CA3AF">New York (Coming soon)</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option><option disabled style="color:#9CA3AF">Virginia (Coming soon)</option><option selected>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
                   </select>
                   <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                 </div>
               </div>
             </div>
-
             <!-- Row 1: Home Value + Mortgage -->
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label for="inp-homeValue" class="block text-xs font-medium text-gray-700 mb-1.5">Estimated Departing Home Value</label>
+                <label for="inp-homeValue" class="block text-xs font-medium text-gray-700 mb-1.5">Estimated Value of Your Current Home</label>
                 <div class="has-prefix relative">
                   <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">$</span>
                   <input id="inp-homeValue" type="text" inputmode="numeric" value="1,200,000"
@@ -312,7 +329,7 @@
             <!-- Row 2: Purchase Price + Liquid Assets -->
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label for="inp-newPrice" class="block text-xs font-medium text-gray-700 mb-1.5">Estimated Purchase Price</label>
+                <label for="inp-newPrice" class="block text-xs font-medium text-gray-700 mb-1.5">Price of the Home You Want to Buy</label>
                 <div class="has-prefix relative">
                   <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">$</span>
                   <input id="inp-newPrice" type="text" inputmode="numeric" value="800,000"
@@ -322,9 +339,15 @@
                 <div class="no-print flex justify-between text-[11px] text-gray-300 mt-0.5"><span>$200K</span><span>$3M</span></div>
               </div>
               <div>
-                <label for="inp-assets" class="block text-xs font-medium text-gray-700 mb-1.5">
-                  Liquid Assets Available
-                </label>
+                <div class="flex items-center gap-1 mb-1.5">
+                  <label for="inp-assets" class="text-xs font-medium text-gray-700">Cash &amp; Liquid Assets Available</label>
+                  <span class="tip">
+                    <button onclick="event.stopPropagation()" class="flex-shrink-0 text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about liquid assets" tabindex="0">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                    </button>
+                    <div class="tip-box tip-down">Savings, stocks, and other funds you could use — not retirement accounts.</div>
+                  </span>
+                </div>
                 <div class="has-prefix relative">
                   <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">$</span>
                   <input id="inp-assets" type="text" inputmode="numeric" value="40,000"
@@ -352,12 +375,14 @@
         <div id="gbc-solution-card" class="hidden">
           <canvas id="gbc-confetti-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:10;border-radius:inherit"></canvas>
           <div class="px-5 pt-4 pb-4">
-            <div class="tip flex items-center gap-2 mb-1 flex-wrap">
+            <div class="flex items-center gap-2 mb-1 flex-wrap">
               <a href="https://flyhomes.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-brand text-[20px] font-bold leading-snug underline underline-offset-2 hover:opacity-80 transition-opacity">DTI Buster<svg class="w-3.5 h-3.5 flex-shrink-0 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
-              <button onclick="event.stopPropagation()" class="flex-shrink-0 text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full mt-0.5" aria-label="More info about DTI Buster" tabindex="0">
-                <svg class="w-4 h-4" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-              </button>
-              <div class="tip-box tip-left tip-down">Exclude the current mortgage from debt ratio to qualify for more and remove home sale contingency. Guaranteed Backup Contract product is recommended for this scenario.</div>
+              <span class="tip">
+                <button onclick="event.stopPropagation()" class="flex-shrink-0 text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full mt-0.5" aria-label="More info about DTI Buster" tabindex="0">
+                  <svg class="w-4 h-4" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                </button>
+                <div class="tip-box tip-down">Exclude the current mortgage from debt ratio to qualify for more and remove home sale contingency. Guaranteed Backup Contract product is recommended for this scenario.</div>
+              </span>
               <span id="gbc-badge" class="hidden inline-block text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border" style="background:rgba(245,158,11,0.12);color:#B45309;border-color:rgba(245,158,11,0.3)">Most likely needed</span>
             </div>
           </div>
@@ -366,14 +391,16 @@
             <!-- White: estimated cost (expandable) -->
             <div class="bg-white px-6 py-4 border-t border-gray-100">
               <div id="gbc-cost-toggle" class="flex items-center justify-between cursor-pointer select-none" role="button" aria-expanded="false" aria-controls="gbc-cost-breakdown" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
-                <span class="tip text-sm font-medium text-gray-700 gap-1">
+                <span class="inline-flex items-center text-sm font-medium text-gray-700 gap-1">
                   Estimated Cost
-                  <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated cost" tabindex="0">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                  </button>
-                  <div class="tip-box tip-left">
-                    Estimated costs include origination fee, product fee, broker fee and accrued interest, but do not include title, escrow, or appraisal costs. These numbers are estimates only and are based on the information you entered. Actual amounts may vary after evaluation.
-                  </div>
+                  <span class="tip">
+                    <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated cost" tabindex="0">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                    </button>
+                    <div class="tip-box">
+                      This covers the origination fee, product fee, broker fee, and interest that accrues while you hold the loan. It doesn't include title, escrow, or appraisal. All numbers are estimates and may change after evaluation.
+                    </div>
+                  </span>
                 </span>
                 <div class="flex items-center gap-1.5">
                   <span id="gbc-dti-cost-value" class="text-sm font-bold text-gray-900">—</span>
@@ -386,7 +413,15 @@
               <div id="gbc-cost-breakdown" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
                 <div class="pt-3 mt-2 border-t border-gray-100">
                   <div class="flex justify-between items-center">
-                    <span class="text-xs text-gray-500">GBC Fee</span>
+                    <span class="inline-flex items-center text-xs text-gray-500 gap-1">
+                      GBC Fee
+                      <span class="tip">
+                        <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about GBC fee" tabindex="0">
+                          <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                        </button>
+                        <div class="tip-box">A one-time Guaranteed Backup Contract fee, starting at $2,500. No loan, so no interest.</div>
+                      </span>
+                    </span>
                     <span id="gbc-dti-fee-display" class="text-xs font-medium text-gray-700">—</span>
                   </div>
                 </div>
@@ -419,12 +454,14 @@
                        onclick="savToggle(this)" data-target="g-sav-staged-body" data-chevron="g-sav-staged-chevron"
                        role="button" aria-expanded="false" tabindex="0"
                        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
-                    <span class="tip text-sm font-medium text-gray-700 gap-1">
+                    <span class="inline-flex items-center text-sm font-medium text-gray-700 gap-1">
                       Net Benefit from Staging
-                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about net benefit from staging" tabindex="0">
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                      </button>
-                      <div class="tip-box tip-left">With Buy Before You Sell, you've already moved out. Your departing home is professionally staged and shown vacant — no family clutter, no scheduling around your life. Buyers can see themselves in the space.</div>
+                      <span class="tip">
+                        <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about net benefit from staging" tabindex="0">
+                          <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                        </button>
+                        <div class="tip-box">With Buy Before You Sell, you've already moved out. Your departing home is professionally staged and shown vacant — no family clutter, no scheduling around your life. Buyers can see themselves in the space.</div>
+                      </span>
                     </span>
                     <div class="flex items-center gap-1.5">
                       <span id="g-sav-staged-val" class="text-sm font-semibold text-emerald-600">—</span>
@@ -469,12 +506,14 @@
                        onclick="savToggle(this)" data-target="g-sav-hpa-body" data-chevron="g-sav-hpa-chevron"
                        role="button" aria-expanded="false" tabindex="0"
                        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
-                    <span class="tip text-sm font-medium text-gray-700 gap-1">
+                    <span class="inline-flex items-center text-sm font-medium text-gray-700 gap-1">
                       Market Timing Benefit
-                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about market timing benefit" tabindex="0">
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                      </button>
-                      <div class="tip-box tip-left">Acting now locks in today's price on the buy side; waiting means paying more (or less, in a cooling market).</div>
+                      <span class="tip">
+                        <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about market timing benefit" tabindex="0">
+                          <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                        </button>
+                        <div class="tip-box">Acting now locks in today's price on the buy side; waiting means paying more (or less, in a cooling market).</div>
+                      </span>
                     </span>
                     <div class="flex items-center gap-1.5">
                       <span id="g-sav-hpa-val" class="text-sm font-semibold text-emerald-600">—</span>
@@ -519,12 +558,14 @@
                        onclick="savToggle(this)" data-target="g-sav-move-body" data-chevron="g-sav-move-chevron"
                        role="button" aria-expanded="false" tabindex="0"
                        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
-                    <span class="tip text-sm font-medium text-gray-700 gap-1">
+                    <span class="inline-flex items-center text-sm font-medium text-gray-700 gap-1">
                       Move Once, Not Twice
-                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about move once savings" tabindex="0">
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                      </button>
-                      <div class="tip-box tip-left">Estimated savings are based on the extra cost of moving twice and two months of transition, compared with moving only once.</div>
+                      <span class="tip">
+                        <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about move once savings" tabindex="0">
+                          <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                        </button>
+                        <div class="tip-box">Estimated savings are based on the extra cost of moving twice and two months of transition, compared with moving only once.</div>
+                      </span>
                     </span>
                     <div class="flex items-center gap-1.5">
                       <span id="g-sav-move-val" class="text-sm font-semibold text-emerald-600">—</span>
@@ -592,12 +633,14 @@
         <!-- Main solution section -->
         <div id="main-solution-card" class="hidden">
           <div id="card-header" class="px-5 pt-4 pb-4">
-            <div class="tip flex items-center gap-1.5 mb-1">
+            <div class="flex items-center gap-1.5 mb-1">
               <a href="https://flyhomes.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-brand text-[20px] font-bold leading-snug underline underline-offset-2 hover:opacity-80 transition-opacity"><span id="solution-name">Equity for Down Payment</span><svg class="w-3.5 h-3.5 flex-shrink-0 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
-              <button onclick="event.stopPropagation()" class="flex-shrink-0 text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full mt-0.5" aria-label="More info about this solution" tabindex="0">
-                <svg class="w-4 h-4" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-              </button>
-              <div class="tip-box tip-left tip-down" id="solution-tooltip-text">Unlocks home equity for down payment &amp; closing costs before selling</div>
+              <span class="tip">
+                <button onclick="event.stopPropagation()" class="flex-shrink-0 text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full mt-0.5" aria-label="More info about this solution" tabindex="0">
+                  <svg class="w-4 h-4" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                </button>
+                <div class="tip-box tip-down" id="solution-tooltip-text">Unlocks home equity for down payment &amp; closing costs before selling</div>
+              </span>
             </div>
             <p id="cc-same-state-note" class="hidden text-[12px] text-gray-600 mt-0.5">(Same-state purchase and sale required.)</p>
           </div>
@@ -610,14 +653,16 @@
           <div class="grad-a px-6 pt-5 pb-6 rounded-2xl" style="position:relative">
             <canvas id="confetti-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;border-radius:1rem"></canvas>
             <div class="bg-white/10 rounded-xl px-4 py-3.5">
-              <span class="tip text-white/60 text-[11px] font-semibold uppercase tracking-widest mb-1 gap-1 inline-flex items-center">
+              <span class="text-white/60 text-[11px] font-semibold uppercase tracking-widest mb-1 gap-1 inline-flex items-center">
                 Estimated Max Loan Amount
-                <button class="text-white/40 hover:text-white/70 transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about estimated max loan amount" tabindex="0">
-                  <svg class="w-3 h-3" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                </button>
-                <div class="tip-box tip-left tip-down">
-                  The loan amounts are estimates based on the home value you provided. Actual numbers might vary after the evaluation.
-                </div>
+                <span class="tip">
+                  <button class="text-white/40 hover:text-white/70 transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about estimated max loan amount" tabindex="0">
+                    <svg class="w-3 h-3" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                  </button>
+                  <div class="tip-box tip-down">
+                    The loan amounts are estimates based on the home value you provided. Actual numbers might vary after the evaluation.
+                  </div>
+                </span>
               </span>
               <div id="max-loan" class="text-white text-3xl font-bold pop">—</div>
             </div>
@@ -630,14 +675,16 @@
           <!-- White: Estimated Cost (expandable) -->
           <div class="bg-white px-6 py-4 rounded-t-2xl">
             <div id="cost-toggle" class="flex items-center justify-between cursor-pointer select-none" role="button" aria-expanded="false" aria-controls="cost-breakdown" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
-              <span class="tip text-sm font-medium text-gray-700 gap-1">
+              <span class="inline-flex items-center text-sm font-medium text-gray-700 gap-1">
                 Estimated Cost
-                <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated cost" tabindex="0">
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                </button>
-                <div class="tip-box tip-left">
-                  Estimated costs include origination fee, product fee, broker fee and accrued interest, but do not include title, escrow, or appraisal costs. These numbers are estimates only and are based on the information you entered. Actual amounts may vary after evaluation.
-                </div>
+                <span class="tip">
+                  <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated cost" tabindex="0">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                  </button>
+                  <div class="tip-box">
+                    This covers the origination fee, product fee, broker fee, and interest that accrues while you hold the loan. It doesn't include title, escrow, or appraisal. All numbers are estimates and may change after evaluation.
+                  </div>
+                </span>
               </span>
               <div class="flex items-center gap-1.5">
                 <span id="total-cost" class="text-sm font-bold text-gray-900">—</span>
@@ -649,33 +696,42 @@
             <!-- Breakdown rows -->
             <div id="cost-breakdown" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
               <div class="pt-3 mt-2 border-t border-gray-100 space-y-2">
-                <div id="accrued-interest-row" class="hidden flex justify-between items-center">
-                  <span class="tip text-xs text-gray-500 gap-1">
-                    Accrued Interest (9.99%)
-                    <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about accrued interest" tabindex="0">
-                      <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                    </button>
-                    <div class="tip-box tip-left">Interest accrues daily on the loan amount during your transition period. Formula: Loan Amount × 9.99% × (Transition Days ÷ 365).</div>
-                  </span>
-                  <span id="accrued-interest-display" class="text-xs font-medium text-gray-700">—</span>
+                <div id="accrued-interest-row" class="hidden flex justify-between items-start">
+                  <div>
+                    <span class="inline-flex items-center text-xs text-gray-500 gap-1">
+                      Accrued Interest (9.99%)
+                      <span class="tip">
+                        <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about accrued interest" tabindex="0">
+                          <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                        </button>
+                        <div class="tip-box">You only pay interest for the days you hold the loan — from buying your new home to selling your current one. Estimated as: loan amount × 9.99% × (transition days ÷ 365).</div>
+                      </span>
+                    </span>
+                    <p class="text-[12px] text-gray-400 mt-0.5">No monthly payments — interest is settled when your current home sells.</p>
+                  </div>
+                  <span id="accrued-interest-display" class="text-xs font-medium text-gray-700 shrink-0 ml-2">—</span>
                 </div>
                 <div class="flex justify-between items-center">
-                  <span class="tip text-xs text-gray-500 gap-1">
-                    Other Costs
-                    <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about other costs" tabindex="0">
-                      <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                    </button>
-                    <div class="tip-box tip-left">Other costs include origination fee, product fee, and broker fee.</div>
+                  <span class="inline-flex items-center text-xs text-gray-500 gap-1">
+                    One-Time Fees
+                    <span class="tip">
+                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about one-time fees" tabindex="0">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                      </button>
+                      <div class="tip-box">A one-time origination fee, product fee, and broker fee. Charged once — not monthly.</div>
+                    </span>
                   </span>
                   <span id="other-costs-display" class="text-xs font-medium text-gray-700">—</span>
                 </div>
                 <div class="flex justify-between items-center pt-1 mt-1">
-                  <span class="tip text-xs text-gray-500 gap-1">
+                  <span class="inline-flex items-center text-xs text-gray-500 gap-1">
                     Estimated Transition Days
-                    <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated transition days" tabindex="0">
-                      <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                    </button>
-                    <div class="tip-box tip-left">Estimated Transition Days is the time gap between selling your current home and buying your next home. It is used to estimate the costs and savings of Buy Before You Sell versus the traditional sell-first, buy-later process.</div>
+                    <span class="tip">
+                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated transition days" tabindex="0">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                      </button>
+                      <div class="tip-box">The time between buying your new home and selling your current one. We use it to estimate both your costs and your savings.</div>
+                    </span>
                   </span>
                   <div class="flex items-center gap-1.5">
                     <input id="inp-td-cost" type="text" inputmode="numeric" value="60"
@@ -719,12 +775,14 @@
                      onclick="savToggle(this)" data-target="sav-cash-body" data-chevron="sav-cash-chevron"
                      role="button" aria-expanded="false" tabindex="0"
                      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
-                  <span class="tip text-sm font-medium text-gray-700 gap-1">
+                  <span class="inline-flex items-center text-sm font-medium text-gray-700 gap-1">
                     Cash Offer Price Advantage
-                    <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about cash offer price advantage" tabindex="0">
-                      <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                    </button>
-                    <div class="tip-box tip-left">Sellers prefer the certainty of cash — no appraisal contingency, no financing fall-through. Research shows this translates to a measurable discount on purchase price.</div>
+                    <span class="tip">
+                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about cash offer price advantage" tabindex="0">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                      </button>
+                      <div class="tip-box">Sellers prefer the certainty of cash — no appraisal contingency, no financing fall-through. Research shows this translates to a measurable discount on purchase price.</div>
+                    </span>
                   </span>
                   <div class="flex items-center gap-1.5">
                     <span id="sav-cash-val" class="text-sm font-semibold text-emerald-600">—</span>
@@ -765,12 +823,14 @@
                      onclick="savToggle(this)" data-target="sav-staged-body" data-chevron="sav-staged-chevron"
                      role="button" aria-expanded="false" tabindex="0"
                      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
-                  <span class="tip text-sm font-medium text-gray-700 gap-1">
+                  <span class="inline-flex items-center text-sm font-medium text-gray-700 gap-1">
                     Net Benefit from Staging
-                    <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about net benefit from staging" tabindex="0">
-                      <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                    </button>
-                    <div class="tip-box tip-left">With Buy Before You Sell, you've already moved out. Your departing home is professionally staged and shown vacant — no family clutter, no scheduling around your life. Buyers can see themselves in the space.</div>
+                    <span class="tip">
+                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about net benefit from staging" tabindex="0">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                      </button>
+                      <div class="tip-box">With Buy Before You Sell, you've already moved out. Your departing home is professionally staged and shown vacant — no family clutter, no scheduling around your life. Buyers can see themselves in the space.</div>
+                    </span>
                   </span>
                   <div class="flex items-center gap-1.5">
                     <span id="sav-staged-val" class="text-sm font-semibold text-emerald-600">—</span>
@@ -817,12 +877,14 @@
                      onclick="savToggle(this)" data-target="sav-hpa-body" data-chevron="sav-hpa-chevron"
                      role="button" aria-expanded="false" tabindex="0"
                      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
-                  <span class="tip text-sm font-medium text-gray-700 gap-1">
+                  <span class="inline-flex items-center text-sm font-medium text-gray-700 gap-1">
                     Market Timing Benefit
-                    <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about market timing benefit" tabindex="0">
-                      <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                    </button>
-                    <div class="tip-box tip-left">Acting now locks in today's price on the buy side; waiting means paying more (or less, in a cooling market).</div>
+                    <span class="tip">
+                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about market timing benefit" tabindex="0">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                      </button>
+                      <div class="tip-box">Acting now locks in today's price on the buy side; waiting means paying more (or less, in a cooling market).</div>
+                    </span>
                   </span>
                   <div class="flex items-center gap-1.5">
                     <span id="sav-hpa-val" class="text-sm font-semibold text-emerald-600">—</span>
@@ -867,12 +929,14 @@
                      onclick="savToggle(this)" data-target="sav-move-body" data-chevron="sav-move-chevron"
                      role="button" aria-expanded="false" tabindex="0"
                      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
-                  <span class="tip text-sm font-medium text-gray-700 gap-1">
+                  <span class="inline-flex items-center text-sm font-medium text-gray-700 gap-1">
                     Move Once, Not Twice
-                    <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about move once savings" tabindex="0">
-                      <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                    </button>
-                    <div class="tip-box tip-left">Estimated savings are based on the extra cost of moving twice and two months of transition, compared with moving only once.</div>
+                    <span class="tip">
+                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about move once savings" tabindex="0">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                      </button>
+                      <div class="tip-box">Estimated savings are based on the extra cost of moving twice and two months of transition, compared with moving only once.</div>
+                    </span>
                   </span>
                   <div class="flex items-center gap-1.5">
                     <span id="sav-move-val" class="text-sm font-semibold text-emerald-600">—</span>
@@ -929,12 +993,14 @@
             </div>
             </div><!-- /mt-3 -->
             <div class="flex justify-between items-center pt-3 mt-1">
-              <span class="tip text-xs text-emerald-700 gap-1">
+              <span class="inline-flex items-center text-xs text-emerald-700 gap-1">
                 Estimated Transition Days
-                <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated transition days" tabindex="0">
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                </button>
-                <div class="tip-box tip-left">Estimated Transition Days is the time gap between selling your current home and buying your next home. It is used to estimate the costs and savings of Buy Before You Sell versus the traditional sell-first, buy-later process.</div>
+                <span class="tip">
+                  <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated transition days" tabindex="0">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                  </button>
+                  <div class="tip-box">The time between buying your new home and selling your current one. We use it to estimate both your costs and your savings.</div>
+                </span>
               </span>
               <div class="flex items-center gap-1.5">
                 <input id="inp-td-sav" type="text" inputmode="numeric" value="60"
@@ -1567,10 +1633,10 @@
 
     // ── Challenge card selection ──────────────────────────────────────────────
     const CHALLENGES = [
-      { id: 'dti',      label: 'Current mortgage limits approval', desc: 'Exclude your current mortgage to qualify for more.' },
-      { id: 'equity',   label: 'Low cash / Equity tied in home',    desc: 'Unlock your home equity for your down payment and closing costs.' },
-      { id: 'cash',     label: 'Need a competitive cash offer',     desc: 'Win with an all-cash offer and 10-day close.' },
-      { id: 'downsize', label: 'Want to downsize with greater financial freedom',    desc: 'Use equity to downsize, and enjoy greater financial freedom.' },
+      { id: 'dti',      label: 'My current mortgage is capping how much I qualify for', desc: 'Set your current mortgage aside so you qualify for up to 40–50% more — and drop the home sale contingency.' },
+      { id: 'equity',   label: 'My cash is tied up in my current home',                desc: 'Short on cash for the down payment? Tap that equity now to cover your down payment and closing costs — before you sell.' },
+      { id: 'cash',     label: 'My offers keep losing to cash buyers',                 desc: 'Compete like a cash buyer — no financing or sale contingency — and close in as little as 10 days.' },
+      { id: 'downsize', label: 'I want to downsize — ideally without a new mortgage',  desc: 'Use your equity to buy first and move just once — often with no new long-term mortgage.' },
     ];
     const selected = new Set(['equity']);
 
