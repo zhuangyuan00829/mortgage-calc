@@ -176,23 +176,23 @@ Logic: Default 3.5% (Slider: 1% - 10%).
 
 Formula: `newHomePrice * cashOfferDiscount%`
 
-Tooltip: "Sellers prefer the certainty of cash — no appraisal contingency, no financing fall-through. Research shows this translates to a measurable discount on purchase price."
+Tooltip: "A cash-strong offer can win at a lower price than a financed one. Drag the slider to set how big a discount to estimate; our 3.5% default is the conservative floor."
 
 2. Staged Home Premium
 Logic: Default 5% (Slider: 1% - 10%).
 
 Formula: departingHomePrice * stagedHomePremium%
 
-Tooltip: "With Buy Before You Sell, you've already moved out. Your departing home is professionally staged and shown vacant — no family clutter, no scheduling around your life. Buyers can see themselves in the space."
+Tooltip: "Staging an empty home can lift the sale price. This shows the estimated increase minus a typical $3,500 staging cost."
 
 3. Home Price Appreciation (HPA)
 Logic: Default 4% (Slider: -10% - 10%).
 
-Formula: (newHomePrice + departingHomePrice) * (hpaRate% / 12) * (transitionDays / 30)
+Formula: `newHomePrice * (hpaRate% / 12) * (transitionDays / 30)`
 
-Note: Previously hardcoded as `/ 6` (= 2 months). Now driven by the user-editable `transitionDays` field (default 60 days).
+Note: Buy-side only — counts only the price increase avoided on the new purchase. The sell-side gain is excluded. Driven by the user-editable `transitionDays` field (default 60 days).
 
-Tooltip: "Acting now locks in today's price on the buy side; waiting means paying more (or less, in a cooling market)."
+Tooltip: "Based on the annual price-change rate you set. This counts only the buy-side savings from acting now — we always recommend selling your current home as soon as possible."
 
 4. "Move Once, Not Twice" (Logistics)
 Layout: Single accordion item containing three editable text fields.
