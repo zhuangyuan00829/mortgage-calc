@@ -388,15 +388,15 @@
         <div id="gbc-solution-card" class="hidden">
           <canvas id="gbc-confetti-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:10;border-radius:inherit"></canvas>
           <div class="px-5 pt-4 pb-4">
-            <div class="flex items-center gap-2 mb-1 flex-wrap">
-              <a href="https://flyhomes.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-brand text-[20px] font-bold leading-snug underline underline-offset-2 hover:opacity-80 transition-opacity">DTI Buster<svg class="w-3.5 h-3.5 flex-shrink-0 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
+            <div class="flex items-center gap-3 mb-1 flex-wrap">
+              <a href="https://flyhomes.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-[#3c4659] text-[17px] font-bold leading-snug hover:opacity-80 transition-opacity">DTI Buster<svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
               <span class="tip">
                 <button onclick="event.stopPropagation()" class="flex-shrink-0 text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full mt-0.5" aria-label="More info about DTI Buster" tabindex="0">
                   <svg class="w-4 h-4" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                 </button>
                 <div class="tip-box tip-down">Exclude the current mortgage from debt ratio to qualify for more and remove home sale contingency. Guaranteed Backup Contract product is recommended for this scenario.</div>
               </span>
-              <span id="gbc-badge" class="hidden inline-block text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border" style="background:rgba(245,158,11,0.12);color:#B45309;border-color:rgba(245,158,11,0.3)">Most likely needed</span>
+              <span id="gbc-badge" class="hidden ml-auto inline-block text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border" style="background:#FFF7F8;color:#D87486;border-color:#D87486">Most likely needed</span>
             </div>
           </div>
           <!-- Cost/savings shown only when DTI is the sole challenge -->
@@ -642,8 +642,8 @@
         <!-- Main solution section -->
         <div id="main-solution-card" class="hidden">
           <div id="card-header" class="px-5 pt-4 pb-4">
-            <div class="flex items-center gap-1.5 mb-1">
-              <a href="https://flyhomes.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-brand text-[20px] font-bold leading-snug underline underline-offset-2 hover:opacity-80 transition-opacity"><span id="solution-name">Equity for Down Payment</span><svg class="w-3.5 h-3.5 flex-shrink-0 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
+            <div class="flex items-center gap-3 mb-1 flex-wrap">
+              <a href="https://flyhomes.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-[#3c4659] text-[17px] font-bold leading-snug hover:opacity-80 transition-opacity"><span id="solution-name">Equity for Down Payment</span><svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
               <span class="tip">
                 <button onclick="event.stopPropagation()" class="flex-shrink-0 text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full mt-0.5" aria-label="More info about this solution" tabindex="0">
                   <svg class="w-4 h-4" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
@@ -1716,9 +1716,9 @@
 
       // ── GBC badge ─────────────────────────────────────────────────────────
       const gbcBadge = $('gbc-badge');
-      gbcBadge.className   = 'inline-block text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full border';
+      gbcBadge.className   = 'ml-auto inline-block text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border';
       if (mostLikely) {
-        gbcBadge.style.cssText = 'background:rgba(245,158,11,0.12);color:#B45309;border-color:rgba(245,158,11,0.3)';
+        gbcBadge.style.cssText = 'background:#FFF7F8;color:#D87486;border-color:#D87486';
         gbcBadge.textContent   = 'Most likely needed';
         gbcBadge.classList.remove('hidden');
       } else {
