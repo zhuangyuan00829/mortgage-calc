@@ -48,14 +48,15 @@ A "Buy Before You Sell" (BBYS) mortgage calculator for Flyhomes. Focus on unlock
 ## 4. DREAM Solutions & Recommendation Engine
 
 ### A. Challenge Selection (The 4-Option UI)
-1. **DTI Issue**: "Current mortgage hurting DTI"
-   - *Subtitle*: Exclude your current mortgage to qualify for more.
-2. **Liquidity Issue**: "Low cash / Equity tied in home"
-   - *Subtitle*: Unlock your home equity for your down payment and closing costs.
-3. **Strategy/Speed**: "Need a competitive cash offer"
-   - *Subtitle*: Win with an all-cash offer and 10-day close. (Also supports mortgage-free downsizing.)
-4. **Retirement Focus**: "Want to downsize mortgage-free"
-   - *Subtitle*: Use equity to downsize, often without a new long-term mortgage.
+**Confirmed 2026-08-14**: card copy below updated per compliance/copy spec (`BBYS_Calculator_Copy_Spec_8_13.pdf`) — global no-dash rule (no em dashes, en dashes, or hyphens in visible copy), plain buyer-first pain framing. Solutions/rules unaffected.
+1. **DTI Issue**: "My current mortgage is capping my approval"
+   - *Subtitle*: You cannot carry two mortgages at once, so your approval on the new home comes in lower than you need.
+2. **Liquidity Issue**: "My cash is locked in my current home"
+   - *Subtitle*: Your down payment and closing costs are sitting in your current home, stuck until it sells.
+3. **Strategy/Speed**: "My offers keep losing to cash buyers"
+   - *Subtitle*: You wish your offer could be as strong as cash, winning without having to bid the highest. (Also supports mortgage-free downsizing.)
+4. **Retirement Focus**: "I want to downsize, ideally without a new mortgage"
+   - *Subtitle*: You have plenty of home equity but not enough income to qualify for a new loan the usual way.
 
 ### B. Trigger Rules (Solution Mapping)
 - **Rule 0: The Downsize Override (Priority)**
