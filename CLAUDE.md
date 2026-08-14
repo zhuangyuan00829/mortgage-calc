@@ -60,7 +60,7 @@ A "Buy Before You Sell" (BBYS) mortgage calculator for Flyhomes. Focus on unlock
 ### B. Trigger Rules (Solution Mapping)
 - **Rule 0: The Downsize Override (Priority)**
   - **Condition**: IF (Option 4 IS checked)
-  - **Result**: Show **Retire & Downsize** solution ONLY. This selection overrides all other logic combinations.
+  - **Result**: Show **Retire & Downsize** solution ONLY. This selection overrides all other logic combinations — **except Rule 5** (Cross-State Block), which still applies to downsize since Retire & Downsize is a Cross Collateral product and CC requires same-state homes. See Rule 5.
 - **Rule 1: The "Cross Collateral" Winner**
   - **Condition**: IF (Option 2 IS checked AND Option 3 IS checked)
   - **Result**: Show **Cross Collateral** ONLY. (Hide IE/CO/GBC cards as CC is the integrated $0 cash/downsize king).
@@ -78,7 +78,11 @@ A "Buy Before You Sell" (BBYS) mortgage calculator for Flyhomes. Focus on unlock
     - IF `S.forceCashOffer` is FALSE AND `projectedFinalLTV > 0.75`: Show **All-Cash Advantage** (CO) + **DTI Buster** (GBC).
 - **Rule 5: Cross-State Block**
   - **Condition**: IF the user selects different states for "What state is your current home in?" and "What state will you be buying in?" (both fields populated, values differ)
-  - **Result**: Do NOT recommend **Cross Collateral** regardless of any other rule. Fall back to **All-Cash Advantage** (CO) + **DTI Buster** (GBC) for cash/equity intents, or **DTI Buster** (GBC) alone for DTI-only intent. Cross Collateral requires both homes to be in the same state.
+  - **Result**: Do NOT recommend **Cross Collateral** regardless of any other rule, **including Rule 0 (Downsize Override)**. Cross Collateral requires both homes to be in the same state — no exception for downsize.
+    - **Rule 0 downsize blocked**: Fall back to **Instant Equity** (IE) + **DTI Buster** (GBC). Downsize alone (Option 4, no Option 3) carries no competitive-cash-offer intent — its core value prop is "use equity toward the new home," which Instant Equity preserves. Cash Offer does not fit here since it solves a different problem (winning a bidding war) that a pure-downsize user never asked for.
+    - **Rule 1 equity+cash combo blocked**: Fall back to **All-Cash Advantage** (CO) + **DTI Buster** (GBC), since the user explicitly selected Option 3 (competitive cash offer).
+    - Fall back to **DTI Buster** (GBC) alone for DTI-only intent.
+  - **Confirmed 2026-08-13** (fixes §6.1 bug): when Rule 5 blocks a downsize-triggered CC, the UI must also switch its title/badge/subtitle away from "Retire & Downsize"/"Cross Collateral" to match whatever product actually gets computed — the label must always be derived from the resolved product, never from the raw Option 4 checkbox alone. Do not maintain the solution-card label in two separate places (e.g. once from the resolved calc() branch, once again from raw checkbox state) — that duplication is what let the label and the math disagree.
 - **Rule 4: Pure DTI**
   - **Condition**: IF (Option 1 checked ONLY)
   - **Result**: Show **DTI Buster** (GBC) only.
@@ -113,6 +117,7 @@ A "Buy Before You Sell" (BBYS) mortgage calculator for Flyhomes. Focus on unlock
   - If **LTV <= 90.00%**: 1.0%
 - **Instant Equity**:
   - If **1st Lien**: 2.0% | **2nd Lien**: 2.5%
+  - **Confirmed 2026-08-13**: this calculator is a preliminary/directional estimate, not a bindable quote, so lien-position detection is intentionally NOT implemented. The app has no lien-position input and none of the existing fields (e.g. `Current Mortgage Balance`) reliably imply it — whether an existing mortgage forces 2nd lien or gets paid off/subordinated to keep the new loan in 1st position depends on the specific lending product structure, which this app doesn't model. `originationRate` is hardcoded to `0.02` (1st lien) everywhere (index.html:1245). Do not "fix" this by inferring lien position from `Current Mortgage Balance` without a new product decision — that was explicitly considered and rejected as unreliable.
 
 ### C. GBC Fee Matrix (Standalone vs. Bundle)
 Determined by the **Departing Home Price**. Standalone applies if no Flyhomes loan is selected.
@@ -130,6 +135,8 @@ Determined by the **Departing Home Price**. Standalone applies if no Flyhomes lo
 | Above $2,000,000 | Exception | Exception | **$10,000+** (exception — requires manual handling; not auto-calculated) |
 
 **Exception rule for Above $2,000,000:** Both the Standalone Fee and Bundle Credit fall outside the standard tier table. The system must flag this as an exception. Default display value is $10,000+, but the actual fee must be confirmed manually and is not programmatically computed.
+
+**Confirmed 2026-08-13 — input is capped at $2,000,000, not left open with an exception state:** "Estimated Value of Your Current Home" (`S.homeValue`, index.html:319-326) has its slider max set to `2,000,000` (not $3M). If the user types a value above $2,000,000 directly into the text field, `render()` (index.html:1543) hides the entire `#results-panel` and shows "Please contact us to learn more." under the field instead of computing an estimate. This avoids ever hitting the >$2M GBC exception path in a way that silently produces an incomplete total (see §6.5-style gap) — above $2M, the tool simply doesn't attempt an estimate.
 
 ### D. LO Broker Fee Rules (Estimated Average)
 Programmatically derive the Broker Fee based on the active product track and its corresponding loan/advance base amount:
@@ -170,7 +177,7 @@ newHomePrice: Live-synced from Step 2 "Estimated Purchase Price" input/slider.
 isCashOfferSelected: Boolean flag from Step 1 selection.
 
 1. Cash Offer Price Advantage (Conditional)
-Visibility: Show if `isCashOfferSelected` is TRUE, OR if the recommended product is **Cross Collateral** (including **Retire & Downsize**), OR if `S.forceCashOffer` is TRUE.
+Visibility: Show whenever the recommended product uses a cash offer — i.e. `S.cash` (BBYS + Cash Offer track) OR `S.noCash` (Cross Collateral, including Retire & Downsize) is true. Do NOT gate this further on a standalone liquid-asset check (e.g. `assets >= newPrice * 0.05`) — cash-offer eligibility already accounts for combined cash + equity (`combinedResources`) elsewhere in the app, and re-checking liquid assets alone here can hide the benefit from a user who was legitimately recommended the Cash Offer product. (Confirmed 2026-08-13, fixing a prior undocumented gap where this exact liquid-asset re-check suppressed the row.)
 
 Logic: Default 3.5% (Slider: 1% - 10%).
 

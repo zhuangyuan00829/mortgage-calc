@@ -322,8 +322,9 @@
                   <input id="inp-homeValue" type="text" inputmode="numeric" value="1,200,000"
                     class="field-input w-full py-2.5 pr-4 rounded-lg border border-gray-200 text-sm transition-all" />
                 </div>
-                <input id="sl-homeValue" type="range" min="200000" max="3000000" step="10000" value="1200000" class="w-full mt-3 no-print" />
-                <div class="no-print flex justify-between text-[11px] text-gray-400 mt-0.5"><span>$200K</span><span>$3M</span></div>
+                <input id="sl-homeValue" type="range" min="200000" max="2000000" step="10000" value="1200000" class="w-full mt-3 no-print" />
+                <div class="no-print flex justify-between text-[11px] text-gray-400 mt-0.5"><span>$200K</span><span>$2M</span></div>
+                <p id="homeValue-limit-warning" class="hidden text-xs text-amber-700 mt-1.5">Please contact us to learn more.</p>
               </div>
               <div>
                 <label for="inp-mortgage" class="block text-xs font-medium text-gray-700 mb-1.5">Current Mortgage Balance</label>
@@ -377,7 +378,7 @@
       </div><!-- /left -->
 
       <!-- ── RIGHT: RESULTS ─────────────────────────────────────────────────── -->
-      <div class="sticky-panel space-y-4">
+      <div id="results-panel" class="sticky-panel space-y-4">
         <p class="text-[13px] font-semibold text-[#232226] uppercase tracking-widest">Step 3: Review results</p>
 
         <!-- Card 1: GBC / DTI Buster -->
@@ -1257,9 +1258,8 @@
       const gbcFeeNum         = gbcFee ?? 0; // treat exception as 0 for total calc
       const accruedInterest   = maxLoan * 0.0999 * (S.transitionDays / 365);
       const total             = originationFee + brokerFee + gbcFeeNum + accruedInterest;
-      const savings           = Math.max(0, maxLoan * 0.04 - total);
 
-      return { maxLoan, originationFee, brokerFee, gbcActive, gbcFee, accruedInterest, total, savings,
+      return { maxLoan, originationFee, brokerFee, gbcActive, gbcFee, accruedInterest, total,
                cashEligible, cashThreshold, combinedResources, productName, solutionName, productIntro, grad };
     }
 
@@ -1323,11 +1323,11 @@
 
     // ── Savings calculation ───────────────────────────────────────────────────
     function calcSavings() {
-      const { newPrice, homeValue, cash, assets, noCash, savCashPct, savStagedPct, savHpaPct,
+      const { newPrice, homeValue, cash, noCash, savCashPct, savStagedPct, savHpaPct,
               savMovingFee, savHousing, savStorage } = S;
-      // Show Cash Offer Price Advantage for explicit cash selection OR when active solution
-      // is Cross Collateral / Retire & Downsize (both set S.noCash = true)
-      const isCash       = (cash && assets >= newPrice * 0.05) || noCash;
+      // Show Cash Offer Price Advantage whenever the recommended product uses a cash offer:
+      // Cash Offer track (S.cash) or Cross Collateral / Retire & Downsize (S.noCash)
+      const isCash       = cash || noCash;
       const cashDiscount = isCash ? newPrice * (savCashPct / 100) : 0;
       const staged       = Math.max(0, homeValue * (savStagedPct / 100) - S.savStagingCost);
       const hpa          = newPrice * (savHpaPct / 100) * (S.transitionDays / 30) / 12;
@@ -1542,6 +1542,20 @@
     }
 
     function render() {
+      // Current home value above $2M falls outside the GBC fee matrix (CLAUDE.md §5C) —
+      // rather than showing an incomplete/exception-riddled estimate, block the whole
+      // results panel and point the user to contact us directly.
+      const overHomeValueLimit = S.homeValue > 2_000_000;
+      $('homeValue-limit-warning').classList.toggle('hidden', !overHomeValueLimit);
+      $('results-panel').classList.toggle('hidden', overHomeValueLimit);
+      if (overHomeValueLimit) {
+        // cash-warning lives outside #results-panel (it's in the Step 1 card) — clear it too,
+        // otherwise a stale "you need $X more" banner can be left showing from before the
+        // user's input crossed the $2M limit.
+        $('cash-warning').classList.add('hidden');
+        return;
+      }
+
       applyRule3Gating();   // re-evaluate Rule 3 with current slider values before calc()
       updatePrintSummary();
       const r = calc();
@@ -1670,11 +1684,20 @@
         const projectedFinalLTV = (S.newPrice + S.mortgage - S.homeValue * 0.9) / S.newPrice;
         isRule3CC = projectedFinalLTV <= 0.75;
       }
-      // Cross Collateral requires same state for both homes — block it when states differ.
+      // Rule 5: Cross Collateral requires same state for both homes — blocks CC "regardless
+      // of any other rule" (including Rule 0 downsize, Rule 1 equity+cash). When a same-state
+      // CC would otherwise have won (S.noCash_base), fall back per §4B Rule 5:
+      //  - Rule 0 downsize: Instant Equity + DTI Buster (preserves the "use equity" intent —
+      //    downsize alone carries no competitive-cash-offer intent, so Cash Offer doesn't fit).
+      //  - Rule 1 equity+cash combo: All-Cash Advantage (CO) + DTI Buster (user explicitly
+      //    wanted a competitive cash offer via Option 3).
       if (S.statesDiffer) {
+        if (S.noCash_base) {
+          if (!S.downsize) S.cashIntent = true;
+          S.gbc_base = true;
+        }
         S.noCash_base = false;
         isRule3CC     = false;
-        if (!S.cashIntent) S.cashIntent = selected.has('cash');
       }
       // naturalIsCC: true when CC would be shown without any force override (excludes downsize branding)
       S.naturalIsCC = S.noCash_base || isRule3CC;
@@ -1695,7 +1718,6 @@
     function applyProductLabel() {
       const has           = id => selected.has(id);
       // Read resolved flags (applyRule3Gating() always runs before this in render())
-      const isDownsize    = S.downsize;
       const isCrossCollat = S.noCash;  // includes Rule 0, Rule 1, and Rule 3 auto-gating
       const dtiOnly       = selected.size === 1 && has('dti');
       const noneSelected  = selected.size === 0;
@@ -1725,26 +1747,11 @@
         gbcBadge.classList.add('hidden');
       }
 
-      if (dtiOnly) return;
-      if (noneSelected) return;
-
-      // ── Main solution card labels (downsize has highest priority) ──────────
-      let solutionLabel, productLabel, intro;
-      if (isDownsize) {
-        solutionLabel = 'Retire & Downsize';          productLabel = 'Cross Collateral';  intro = 'Leverage home equity to downsize for retirement and enjoy greater financial freedom, often without taking on a new long-term mortgage.';
-      } else if (isCrossCollat) {
-        solutionLabel = 'Move with $0 out of pocket'; productLabel = 'Cross Collateral';  intro = 'Unlocks equity from both homes, little or no cash needed';
-      } else if (has('cash')) {
-        solutionLabel = 'All-Cash Advantage';         productLabel = 'Cash Offer';         intro = 'Offer like a cash buyer, close in as little as 10 days';
-      } else if (has('equity')) {
-        solutionLabel = 'Equity for Down Payment';    productLabel = 'Instant Equity';     intro = 'Unlocks home equity for down payment & closing costs before selling';
-      } else {
-        return;
-      }
-
-      $('solution-name').textContent         = solutionLabel;
-      $('solution-tooltip-text').textContent = intro + ' ' + productLabel + ' product is recommended for this scenario.';
-      $('cc-same-state-note').classList.toggle('hidden', productLabel !== 'Cross Collateral');
+      // Solution card labels (name/intro/same-state note) are derived once from calc()'s
+      // resolved product branch and set in render() — not recomputed here. Re-deriving them
+      // from raw checkbox state (e.g. isDownsize first, unconditionally) previously caused the
+      // label to disagree with the actual math when Rule 5's cross-state block flipped the
+      // resolved product but S.downsize stayed true (see §6.1 bug writeup).
     }
 
     function renderChallenges() {
