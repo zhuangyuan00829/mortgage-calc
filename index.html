@@ -255,7 +255,7 @@
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm">
           <div class="px-6 pt-5 pb-4">
             <p class="text-sm font-medium text-gray-700 mb-0.5">What's getting in the way of your next move?</p>
-            <p class="text-xs text-gray-400 mb-4">Select all that apply — most buyers face more than one.</p>
+            <p class="text-xs text-gray-400 mb-4">Select all that apply. Most buyers face more than one.</p>
 
             <!-- 2×2 grid of challenge cards -->
             <div id="challenge-cards" class="grid grid-cols-1 md:grid-cols-2 gap-2.5 mb-4"></div>
@@ -706,6 +706,18 @@
             <!-- Breakdown rows -->
             <div id="cost-breakdown" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
               <div class="pt-3 mt-2 border-t border-gray-100 space-y-2">
+                <div class="flex justify-between items-center">
+                  <span class="inline-flex items-center text-xs text-gray-500 gap-1">
+                    One-Time Fees
+                    <span class="tip">
+                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about one-time fees" tabindex="0">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                      </button>
+                      <div class="tip-box">A one-time origination fee, product fee, and broker fee. Charged once — not monthly.</div>
+                    </span>
+                  </span>
+                  <span id="other-costs-display" class="text-xs font-medium text-gray-700">—</span>
+                </div>
                 <div id="accrued-interest-row" class="hidden flex justify-between items-start">
                   <div>
                     <span class="inline-flex items-center text-xs text-gray-500 gap-1">
@@ -720,18 +732,6 @@
                     <p class="text-[12px] text-gray-400 mt-0.5">No monthly payments — interest is settled when your current home sells.</p>
                   </div>
                   <span id="accrued-interest-display" class="text-xs font-medium text-gray-700 shrink-0 ml-2">—</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="inline-flex items-center text-xs text-gray-500 gap-1">
-                    One-Time Fees
-                    <span class="tip">
-                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about one-time fees" tabindex="0">
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                      </button>
-                      <div class="tip-box">A one-time origination fee, product fee, and broker fee. Charged once — not monthly.</div>
-                    </span>
-                  </span>
-                  <span id="other-costs-display" class="text-xs font-medium text-gray-700">—</span>
                 </div>
                 <div class="flex justify-between items-center pt-1 mt-1">
                   <span class="inline-flex items-center text-xs text-gray-500 gap-1">
