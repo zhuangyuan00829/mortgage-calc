@@ -76,7 +76,8 @@ A "Buy Before You Sell" (BBYS) mortgage calculator for Flyhomes. Focus on unlock
   - **Result**: 
     - IF `S.forceCashOffer` is TRUE: Show **All-Cash Advantage** (CO) + **DTI Buster** (GBC) immediately.
     - IF `S.forceCashOffer` is FALSE AND `projectedFinalLTV <= 0.75`: Show **Cross Collateral** ONLY.
-    - IF `S.forceCashOffer` is FALSE AND `projectedFinalLTV > 0.75`: Show **All-Cash Advantage** (CO) + **DTI Buster** (GBC).
+    - IF `S.forceCashOffer` is FALSE AND `projectedFinalLTV > 0.75`: Show **All-Cash Advantage** (CO) + **DTI Buster** (GBC), **UNLESS** the cash-shortfall fallback below applies.
+  - **Cash-shortfall fallback to Cross Collateral (Confirmed 2026-08-14)**: When this rule would resolve to Cash Offer (`projectedFinalLTV > 0.75`) but the buyer's liquid cash (`assets`) can't cover the 5% down payment on the new home, check whether Cross Collateral would actually get the buyer all the way there: `CC Max Loan + assets >= NewHomePrice`, where `CC Max Loan = MIN(NewHomePrice * 1.05, (NewHomePrice + DepartingPrice) * 0.75 - CurrentMortgage)`. If yes, show **Cross Collateral** instead. **This is a gap-coverage check, not a fixed percentage** — Cross Collateral has no minimum-down-payment rule of its own (unlike Cash Offer's 5%), so the test is simply "does the CC loan plus the buyer's actual cash cover the purchase," not "does the CC loan clear some flat threshold like 95%." (An earlier version of this rule checked `CC Max Loan >= NewHomePrice * 0.95`, matching Cash Offer's own qualifying bar — that undercounts a real shortfall whenever the CC loan clears 95% but still leaves a gap bigger than the buyer's cash, e.g. a $35K gap against $10K cash. Replaced with the gap-coverage check above.) If Cross Collateral would ALSO leave an uncovered gap, do NOT switch — keep showing **All-Cash Advantage** (CO) + **DTI Buster** (GBC) with the existing cash-shortfall warning, since swapping to an equally-inadequate Cross Collateral loan (with no warning UI for that shortfall) would be more confusing, not less.
 - **Rule 5: Cross-State Block**
   - **Condition**: IF the user selects different states for "What state is your current home in?" and "What state will you be buying in?" (both fields populated, values differ)
   - **Result**: Do NOT recommend **Cross Collateral** regardless of any other rule, **including Rule 0 (Downsize Override)**. Cross Collateral requires both homes to be in the same state — no exception for downsize.
@@ -104,13 +105,15 @@ A "Buy Before You Sell" (BBYS) mortgage calculator for Flyhomes. Focus on unlock
 ## 5. Calculation Logic (Source of Truth)
 
 ### A. Total Estimated Upfront Cost Formula
-`Total Estimated Cost = (Loan Amount × Origination Fee %) + GBC Fee + Accrued Interest`
+`Total Estimated Cost = Origination Fee + Broker Fee + GBC Fee + Accrued Interest`
+
+**Confirmed 2026-08-14** (raised by engineering — two archived Notion doc variants disagreed with each other and with the prototype, one omitting Broker Fee and the other omitting Accrued Interest): the prototype's formula is the correct, complete one — all four terms are part of the total. Broker Fee is never broken out as its own visible line item though; per §5D it's bundled into the "One Time Fees" display alongside Origination Fee. Do not use a total formula that's missing any of these four terms.
 
 **Accrued Interest**
 - Rate: 9.99% per annum
 - Formula: `Loan Amount × 9.99% × (transitionDays / 365)`
 - Only shown when `Loan Amount > 0` (hidden in DTI-only scenario where there is no loan).
-- Displayed as a separate line item in the Estimated Cost dropdown alongside "Other Costs".
+- Displayed as a separate line item in the Estimated Cost dropdown alongside "One Time Fees" (Origination Fee + Broker Fee bundled together).
 
 ### B. Origination Fee % Rules
 - **BBYS + Cash Offer & Cross Collateral**:
@@ -152,16 +155,22 @@ Programmatically derive the Broker Fee based on the active product track and its
   `BrokerFee = CC_CappedLoanAmount * 0.01` (1% of the final dual-capped Cross Collateral loan amount)
 
 *UI & Multi-panel Guidelines:*
-1. **Encapsulation**: These calculated fees must not be shown as a standalone raw line item to the buyer. They must be rolled into the `Other Costs` parent element.
-2. **Tooltip Rendering**: Inside the `Other Costs` disclosure tooltip, map this value to the professional label: `Loan Processing & Underwriting: $[Calculated_Value]`.
+1. **Encapsulation**: These calculated fees must not be shown as a standalone raw line item to the buyer. They must be rolled into the `One Time Fees` parent element (previously labeled "Other Costs" — renamed per the 2026-08-13/14 copy spec).
+2. **Tooltip Rendering**: Inside the `One Time Fees` disclosure tooltip, map this value to the professional label: `Loan Processing & Underwriting: $[Calculated_Value]`.
 3. **Reactivity**: Any change to input variables (e.g., purchase price or departing home value) that shifts the underlying loan amount must instantly re-run these percentage models to keep the totals synchronized.
 
 ### E. Core Product Formulas
 Instant Equity: (Departing Price * 0.75 * 0.9) - Current Mortgage. Max LTV: 90% of GBC Price.
 
-Max Purchase Price: (Liquid Assets + Instant Equity) / 0.05. Ensures 5% Down Payment can be funded by both Cash and Home Equity.
+Cash Offer eligibility (`cashEligible`): Liquid Assets >= New Home Price * 5%. Ensures the 5% Down Payment is funded by actual liquid cash.
 
-BBYS + Cash Offer: New Home Price * 95%. Max LTV: 95%. Min Down Payment: 5%.
+**Confirmed 2026-08-14**: Cash Offer's down payment must come from liquid cash only — home equity does NOT count toward it, since that equity is still locked in the departing home and isn't accessible to the buyer unless they're also using Instant Equity or Cross Collateral. Do not combine assets with unlockable home equity (previously called `combinedResources` in code) for Cash Offer — that was a bug, since a buyer with little cash but high home equity would be shown as Cash Offer eligible despite having no way to actually fund the down payment.
+
+BBYS + Cash Offer: New Home Price * 95%. Max LTV: 95%. Min Down Payment: 5%. Only computed once `cashEligible` (above) has already passed.
+
+**History (resolved 2026-08-14)**: engineering flagged that the prototype's original code (`MIN(New Home Price, Max Purchase Price) * 95%`, with `Max Purchase Price = combined cash + equity / 0.05`) diverged from the design doc's flat `New Home Price * 95%`. Two things got resolved in sequence:
+1. The "Max Purchase Price" cap should use liquid cash only, never home equity (equity isn't accessible for a Cash Offer down payment — see the confirmation above).
+2. Once liquid-cash-only `cashEligible` gates entry into this branch at all (`Liquid Assets >= New Home Price * 5%`), the `MIN(New Home Price, Max Purchase Price)` cap became mathematically redundant — `cashEligible` passing already guarantees `Max Purchase Price >= New Home Price`, so the MIN always resolves to `New Home Price` and never actually caps anything. The cap was removed; eligibility is checked once, and the loan amount is the plain formula above. Net effect on output: none — this only simplifies the formula, it doesn't change any computed number.
 
 Cross Collateral: MIN((New Home Price * 1.05), ((New Home Price + Departing Price) * 0.75 - Current Mortgage)). Hard risk caps: 105% Acquiring LTV maximum and 75% Combined CLTV maximum.
 
@@ -178,7 +187,7 @@ newHomePrice: Live-synced from Step 2 "Estimated Purchase Price" input/slider.
 isCashOfferSelected: Boolean flag from Step 1 selection.
 
 1. Cash Offer Price Advantage (Conditional)
-Visibility: Show whenever the recommended product uses a cash offer — i.e. `S.cash` (BBYS + Cash Offer track) OR `S.noCash` (Cross Collateral, including Retire & Downsize) is true. Do NOT gate this further on a standalone liquid-asset check (e.g. `assets >= newPrice * 0.05`) — cash-offer eligibility already accounts for combined cash + equity (`combinedResources`) elsewhere in the app, and re-checking liquid assets alone here can hide the benefit from a user who was legitimately recommended the Cash Offer product. (Confirmed 2026-08-13, fixing a prior undocumented gap where this exact liquid-asset re-check suppressed the row.)
+Visibility: Show whenever the recommended product uses a cash offer — i.e. `S.cash` (BBYS + Cash Offer track) OR `S.noCash` (Cross Collateral, including Retire & Downsize) is true. Do NOT gate this further on a standalone liquid-asset check (e.g. `assets >= newPrice * 0.05`) — that duplicates the same liquid-cash eligibility check `calc()` already runs to decide whether the Cash Offer branch applies in the first place, and re-checking it again here can hide the benefit from a user who was legitimately recommended the Cash Offer product. (Confirmed 2026-08-13, fixing a prior undocumented gap where this exact liquid-asset re-check suppressed the row. Note: as of 2026-08-14, Cash Offer eligibility itself is liquid-cash-only too, per §5E — see that section for the current formula.)
 
 Logic: Default 3.5% (Slider: 1% - 10%).
 

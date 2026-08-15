@@ -1229,14 +1229,11 @@
     function calc() {
       const { homeValue, mortgage, newPrice, assets, cash, noCash } = S;
 
-      // Available equity from departing home — reacts to mortgage slider (§5D IE formula)
-      const availableEquity   = Math.max(0, homeValue * 0.75 * 0.9 - mortgage);
-      // Combined down-payment resources: cash assets + unlockable equity
-      const combinedResources = assets + availableEquity;
-
       const cashThreshold = newPrice * 0.05;
-      // Eligible when combined resources (not just cash) can cover the min 5% down payment
-      const cashEligible  = combinedResources >= cashThreshold;
+      // Cash Offer requires the 5% down payment in actual liquid cash — home equity doesn't
+      // count here, since it isn't accessible to the buyer unless they also use Instant Equity
+      // or Cross Collateral. (Confirmed 2026-08-14.)
+      const cashEligible  = assets >= cashThreshold;
 
       // CLAUDE.md §5A: GBC cannot pair with Cross Collateral
       const gbcActive = S.gbc && !noCash;
@@ -1261,10 +1258,11 @@
           productIntro = 'Unlocks equity from both homes, little or no cash needed';
         }
       } else if (cash && cashEligible) {
-        // §5D Cash Offer: Max Purchase Price = combinedResources / 5%, capped by entered newPrice
-        // maxLoan reacts to mortgage slider via availableEquity → combinedResources
-        const maxPurchasePrice = combinedResources / 0.05;
-        maxLoan = Math.max(0, Math.min(newPrice, maxPurchasePrice) * 0.95);
+        // §5D Cash Offer: cashEligible already confirmed assets >= newPrice * 5%, i.e. the
+        // buyer clears the down payment bar for this exact price — so the loan is simply
+        // 95% of the entered price. No separate "Max Purchase Price" cap is needed here;
+        // that check already happened above, in cashEligible.
+        maxLoan = Math.max(0, newPrice * 0.95);
         const ltv       = newPrice > 0 ? maxLoan / newPrice : 0;
         originationRate = ltv > 0.90 ? 0.015 : 0.010;
         brokerFee       = maxLoan * 0.01;   // Cash Offer track: 1% of FCO loan amount
@@ -1292,7 +1290,7 @@
       const total             = originationFee + brokerFee + gbcFeeNum + accruedInterest;
 
       return { maxLoan, originationFee, brokerFee, gbcActive, gbcFee, accruedInterest, total,
-               cashEligible, cashThreshold, combinedResources, productName, solutionName, productIntro, grad };
+               cashEligible, cashThreshold, productName, solutionName, productIntro, grad };
     }
 
     // ── Savings accordion toggle ─────────────────────────────────────────────
@@ -1655,8 +1653,8 @@
 
       if (S.cash && !r.cashEligible) {
         $('cash-warning').classList.remove('hidden');
-        const gap = r.cashThreshold - r.combinedResources;
-        $('cash-shortfall').textContent = `You need $${Math.round(gap).toLocaleString()} more in cash or home equity.`;
+        const gap = r.cashThreshold - S.assets;
+        $('cash-shortfall').textContent = `You need $${Math.round(gap).toLocaleString()} more in cash.`;
       } else {
         $('cash-warning').classList.add('hidden');
       }
@@ -1730,6 +1728,24 @@
       if (S.cashIntent && S.newPrice > 0) {
         const projectedFinalLTV = (S.newPrice + S.mortgage - S.homeValue * 0.9) / S.newPrice;
         isRule3CC = projectedFinalLTV <= 0.75;
+
+        // Cash-shortfall fallback: Rule 3 would otherwise recommend Cash Offer, but the buyer's
+        // liquid cash can't cover the 5% down payment. Switch to Cross Collateral instead, but
+        // only when Cross Collateral's own loan actually gets the buyer all the way there.
+        // Cross Collateral has NO minimum-down-payment rule of its own (unlike Cash Offer's 5%),
+        // so the right test isn't a fixed percentage — it's simply whether the CC loan plus the
+        // buyer's actual cash covers the purchase price. If Cross Collateral would ALSO leave a
+        // gap the buyer can't cover, keep recommending Cash Offer so the existing cash-shortfall
+        // warning stays visible instead of silently swapping to an equally inadequate loan.
+        // (Confirmed 2026-08-14.)
+        if (!isRule3CC) {
+          const cashEligible = S.assets >= S.newPrice * 0.05;
+          if (!cashEligible) {
+            const ccCltv    = (S.newPrice + S.homeValue) * 0.75 - S.mortgage;
+            const ccMaxLoan = Math.max(0, Math.min(S.newPrice * 1.05, ccCltv));
+            if (ccMaxLoan + S.assets >= S.newPrice) isRule3CC = true;
+          }
+        }
       }
       // Rule 5: Cross Collateral requires same state for both homes — blocks CC "regardless
       // of any other rule" (including Rule 0 downsize, Rule 1 equity+cash). When a same-state
