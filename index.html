@@ -129,13 +129,18 @@
       canvas,
       #cash-warning { display: none !important; }
 
-      /* Hide interactive children of left column; keep only the print summary */
-      #inputs-col > *:not(#print-summary) { display: none !important; }
+      /* Hide interactive children of column 1; keep only the print summary */
+      #step1-col > *:not(#print-summary) { display: none !important; }
+
+      /* Column 2 (Step 2 inputs) has no print-only content of its own; drop it entirely
+         so #main-grid is left with exactly 2 visible children (step1-col, results-panel)
+         to match the explicit 2-column template below. */
+      #step2-col { display: none !important; }
 
       /* Show print-only elements */
       .print-only { display: block !important; }
 
-      /* Force explicit 2-column grid: left (steps 1+2) | right (step 3) */
+      /* Force explicit 2-column grid: left (steps 1+2 summary) | right (step 3) */
       #main-grid { display: grid !important; grid-template-columns: 1fr 360px !important; gap: 96px !important; }
 
       /* Kill sticky so right column flows naturally */
@@ -215,7 +220,7 @@
 
 
   <!-- ══ MAIN ══════════════════════════════════════════════════════════════════ -->
-  <main class="max-w-5xl mx-auto px-5 sm:px-8 pt-4 pb-8 sm:pt-5 sm:pb-12">
+  <main class="max-w-[1340px] mx-auto px-5 sm:px-8 pt-4 pb-8 sm:pt-5 sm:pb-12">
 
     <h1 class="text-[42px] font-semibold text-[#232226] mb-4">Buy Before You Sell Calculator</h1>
 
@@ -242,10 +247,10 @@
       </div>
     </div>
 
-    <div id="main-grid" class="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-7">
+    <div id="main-grid" class="grid grid-cols-1 lg:grid-cols-3 gap-7">
 
-      <!-- ── LEFT: INPUTS ──────────────────────────────────────────────────── -->
-      <div id="inputs-col" class="space-y-5">
+      <!-- ── COLUMN 1: CHALLENGE SELECTOR (STEP 1) ───────────────────────────── -->
+      <div id="step1-col" class="space-y-5">
 
         <!-- Print-only: Step 1 + Step 2 summary (left column in PDF) -->
         <div id="print-summary" class="print-only" hidden>
@@ -256,13 +261,13 @@
         </div>
 
         <!-- Challenge Selector -->
-        <p class="text-[16px] font-semibold text-[#232226] uppercase tracking-widest">Step 1: What's getting in the way of your next move?</p>
+        <p class="text-[16px] font-semibold text-[#232226] uppercase tracking-widest min-h-[48px]">Step 1: What's getting in the way of your next move?</p>
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm">
           <div class="px-6 pt-5 pb-4">
             <p class="text-sm font-medium text-gray-700 mb-4"><span style="position:relative;display:inline-block;"><span style="position:absolute;left:-4px;right:-4px;top:1px;bottom:1px;background:#4C7994;opacity:0.16;border-radius:4px;transform:rotate(-0.8deg);"></span><span style="position:relative;font-weight:700;color:#232226;">Select all that apply.</span></span> Most buyers face more than one.</p>
 
-            <!-- 2×2 grid of challenge cards -->
-            <div id="challenge-cards" class="grid grid-cols-1 md:grid-cols-2 gap-2.5 mb-4"></div>
+            <!-- 1×4 vertically stacked challenge cards -->
+            <div id="challenge-cards" class="grid grid-cols-1 gap-2.5 mb-4"></div>
 
             <!-- Cash ineligibility warning -->
             <div id="cash-warning" class="hidden rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 text-xs text-amber-700 leading-relaxed mb-3">
@@ -273,13 +278,18 @@
           </div>
         </div>
 
+      </div><!-- /step1-col -->
+
+      <!-- ── COLUMN 2: HOME DETAILS (STEP 2) ──────────────────────────────────── -->
+      <div id="step2-col" class="space-y-5">
+
         <!-- Home details -->
-        <p class="text-[16px] font-semibold text-[#232226] uppercase tracking-widest">Step 2: Tell us about your move</p>
+        <p class="text-[16px] font-semibold text-[#232226] uppercase tracking-widest min-h-[48px]">Step 2: Tell us about your move</p>
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm">
           <div class="p-6 space-y-5">
 
             <!-- Row 0: State Dropdowns -->
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 gap-4">
               <div>
                 <div class="flex items-center gap-1 mb-1.5">
                   <label for="inp-currentState" class="text-xs font-medium text-gray-700">State you are selling in</label>
@@ -307,7 +317,7 @@
             </div>
             <p class="text-xs text-gray-400 -mt-1">Some Flyhomes loan options are not available in every state yet. We will flag any that do not fit. The Guaranteed Backup Contract works in all 50 states.</p>
             <!-- Row 1: Home Value + Mortgage -->
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 gap-4">
               <div>
                 <label for="inp-homeValue" class="block text-xs font-medium text-gray-700 mb-1.5">Estimated Value of Your Current Home</label>
                 <div class="has-prefix relative">
@@ -334,7 +344,7 @@
             <div class="h-px bg-gray-100"></div>
 
             <!-- Row 2: Purchase Price + Liquid Assets -->
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 gap-4">
               <div>
                 <label for="inp-newPrice" class="block text-xs font-medium text-gray-700 mb-1.5">Price of the Home You Want to Buy</label>
                 <div class="has-prefix relative">
@@ -368,11 +378,11 @@
           </div>
         </div>
 
-      </div><!-- /left -->
+      </div><!-- /step2-col -->
 
-      <!-- ── RIGHT: RESULTS ─────────────────────────────────────────────────── -->
+      <!-- ── COLUMN 3: RESULTS (STEP 3) ───────────────────────────────────────── -->
       <div id="results-panel" class="sticky-panel space-y-4">
-        <p class="text-[16px] font-semibold text-[#232226] uppercase tracking-widest">Step 3: Your results</p>
+        <p class="text-[16px] font-semibold text-[#232226] uppercase tracking-widest min-h-[48px]">Step 3: Your results</p>
 
         <!-- Card 1: GBC / DTI Buster -->
         <!-- Combined Solution Card -->
@@ -1061,7 +1071,7 @@
   </main>
 
   <!-- ══ FOOTER ════════════════════════════════════════════════════════════════ -->
-  <footer class="max-w-5xl mx-auto px-5 sm:px-8 pt-4 pb-10">
+  <footer class="max-w-[1340px] mx-auto px-5 sm:px-8 pt-4 pb-10">
     <div class="border-t border-gray-100 pt-6">
       <p class="text-[12px] text-gray-500 leading-relaxed">
         <strong class="text-gray-600 font-medium">Disclaimer:</strong> This calculator is for illustrative purposes only and does not constitute financial, legal, or tax advice. Results are estimates based on simplified assumptions and may not reflect actual loan amounts, eligibility, fees, or terms. Subject to Flyhomes underwriting review and approval. Not available in all markets. &copy; 2026 Flyhomes, Inc.
