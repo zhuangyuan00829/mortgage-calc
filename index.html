@@ -222,7 +222,7 @@
     <!-- Ant Design Warning Alert -->
     <div role="alert" style="display:flex;align-items:flex-start;gap:8px;padding:9px 16px;margin-bottom:20px;background:#fffbe6;border:1px solid #ffe58f;border-radius:8px;">
       <svg style="flex-shrink:0;margin-top:1px;color:#faad14" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm.75 10.25h-1.5V9.5h1.5v1.75zm0-3h-1.5v-4h1.5v4z"/></svg>
-      <span style="font-size:13px;color:#664d00;line-height:1.55">Estimates only. Your exact numbers are confirmed by your Flyhomes account executive after a quick review.</span>
+      <span style="font-size:13px;color:#664d00;line-height:1.55">Estimates only. Your Loan Officer will review your details with Flyhomes to confirm your exact numbers.</span>
     </div>
 
     <!-- Print-only: full-width title bar above both columns -->
@@ -238,7 +238,7 @@
     <div class="print-only" style="padding:8px 14px;margin-bottom:16px;margin-top:12px;background:#fffbe6;border:1px solid #ffe58f;border-radius:8px;">
       <div style="display:flex;align-items:center;gap:8px;">
         <svg style="flex-shrink:0;color:#faad14" width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm.75 10.25h-1.5V9.5h1.5v1.75zm0-3h-1.5v-4h1.5v4z"/></svg>
-        <span style="font-size:12px;color:#664d00;line-height:1.55">This is an estimate only and has not been confirmed by a Flyhomes account executive. Product availability varies by state.</span>
+        <span style="font-size:12px;color:#664d00;line-height:1.55">This is an estimate only. Your Loan Officer will review your details with Flyhomes to confirm your exact numbers. Product availability varies by state.</span>
       </div>
     </div>
 
@@ -256,11 +256,10 @@
         </div>
 
         <!-- Challenge Selector -->
-        <p class="text-[16px] font-semibold text-[#232226] uppercase tracking-widest">Step 1: What are you trying to solve?</p>
+        <p class="text-[16px] font-semibold text-[#232226] uppercase tracking-widest">Step 1: What's getting in the way of your next move?</p>
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm">
           <div class="px-6 pt-5 pb-4">
-            <p class="text-sm font-medium text-gray-700 mb-0.5">What's getting in the way of your next move?</p>
-            <p class="text-xs text-gray-400 mb-4">Select all that apply. Most buyers face more than one.</p>
+            <p class="text-sm font-medium text-gray-700 mb-4"><span style="position:relative;display:inline-block;"><span style="position:absolute;left:-4px;right:-4px;top:1px;bottom:1px;background:#4C7994;opacity:0.16;border-radius:4px;transform:rotate(-0.8deg);"></span><span style="position:relative;font-weight:700;color:#232226;">Select all that apply.</span></span> Most buyers face more than one.</p>
 
             <!-- 2×2 grid of challenge cards -->
             <div id="challenge-cards" class="grid grid-cols-1 md:grid-cols-2 gap-2.5 mb-4"></div>
@@ -384,7 +383,7 @@
           <canvas id="gbc-confetti-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:10;border-radius:inherit"></canvas>
           <div class="px-5 pt-4 pb-4">
             <div class="flex items-center gap-3 mb-1 flex-wrap">
-              <a href="https://flyhomes.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-[#3c4659] text-[17px] font-bold leading-snug hover:opacity-80 transition-opacity">DTI Buster<svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
+              <a href="https://flyhomes.com/solutions/dti-buster" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-[#3c4659] text-[17px] font-bold leading-snug hover:opacity-80 transition-opacity">DTI Buster<svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
               <span class="tip">
                 <button onclick="event.stopPropagation()" class="flex-shrink-0 text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full mt-0.5" aria-label="More info about DTI Buster" tabindex="0">
                   <svg class="w-4 h-4" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
@@ -652,7 +651,7 @@
         <div id="main-solution-card" class="hidden">
           <div id="card-header" class="px-5 pt-4 pb-4">
             <div class="flex items-center gap-3 mb-1 flex-wrap">
-              <a href="https://flyhomes.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-[#3c4659] text-[17px] font-bold leading-snug hover:opacity-80 transition-opacity"><span id="solution-name">Equity for Down Payment</span><svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
+              <a id="solution-link" href="https://flyhomes.com/solutions/equity-for-down-payment" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-[#3c4659] text-[17px] font-bold leading-snug hover:opacity-80 transition-opacity"><span id="solution-name">Equity for Down Payment</span><svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
               <span class="tip">
                 <button onclick="event.stopPropagation()" class="flex-shrink-0 text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full mt-0.5" aria-label="More info about this solution" tabindex="0">
                   <svg class="w-4 h-4" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
@@ -1047,10 +1046,7 @@
 
         <!-- Card 3: CTA + disclaimer -->
         <div id="cta-card" class="bg-white rounded-2xl px-6 pt-4 pb-5" style="border:1px solid #E5E7EB">
-          <span class="tip" style="display:block;width:100%">
-            <a href="#" class="flex items-center justify-center w-full font-medium py-3.5 rounded-lg text-[15px] transition-colors" style="background:#D9848B;color:#232226" onmouseover="this.style.background='#CB7178'" onmouseout="this.style.background='#D9848B'">Save and continue in Portal<svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-            <div class="tip-box" style="width:220px">Sign in to turn this estimate into a real scenario.</div>
-          </span>
+          <a href="#" class="flex items-center justify-center w-full font-medium py-3.5 rounded-lg text-[15px] transition-colors" style="background:#D9848B;color:#232226" onmouseover="this.style.background='#CB7178'" onmouseout="this.style.background='#D9848B'">Save and continue in Portal as LO<svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg></a>
           <button onclick="window.print()" class="flex items-center justify-center w-full font-medium py-3 rounded-lg text-[15px] mt-2.5 border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">Save as PDF</button>
         </div><!-- /card 3 -->
 
@@ -1084,7 +1080,7 @@
         </p>
       </div>
       <p class="print-only text-[11px] text-gray-500 leading-relaxed mt-3 pt-3 border-t border-gray-100">
-        Prepared for professional and educational use. Estimates are not confirmed by a Flyhomes account executive and are not a commitment to lend.
+        Prepared for professional and educational use. Your Loan Officer will review your details with Flyhomes to confirm your exact numbers; estimates are not a commitment to lend.
       </p>
     </div>
   </footer>
@@ -1603,6 +1599,7 @@
 
       $('card-header').className      = `px-5 pt-4 pb-4`;
       $('solution-name').textContent         = r.solutionName;
+      $('solution-link').href                = SOLUTION_URLS[r.solutionName] || 'https://flyhomes.com/';
       $('solution-tooltip-text').textContent = r.productIntro + ' ' + r.productName + ' product is recommended for this scenario.';
       $('cc-same-state-note').classList.toggle('hidden', r.productName !== 'Cross Collateral');
 
@@ -1693,12 +1690,17 @@
     bindField('inp-assets',    'sl-assets',    'assets');
 
     // ── Challenge card selection ──────────────────────────────────────────────
+    const SOLUTION_URLS = {
+      'DTI Buster':                'https://flyhomes.com/solutions/dti-buster',
+      'Equity for Down Payment':   'https://flyhomes.com/solutions/equity-for-down-payment',
+      'Retire & Downsize':         'https://flyhomes.com/solutions/retire-downsize',
+      'All-Cash Advantage':        'https://flyhomes.com/solutions/all-cash-advantage',
+      'Move with $0 out of pocket': 'https://flyhomes.com/solutions/move-with-zero-out-of-pocket',
+    };
     const CHALLENGES = [
-      { id: 'dti',      label: 'My current mortgage is capping my approval',        desc: 'You cannot carry two mortgages at once, so your approval on the new home comes in lower than you need.',
-        footnote: 'Increase in your qualifying amount depends on your full financial profile and lender approval. Not all borrowers qualify. Any 40% to 50% figure is illustrative.' },
+      { id: 'dti',      label: 'My current mortgage is capping my approval',        desc: 'You cannot carry two mortgages at once, so your approval on the new home comes in lower than you need.' },
       { id: 'equity',   label: 'My cash is locked in my current home',              desc: 'Your down payment and closing costs are sitting in your current home, stuck until it sells.' },
-      { id: 'cash',     label: 'My offers keep losing to cash buyers',              desc: 'You wish your offer could be as strong as cash, winning without having to bid the highest.',
-        footnote: 'Offer strength comes from a Flyhomes bridge loan, not a cash payment. Removing contingencies is subject to eligibility and underwriting.' },
+      { id: 'cash',     label: 'My offers keep losing to cash buyers',              desc: 'You wish your offer could be as strong as cash, winning without having to bid the highest.' },
       { id: 'downsize', label: 'I want to downsize, ideally without a new mortgage', desc: 'You have plenty of home equity but not enough income to qualify for a new loan the usual way.',
         footnote: 'Qualifying without income verification is available on certain solutions, subject to program eligibility.' },
     ];
@@ -1792,7 +1794,7 @@
       const showWrapper = showGBC || showMain;
       $('number-card').classList.toggle('hidden',           dtiOnly || noneSelected);
       $('cost-benefit-card').classList.toggle('hidden',     dtiOnly || noneSelected);
-      $('cta-card').classList.toggle('hidden',              dtiOnly || noneSelected);
+      $('cta-card').classList.toggle('hidden',              noneSelected);
       $('solution-card-wrapper').classList.toggle('hidden', !showWrapper);
       $('solution-card-wrapper').classList.toggle('dti-solo', dtiOnly);
       $('main-solution-card').classList.toggle('hidden',    !showMain);
