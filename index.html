@@ -400,7 +400,7 @@
                 </button>
                 <div class="tip-box tip-down">Sets your current mortgage aside so you qualify for more, and lets you drop the home sale contingency. Guaranteed Backup Contract product is recommended for this scenario.</div>
               </span>
-              <span id="gbc-badge" class="hidden ml-auto inline-block text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border" style="background:#FFF7F8;color:#D87486;border-color:#D87486">Recommended for you</span>
+              <span id="gbc-badge" class="hidden ml-auto inline-block text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border" style="background:#FFF7F8;color:#D87486;border-color:#D87486">Optional</span>
             </div>
           </div>
         </div><!-- /gbc-solution-card -->
@@ -1056,8 +1056,9 @@
 
         <!-- Card 3: CTA + disclaimer -->
         <div id="cta-card" class="bg-white rounded-2xl px-6 pt-4 pb-5" style="border:1px solid #E5E7EB">
-          <a href="#" class="flex items-center justify-center w-full font-medium py-3.5 rounded-lg text-[15px] transition-colors" style="background:#D9848B;color:#232226" onmouseover="this.style.background='#CB7178'" onmouseout="this.style.background='#D9848B'">Save and continue in Portal as LO<svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-          <button onclick="window.print()" class="flex items-center justify-center w-full font-medium py-3 rounded-lg text-[15px] mt-2.5 border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">Save as PDF</button>
+          <a href="#" class="flex items-center justify-center w-full font-medium py-3.5 rounded-lg text-[15px] transition-colors" style="background:#D9848B;color:#232226" onmouseover="this.style.background='#CB7178'" onmouseout="this.style.background='#D9848B'">Save and continue in Partner Portal<svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <p class="text-center text-[14px] text-gray-400 mt-1.5 mb-3">For loan officers and agents</p>
+          <button onclick="window.print()" class="flex items-center justify-center w-full font-medium py-3 rounded-lg text-[15px] border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">Save as PDF</button>
         </div><!-- /card 3 -->
 
         <!-- Section header -->
@@ -1817,7 +1818,7 @@
       gbcBadge.className   = 'ml-auto inline-block text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border';
       if (mostLikely) {
         gbcBadge.style.cssText = 'background:#FFF7F8;color:#D87486;border-color:#D87486';
-        gbcBadge.textContent   = 'Recommended for you';
+        gbcBadge.textContent   = 'Optional';
         gbcBadge.classList.remove('hidden');
       } else {
         gbcBadge.classList.add('hidden');
