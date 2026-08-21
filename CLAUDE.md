@@ -91,6 +91,8 @@ A "Buy Before You Sell" (BBYS) mortgage calculator for Flyhomes. Focus on unlock
 
 ### C. UI Badges & Labels
 - **"Most Likely Needed"**: Apply this badge to the **DTI Buster** card if Option 1 was **NOT** manually checked but Rule 2 or Rule 3 triggered it. 
+- **Badge copy (Confirmed 2026-08-21)**: this auto-triggered DTI Buster badge reads "Optional Add-On" (not "Optional").
+- **Rule 2 combo ordering (Confirmed 2026-08-21)**: When **Equity for Down Payment** (IE) + **DTI Buster** (GBC) are shown together (Rule 2), Equity for Down Payment renders FIRST with a "Core" tag, and DTI Buster renders SECOND. This reordering is specific to the IE+GBC combo — other combos that also show DTI Buster alongside a main solution (e.g. Rule 3's All-Cash Advantage + DTI Buster) keep DTI Buster first and do not get a "Core" tag. Implemented via a `reorder-equity-first` class toggled on `#solution-card-wrapper` in `applyProductLabel()` (index.html), driven by CSS `order` rather than moving DOM nodes. The "Core" tag reuses the same pink pill style as "Optional Add-On" (`background:#FFF7F8;color:#D87486;border-color:#D87486`) — do not give it a distinct color.
 - **Downsize Hint**: If Option 3 is active, ensure UI emphasizes: "Perfect for mortgage-free downsizing."
 
 ### D. Scenario Branding: "Retire & Downsize"
@@ -239,6 +241,11 @@ UI: Display "Total Estimated Savings" prominently at the bottom of the section.
 - **Single File**: All CSS (Tailwind), HTML, and JS in `index.html`.
 - **Reactivity**: Use a single state object `S`. Any input change triggers `calc()` -> `render()`.
 - **UX**: Currency formatting on blur; bidirectional slider sync; keyboard-accessible tooltips.
+
+### Card 3 CTA (Confirmed 2026-08-21)
+- **Layout**: "Share with buyers, loan officers, agents" label → **Save as PDF** + **Share link** side by side (outline buttons, file/link icons) → "For loan officers and agents only" → primary pink **Save and continue in Partner Portal** → outline **Talk to us** (opens `https://flyhomes.com/contact` in a new tab).
+- **Share link mechanism**: `shareCalculatorLink()` (index.html) serializes the inputs that drive `calc()` — `SHARE_STATE_KEYS` subset of `S` (homeValue, mortgage, newPrice, assets, forceCashOffer, flyhomesLoan, savCashPct, savStagedPct, savHpaPct, transitionDays), the `selected` challenge-option set, and the current/buying state selects — into a base64 JSON payload in the URL hash (`#s=...`). `restoreFromShareLink()` runs at page bootstrap (before `renderChallenges()`/`render()`) to decode it and repopulate `S`, `selected`, and the visible inputs, so a shared link reproduces the same numbers and recommended results for whoever opens it. Clicking "Share link" copies this URL via `navigator.clipboard.writeText`, falling back to a hidden-textarea `execCommand('copy')` for insecure/`file://` contexts, then shows a "Link copied!" toast above the button.
+- **Not serialized**: `savMovingFee`/`savHousing`/`savStorage` (the editable "Move Once" sub-fields) — `render()` unconditionally recomputes these from `homeValue`/`transitionDays` via `initSavingsDefaults()` on every render pass, so a restored value would just be overwritten on the next render; restoring `homeValue` + `transitionDays` already reproduces the same defaults.
 
 ## 7. Capture & Learn
 - **Self-Correction**: After any correction on visuals or structure, **update this file** with the new rule.
