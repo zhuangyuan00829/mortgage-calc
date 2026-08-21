@@ -37,6 +37,12 @@
     /* ── DTI-only solo cards: DTI Buster title and Estimated Cost/Total Value become two separate cards ── */
     #solution-card-wrapper.dti-solo { background: transparent !important; border: none !important; display: flex; flex-direction: column; gap: 1rem; }
     #solution-card-wrapper.dti-solo #gbc-solution-card { background: #fff; border: 1px solid #E5E7EB; border-radius: 0.75rem; overflow: hidden; }
+    /* ── Equity for Down Payment + DTI Buster combo: Equity leads, DTI Buster follows ── */
+    #solution-card-wrapper.reorder-equity-first { display: flex; flex-direction: column; }
+    #solution-card-wrapper.reorder-equity-first #main-solution-card { order: 0; }
+    #solution-card-wrapper.reorder-equity-first #solution-divider { order: 1; }
+    #solution-card-wrapper.reorder-equity-first #gbc-solution-card { order: 2; }
+    #solution-card-wrapper.reorder-equity-first #gbc-dti-costs { order: 3; }
     #gbc-dti-costs { background: #fff; border: 1px solid #E5E7EB; border-radius: 0.75rem; overflow: hidden; }
 
     /* ── Tooltip ── */
@@ -677,6 +683,7 @@
                 </button>
                 <div class="tip-box tip-down" id="solution-tooltip-text">Turns the equity in your current home into cash for your down payment and closing costs, before you sell</div>
               </span>
+              <span id="core-badge" class="hidden ml-auto inline-block text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border" style="background:#FFF7F8;color:#D87486;border-color:#D87486">Core</span>
             </div>
             <p id="cc-same-state-note" class="hidden text-[12px] text-gray-600 mt-0.5">(Same state purchase and sale required.)</p>
           </div>
@@ -1064,10 +1071,22 @@
         </div>
 
         <!-- Card 3: CTA + disclaimer -->
-        <div id="cta-card" class="bg-white rounded-2xl px-6 pt-4 pb-5" style="border:1px solid #E5E7EB">
+        <div id="cta-card" class="bg-white rounded-2xl px-6 pt-5 pb-5" style="border:1px solid #E5E7EB">
+          <p class="text-[13px] font-medium text-gray-500 mb-3">Share with buyers, loan officers, and agents</p>
+          <div class="grid grid-cols-2 gap-3">
+            <button onclick="window.print()" class="flex items-center justify-center gap-1.5 w-full font-medium py-3 rounded-lg text-[14px] border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors">
+              <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              Save as PDF
+            </button>
+            <button id="share-link-btn" onclick="shareCalculatorLink()" class="relative flex items-center justify-center gap-1.5 w-full font-medium py-3 rounded-lg text-[14px] border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors">
+              <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.6602 16.107C13.6199 16.0671 13.5655 16.0447 13.5088 16.0447C13.4522 16.0447 13.3978 16.0671 13.3575 16.107L10.245 19.2195C8.80392 20.6606 6.37178 20.8132 4.78071 19.2195C3.18696 17.6257 3.33963 15.1963 4.78071 13.7552L7.89321 10.6427C7.97624 10.5597 7.97624 10.4231 7.89321 10.34L6.82713 9.27395C6.78686 9.23407 6.73247 9.2117 6.6758 9.2117C6.61912 9.2117 6.56473 9.23407 6.52446 9.27395L3.41196 12.3864C1.14588 14.6525 1.14588 18.3195 3.41196 20.5829C5.67803 22.8463 9.34499 22.8489 11.6084 20.5829L14.7209 17.4704C14.8039 17.3873 14.8039 17.2507 14.7209 17.1677L13.6602 16.107ZM20.587 3.41055C18.3209 1.14448 14.6539 1.14448 12.3905 3.41055L9.27535 6.52305C9.23547 6.56333 9.2131 6.61771 9.2131 6.67439C9.2131 6.73107 9.23547 6.78546 9.27535 6.82573L10.3387 7.88912C10.4218 7.97216 10.5584 7.97216 10.6414 7.88912L13.7539 4.77662C15.195 3.33555 17.6271 3.18287 19.2182 4.77662C20.812 6.37037 20.6593 8.79984 19.2182 10.2409L16.1057 13.3534C16.0658 13.3937 16.0435 13.4481 16.0435 13.5048C16.0435 13.5614 16.0658 13.6158 16.1057 13.6561L17.1718 14.7222C17.2548 14.8052 17.3914 14.8052 17.4745 14.7222L20.587 11.6097C22.8503 9.34359 22.8503 5.67662 20.587 3.41055ZM14.6271 8.25609C14.5869 8.21621 14.5325 8.19384 14.4758 8.19384C14.4191 8.19384 14.3647 8.21621 14.3245 8.25609L8.25749 14.3204C8.21761 14.3607 8.19524 14.415 8.19524 14.4717C8.19524 14.5284 8.21761 14.5828 8.25749 14.6231L9.31821 15.6838C9.40124 15.7668 9.53785 15.7668 9.62089 15.6838L15.6852 9.61948C15.7682 9.53645 15.7682 9.39984 15.6852 9.3168L14.6271 8.25609Z"/></svg>
+              Share link
+              <span id="share-link-toast" class="hidden absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap text-[12px] font-medium text-white px-2.5 py-1 rounded-md z-10" style="background:#232226">Link copied!</span>
+            </button>
+          </div>
+          <p class="text-[13px] font-medium text-gray-500 mt-6 mb-3">For loan officers and agents only</p>
           <a href="#" class="flex items-center justify-center w-full font-medium py-3.5 rounded-lg text-[15px] transition-colors" style="background:#D9848B;color:#232226" onmouseover="this.style.background='#CB7178'" onmouseout="this.style.background='#D9848B'">Save and continue in Partner Portal<svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-          <p class="text-center text-[14px] text-gray-400 mt-1.5 mb-3">For loan officers and agents</p>
-          <button onclick="window.print()" class="flex items-center justify-center w-full font-medium py-3 rounded-lg text-[15px] border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">Save as PDF</button>
+          <a href="https://flyhomes.com/contact" target="_blank" rel="noopener" class="flex items-center justify-center w-full font-medium py-3 rounded-lg text-[15px] border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors mt-2">Contact Flyhomes</a>
         </div><!-- /card 3 -->
 
         <!-- Section header -->
@@ -1807,22 +1826,27 @@
       // ── Card visibility ───────────────────────────────────────────────────
       const showMain = !dtiOnly && !noneSelected;
       const showWrapper = showGBC || showMain;
+      // Rule 2 combo (Equity for Down Payment + DTI Buster shown together): Equity leads with
+      // a "Core" tag, DTI Buster follows as the secondary/optional add-on.
+      const isEquityDtiCombo = showGBC && showMain && $('solution-name').textContent === 'Equity for Down Payment';
       $('number-card').classList.toggle('hidden',           dtiOnly || noneSelected);
       $('cost-benefit-card').classList.toggle('hidden',     dtiOnly || noneSelected);
       $('cta-card').classList.toggle('hidden',              noneSelected);
       $('solution-card-wrapper').classList.toggle('hidden', !showWrapper);
       $('solution-card-wrapper').classList.toggle('dti-solo', dtiOnly);
+      $('solution-card-wrapper').classList.toggle('reorder-equity-first', isEquityDtiCombo);
       $('main-solution-card').classList.toggle('hidden',    !showMain);
       $('gbc-solution-card').classList.toggle('hidden',     !showGBC);
       $('solution-divider').classList.toggle('hidden',      !(showGBC && showMain));
       $('gbc-dti-costs').classList.toggle('hidden',         !dtiOnly);
+      $('core-badge').classList.toggle('hidden',            !isEquityDtiCombo);
 
       // ── GBC badge ─────────────────────────────────────────────────────────
       const gbcBadge = $('gbc-badge');
       gbcBadge.className   = 'ml-auto inline-block text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border';
       if (mostLikely) {
         gbcBadge.style.cssText = 'background:#FFF7F8;color:#D87486;border-color:#D87486';
-        gbcBadge.textContent   = 'Optional';
+        gbcBadge.textContent   = 'Optional Add-On';
         gbcBadge.classList.remove('hidden');
       } else {
         gbcBadge.classList.add('hidden');
@@ -1887,8 +1911,81 @@
       }
     });
 
+    // ── Share link: encode/restore the inputs that drive calc() so a shared URL
+    // reproduces the same numbers and results for whoever opens it ──────────────
+    const SHARE_STATE_KEYS = ['homeValue', 'mortgage', 'newPrice', 'assets',
+      'forceCashOffer', 'flyhomesLoan', 'savCashPct', 'savStagedPct', 'savHpaPct', 'transitionDays'];
+
+    function buildShareState() {
+      const state = { v: 1, selected: Array.from(selected),
+        currentState: $('inp-currentState').value, buyingState: $('inp-buyingState').value };
+      SHARE_STATE_KEYS.forEach(key => { state[key] = S[key]; });
+      return state;
+    }
+
+    function getShareUrl() {
+      const payload = encodeURIComponent(btoa(JSON.stringify(buildShareState())));
+      return `${location.origin}${location.pathname}#s=${payload}`;
+    }
+
+    function showShareToast() {
+      const toast = $('share-link-toast');
+      toast.classList.remove('hidden');
+      clearTimeout(toast._hideTimer);
+      toast._hideTimer = setTimeout(() => toast.classList.add('hidden'), 2200);
+    }
+
+    async function shareCalculatorLink() {
+      const url = getShareUrl();
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch (e) {
+        const ta = document.createElement('textarea');
+        ta.value = url;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      showShareToast();
+    }
+
+    function restoreFromShareLink() {
+      const match = location.hash.match(/(?:^#|&)s=([^&]+)/);
+      if (!match) return;
+      let data;
+      try { data = JSON.parse(atob(decodeURIComponent(match[1]))); } catch (e) { return; }
+      if (!data || typeof data !== 'object') return;
+
+      SHARE_STATE_KEYS.forEach(key => { if (data[key] !== undefined) S[key] = data[key]; });
+      if (Array.isArray(data.selected)) {
+        selected.clear();
+        data.selected.forEach(id => selected.add(id));
+      }
+      if (data.currentState) $('inp-currentState').value = data.currentState;
+      if (data.buyingState)  $('inp-buyingState').value  = data.buyingState;
+
+      $('inp-homeValue').value = fmtNum(S.homeValue); $('sl-homeValue').value = S.homeValue;
+      $('inp-mortgage').value  = fmtNum(S.mortgage);  $('sl-mortgage').value  = S.mortgage;
+      $('inp-newPrice').value  = fmtNum(S.newPrice);  $('sl-newPrice').value  = S.newPrice;
+      $('inp-assets').value    = fmtNum(S.assets);    $('sl-assets').value    = S.assets;
+      $('tog-flyhomes-loan').checked = S.flyhomesLoan;
+
+      $('sl-sav-cash').value = S.savCashPct;
+      $('sav-cash-pct-label').textContent = S.savCashPct + '%';
+      $('sl-sav-staged').value = S.savStagedPct; $('g-sl-sav-staged').value = S.savStagedPct;
+      $('sav-staged-pct-label').textContent = S.savStagedPct + '%';
+      $('sl-sav-hpa').value = S.savHpaPct; $('g-sl-sav-hpa').value = S.savHpaPct;
+      $('sav-hpa-pct-label').textContent = S.savHpaPct + '%';
+      $('inp-td-cost').value = S.transitionDays; $('inp-td-sav').value = S.transitionDays;
+    }
+
+    restoreFromShareLink();
     renderChallenges();
     syncStateFromChallenges();
+    updateStatesDiffer();
     initSavingsDefaults();
     bindSavingsInputs();
     render();  // applyProductLabel() is called inside render()
