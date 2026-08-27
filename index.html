@@ -1971,7 +1971,8 @@
       $('inp-mortgage').value  = fmtNum(S.mortgage);  $('sl-mortgage').value  = S.mortgage;
       $('inp-newPrice').value  = fmtNum(S.newPrice);  $('sl-newPrice').value  = S.newPrice;
       $('inp-assets').value    = fmtNum(S.assets);    $('sl-assets').value    = S.assets;
-      $('tog-flyhomes-loan').checked = S.flyhomesLoan;
+      const flyhomesLoanToggle = $('tog-flyhomes-loan');
+      if (flyhomesLoanToggle) flyhomesLoanToggle.checked = S.flyhomesLoan;
 
       $('sl-sav-cash').value = S.savCashPct;
       $('sav-cash-pct-label').textContent = S.savCashPct + '%';
