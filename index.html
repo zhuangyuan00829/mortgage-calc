@@ -37,12 +37,13 @@
     /* ── DTI-only solo cards: DTI Buster title and Estimated Cost/Total Value become two separate cards ── */
     #solution-card-wrapper.dti-solo { background: transparent !important; border: none !important; display: flex; flex-direction: column; gap: 1rem; }
     #solution-card-wrapper.dti-solo #gbc-solution-card { background: #fff; border: 1px solid #E5E7EB; border-radius: 0.75rem; overflow: hidden; }
-    /* ── Equity for Down Payment + DTI Buster combo: Equity leads, DTI Buster follows ── */
-    #solution-card-wrapper.reorder-equity-first { display: flex; flex-direction: column; }
-    #solution-card-wrapper.reorder-equity-first #main-solution-card { order: 0; }
-    #solution-card-wrapper.reorder-equity-first #solution-divider { order: 1; }
-    #solution-card-wrapper.reorder-equity-first #gbc-solution-card { order: 2; }
-    #solution-card-wrapper.reorder-equity-first #gbc-dti-costs { order: 3; }
+    /* ── Main solution + DTI Buster combos (Equity for Down Payment, All-Cash Advantage):
+       main solution leads, DTI Buster follows ── */
+    #solution-card-wrapper.reorder-main-first { display: flex; flex-direction: column; }
+    #solution-card-wrapper.reorder-main-first #main-solution-card { order: 0; }
+    #solution-card-wrapper.reorder-main-first #solution-divider { order: 1; }
+    #solution-card-wrapper.reorder-main-first #gbc-solution-card { order: 2; }
+    #solution-card-wrapper.reorder-main-first #gbc-dti-costs { order: 3; }
     #gbc-dti-costs { background: #fff; border: 1px solid #E5E7EB; border-radius: 0.75rem; overflow: hidden; }
 
     /* ── Tooltip ── */
@@ -415,7 +416,7 @@
                 </button>
                 <div class="tip-box tip-down">Sets your current mortgage aside so you qualify for more, and lets you drop the home sale contingency. Guaranteed Backup Contract product is recommended for this scenario.</div>
               </span>
-              <span id="gbc-badge" class="hidden ml-auto inline-block text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border" style="background:#FFF7F8;color:#D87486;border-color:#D87486">Optional</span>
+              <span id="gbc-badge" class="hidden ml-auto inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full border whitespace-nowrap" style="background:#FFF7F8;color:#D87486;border-color:#D87486">Often Paired With</span>
             </div>
           </div>
         </div><!-- /gbc-solution-card -->
@@ -675,7 +676,7 @@
         <!-- Main solution section -->
         <div id="main-solution-card" class="hidden">
           <div id="card-header" class="px-5 pt-4 pb-4">
-            <div class="flex items-center gap-3 mb-1 flex-wrap">
+            <div class="flex items-center gap-2 mb-1 flex-wrap">
               <a id="solution-link" href="https://flyhomes.com/solutions/equity-for-down-payment" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-[#3c4659] text-[17px] font-bold leading-snug hover:opacity-80 transition-opacity"><span id="solution-name">Equity for Down Payment</span><svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
               <span class="tip">
                 <button onclick="event.stopPropagation()" class="flex-shrink-0 text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full mt-0.5" aria-label="More info about this solution" tabindex="0">
@@ -683,7 +684,7 @@
                 </button>
                 <div class="tip-box tip-down" id="solution-tooltip-text">Turns the equity in your current home into cash for your down payment and closing costs, before you sell</div>
               </span>
-              <span id="core-badge" class="hidden ml-auto inline-block text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border" style="background:#FFF7F8;color:#D87486;border-color:#D87486">Core</span>
+              <span id="core-badge" class="hidden ml-auto inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full border whitespace-nowrap" style="background:#FFF7F8;color:#D87486;border-color:#D87486">Recommended</span>
             </div>
             <p id="cc-same-state-note" class="hidden text-[12px] text-gray-600 mt-0.5">(Same state purchase and sale required.)</p>
           </div>
@@ -1827,26 +1828,34 @@
       const showMain = !dtiOnly && !noneSelected;
       const showWrapper = showGBC || showMain;
       // Rule 2 combo (Equity for Down Payment + DTI Buster shown together): Equity leads with
-      // a "Core" tag, DTI Buster follows as the secondary/optional add-on.
+      // a "Recommended" tag, DTI Buster follows as the secondary/optional add-on.
       const isEquityDtiCombo = showGBC && showMain && $('solution-name').textContent === 'Equity for Down Payment';
+      // Rule 3 combo (All-Cash Advantage + DTI Buster shown together): Cash Advantage leads
+      // with a "Recommended" tag, DTI Buster follows tagged "Required".
+      const isCashDtiCombo   = showGBC && showMain && $('solution-name').textContent === 'All-Cash Advantage';
+      const reorderMainFirst = isEquityDtiCombo || isCashDtiCombo;
       $('number-card').classList.toggle('hidden',           dtiOnly || noneSelected);
       $('cost-benefit-card').classList.toggle('hidden',     dtiOnly || noneSelected);
       $('cta-card').classList.toggle('hidden',              noneSelected);
       $('solution-card-wrapper').classList.toggle('hidden', !showWrapper);
       $('solution-card-wrapper').classList.toggle('dti-solo', dtiOnly);
-      $('solution-card-wrapper').classList.toggle('reorder-equity-first', isEquityDtiCombo);
+      $('solution-card-wrapper').classList.toggle('reorder-main-first', reorderMainFirst);
       $('main-solution-card').classList.toggle('hidden',    !showMain);
       $('gbc-solution-card').classList.toggle('hidden',     !showGBC);
       $('solution-divider').classList.toggle('hidden',      !(showGBC && showMain));
       $('gbc-dti-costs').classList.toggle('hidden',         !dtiOnly);
-      $('core-badge').classList.toggle('hidden',            !isEquityDtiCombo);
+      $('core-badge').classList.toggle('hidden',            !reorderMainFirst);
 
       // ── GBC badge ─────────────────────────────────────────────────────────
       const gbcBadge = $('gbc-badge');
-      gbcBadge.className   = 'ml-auto inline-block text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border';
-      if (mostLikely) {
+      gbcBadge.className   = 'ml-auto inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full border whitespace-nowrap';
+      if (isCashDtiCombo) {
         gbcBadge.style.cssText = 'background:#FFF7F8;color:#D87486;border-color:#D87486';
-        gbcBadge.textContent   = 'Optional Add-On';
+        gbcBadge.textContent   = 'Required';
+        gbcBadge.classList.remove('hidden');
+      } else if (mostLikely) {
+        gbcBadge.style.cssText = 'background:#FFF7F8;color:#D87486;border-color:#D87486';
+        gbcBadge.textContent   = 'Often Paired With';
         gbcBadge.classList.remove('hidden');
       } else {
         gbcBadge.classList.add('hidden');
