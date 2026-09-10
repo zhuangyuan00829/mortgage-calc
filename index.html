@@ -36,7 +36,7 @@
 
     /* ── DTI-only solo cards: DTI Buster title and Estimated Cost/Total Value become two separate cards ── */
     #solution-card-wrapper.dti-solo { background: transparent !important; border: none !important; display: flex; flex-direction: column; gap: 1rem; }
-    #solution-card-wrapper.dti-solo #gbc-solution-card { background: #fff; border: 1px solid #E5E7EB; border-radius: 0.75rem; overflow: hidden; }
+    #solution-card-wrapper.dti-solo #gbc-solution-card { background: #fff; border: 1px solid #E5E7EB; border-radius: 0.75rem; }
     /* ── Main solution + DTI Buster combos (Equity for Down Payment, All-Cash Advantage):
        main solution leads, DTI Buster follows ── */
     #solution-card-wrapper.reorder-main-first { display: flex; flex-direction: column; }
@@ -44,7 +44,7 @@
     #solution-card-wrapper.reorder-main-first #solution-divider { order: 1; }
     #solution-card-wrapper.reorder-main-first #gbc-solution-card { order: 2; }
     #solution-card-wrapper.reorder-main-first #gbc-dti-costs { order: 3; }
-    #gbc-dti-costs { background: #fff; border: 1px solid #E5E7EB; border-radius: 0.75rem; overflow: hidden; }
+    #gbc-dti-costs { background: #fff; border: 1px solid #E5E7EB; border-radius: 0.75rem; }
 
     /* ── Tooltip ── */
     .tip { position: relative; display: inline-flex; align-items: center; }
@@ -281,8 +281,7 @@
 
             <!-- Cash ineligibility warning -->
             <div id="cash-warning" class="hidden rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 text-xs text-amber-700 leading-relaxed mb-3">
-              A cash offer needs at least 5% of the purchase price in liquid assets. Based on your numbers, you are just short. Adjust the inputs or pick another option.
-              <span id="cash-shortfall" class="ml-1"></span>
+              <span id="cash-shortfall"></span> To use the All-Cash Advantage solution, please adjust the amount entered for "Cash and Liquid Assets Available."
             </div>
 
           </div>
@@ -449,7 +448,7 @@
                 <div class="pt-3 mt-2 border-t border-gray-100">
                   <div class="flex justify-between items-center">
                     <span class="inline-flex items-center text-xs text-gray-500 gap-1">
-                      GBC Fee
+                      Guaranteed Backup Contract Fee
                       <span class="tip">
                         <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about GBC fee" tabindex="0">
                           <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
@@ -686,7 +685,6 @@
               </span>
               <span id="core-badge" class="hidden ml-auto inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full border whitespace-nowrap" style="background:#FFF7F8;color:#D87486;border-color:#D87486">Recommended</span>
             </div>
-            <p id="cc-same-state-note" class="hidden text-[12px] text-gray-600 mt-0.5">(Same state purchase and sale required.)</p>
           </div>
         </div><!-- /main-solution-card -->
 
@@ -697,18 +695,21 @@
           <div class="grad-a px-6 pt-5 pb-6 rounded-2xl" style="position:relative">
             <canvas id="confetti-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;border-radius:1rem"></canvas>
             <div class="bg-white/10 rounded-xl px-4 py-3.5">
-              <span class="text-white/60 text-[11px] font-semibold uppercase tracking-widest mb-1 gap-1 inline-flex items-center">
-                Estimated Max Loan Amount
-                <span class="tip">
-                  <button class="text-white/40 hover:text-white/70 transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about estimated max loan amount" tabindex="0">
-                    <svg class="w-3 h-3" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                  </button>
-                  <div class="tip-box tip-down">
-                    An estimate based on the numbers you entered. Your actual amount is confirmed after a quick evaluation.
-                  </div>
+              <div id="max-loan-normal">
+                <span class="text-white/60 text-[11px] font-semibold uppercase tracking-widest mb-1 gap-1 inline-flex items-center">
+                  Estimated Max Loan Amount
+                  <span class="tip">
+                    <button class="text-white/40 hover:text-white/70 transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about estimated max loan amount" tabindex="0">
+                      <svg class="w-3 h-3" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                    </button>
+                    <div class="tip-box tip-down">
+                      An estimate based on the numbers you entered. Your actual amount is confirmed after a quick evaluation.
+                    </div>
+                  </span>
                 </span>
-              </span>
-              <div id="max-loan" class="text-white text-3xl font-bold pop">—</div>
+                <div id="max-loan" class="text-white text-3xl font-bold pop">—</div>
+              </div>
+              <p id="loan-unavailable-message" class="hidden text-white text-[15px] leading-snug"></p>
             </div>
           </div>
         </div><!-- /card 2 -->
@@ -747,10 +748,22 @@
                       <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about one time fees" tabindex="0">
                         <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                       </button>
-                      <div class="tip-box">A single origination fee, product fee, and broker fee. Charged once, not monthly.</div>
+                      <div class="tip-box">A single origination fee and broker fee. Charged once, not monthly.</div>
                     </span>
                   </span>
                   <span id="other-costs-display" class="text-xs font-medium text-gray-700">—</span>
+                </div>
+                <div id="gbc-fee-row" class="hidden flex justify-between items-center pt-1 mt-1">
+                  <span class="inline-flex items-center text-xs text-gray-500 gap-1">
+                    <span id="gbc-fee-label">Guaranteed Backup Contract Fee</span>
+                    <span class="tip">
+                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about Guaranteed Backup Contract fee" tabindex="0">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                      </button>
+                      <div class="tip-box">The Guaranteed Backup Contract is a contract, not a loan, so there is no loan interest. A single fee starting at $2,500, subject to program terms.</div>
+                    </span>
+                  </span>
+                  <span id="gbc-fee-display" class="text-xs font-medium text-gray-700">—</span>
                 </div>
                 <div id="accrued-interest-row" class="hidden flex justify-between items-start">
                   <div>
@@ -764,6 +777,7 @@
                       </span>
                     </span>
                     <p class="text-[12px] text-gray-400 mt-0.5">No monthly payments. Interest is settled when your current home sells.</p>
+                    <p id="accrued-interest-apr" class="text-[12px] text-gray-400 mt-0.5">APR: —</p>
                   </div>
                   <span id="accrued-interest-display" class="text-xs font-medium text-gray-700 shrink-0 ml-2">—</span>
                 </div>
@@ -1222,7 +1236,6 @@
       // Raw user-intent flags (set by syncStateFromChallenges; resolved by applyRule3Gating)
       cashIntent   : false,
       noCash_base  : false,
-      gbc_base     : false,
       // Option A override: user switches CC → Standalone Cash Offer
       forceCashOffer : false,
       naturalIsCC    : false,  // true when CC would be shown without force override
@@ -1257,6 +1270,8 @@
     }
 
     // ── Calculation (source of truth: CLAUDE.md §5) ───────────────────────────
+    const IE_MIN_LOAN = 75000; // Instant Equity's minimum loan amount
+
     function calc() {
       const { homeValue, mortgage, newPrice, assets, cash, noCash } = S;
 
@@ -1319,9 +1334,18 @@
       const gbcFeeNum         = gbcFee ?? 0; // treat exception as 0 for total calc
       const accruedInterest   = maxLoan * 0.0999 * (S.transitionDays / 365);
       const total             = originationFee + brokerFee + gbcFeeNum + accruedInterest;
+      // Instant Equity has a $75,000 minimum loan amount — below that, the product isn't
+      // actually available, so the loan amount and its dependent fees/totals shouldn't display.
+      const belowIEMin = productName === 'Instant Equity' && maxLoan < IE_MIN_LOAN;
+      // Cross Collateral (incl. the Retire & Downsize skin) has no stated minimum, but its
+      // dual-capped formula can clamp to $0 when the current mortgage balance is high relative
+      // to the combined 75% CLTV cap — that's not a real loan offer, so treat it the same way.
+      const ccZeroLoan = productName === 'Cross Collateral' && maxLoan <= 0;
+      const loanUnavailable = belowIEMin || ccZeroLoan;
 
       return { maxLoan, originationFee, brokerFee, gbcActive, gbcFee, accruedInterest, total,
-               cashEligible, cashThreshold, productName, solutionName, productIntro, grad };
+               cashEligible, cashThreshold, productName, solutionName, productIntro, grad,
+               belowIEMin, ccZeroLoan, loanUnavailable };
     }
 
     // ── Savings accordion toggle ─────────────────────────────────────────────
@@ -1636,7 +1660,6 @@
       $('solution-name').textContent         = r.solutionName;
       $('solution-link').href                = SOLUTION_URLS[r.solutionName] || 'https://flyhomes.com/';
       $('solution-tooltip-text').textContent = r.productIntro + ' ' + r.productName + ' product is recommended for this scenario.';
-      $('cc-same-state-note').classList.toggle('hidden', r.productName !== 'Cross Collateral');
 
       const pop = id => {
         const el = $(id);
@@ -1645,8 +1668,16 @@
 
       $('max-loan').textContent   = fmtMoney(r.maxLoan);
       $('total-cost').textContent = fmtMoney(r.total);
+      $('max-loan-normal').classList.toggle('hidden', r.loanUnavailable);
+      const loanMsgEl = $('loan-unavailable-message');
+      loanMsgEl.classList.toggle('hidden', !r.loanUnavailable);
+      if (r.loanUnavailable) {
+        loanMsgEl.textContent = r.belowIEMin
+          ? `This loan amount is below Equity for Down Payment's $75,000 minimum. Please contact us to learn more.`
+          : `This loan amount isn't available. Please contact us to learn more.`;
+      }
       pop('max-loan');
-      if (r.maxLoan > 0) triggerConfetti();
+      if (r.maxLoan > 0 && !r.loanUnavailable) triggerConfetti();
       lastCostTotal = r.total;
       lastGbcFee = r.gbcFee ?? 0;
       initSavingsDefaults();
@@ -1654,15 +1685,34 @@
       renderSwitchBanner();
 
       // Populate cost breakdown line items (Card 1)
-      const gbcFeeNum = r.gbcFee === null ? 0 : (r.gbcFee ?? 0);
-      $('other-costs-display').textContent = fmtMoney(r.originationFee + r.brokerFee + gbcFeeNum);
+      // GBC fee is shown as its own line (see applyProductLabel) — One Time Fees is just
+      // origination + broker.
+      $('other-costs-display').textContent = fmtMoney(r.originationFee + r.brokerFee);
 
       // Accrued Interest row (only when there is a loan amount)
       if (r.maxLoan > 0) {
         $('accrued-interest-row').classList.remove('hidden');
         $('accrued-interest-display').textContent = fmtMoney(r.accruedInterest);
+        // Representative APR by product track: Instant Equity carries a different rate than
+        // Cash Offer / Cross Collateral (incl. the Retire & Downsize skin). (Confirmed 2026-09-10.)
+        $('accrued-interest-apr').textContent = 'APR: ' + (r.productName === 'Instant Equity' ? '14.35%' : '12.35%');
       } else {
         $('accrued-interest-row').classList.add('hidden');
+      }
+
+      // GBC fee row — shown separately from One Time Fees, labeled the same way as the DTI
+      // Buster badge: "Required" wording when paired with All-Cash Advantage, "(Optional)" when
+      // auto-triggered ("Often Paired With"), plain otherwise (Option 1 manually checked).
+      const gbcFeeRow          = $('gbc-fee-row');
+      const showGBCNow         = selected.size > 0 && !S.noCash;
+      const mostLikelyNow      = showGBCNow && !selected.has('dti');
+      const isCashDtiComboNow  = showGBCNow && r.solutionName === 'All-Cash Advantage';
+      gbcFeeRow.classList.toggle('hidden', !r.gbcActive);
+      if (r.gbcActive) {
+        $('gbc-fee-label').textContent = mostLikelyNow && !isCashDtiComboNow
+          ? 'Guaranteed Backup Contract Fee (Optional)'
+          : 'Guaranteed Backup Contract Fee';
+        $('gbc-fee-display').textContent = r.gbcFee === null ? 'Exception, contact us' : fmtMoney(r.gbcFee);
       }
 
       // Refresh breakdown panel height if already open (skip if max-height:none — auto-sizes)
@@ -1686,12 +1736,12 @@
       if (S.cash && !r.cashEligible) {
         $('cash-warning').classList.remove('hidden');
         const gap = r.cashThreshold - S.assets;
-        $('cash-shortfall').textContent = `You need $${Math.round(gap).toLocaleString()} more in cash.`;
+        $('cash-shortfall').textContent = `All-Cash Advantage solution requires a down payment of at least 5%. Based on your inputs, you are $${Math.round(gap).toLocaleString()} short of the requirement, so we recommend ${r.solutionName} instead.`;
       } else {
         $('cash-warning').classList.add('hidden');
       }
 
-      applyProductLabel();  // always sync card visibility + GBC badge after calc()
+      applyProductLabel(r);  // always sync card visibility + GBC badge after calc()
     }
 
     // ── Input binding ────────────────────────────────────────────────────────
@@ -1750,8 +1800,6 @@
       S.noCash_base = isCrossCollateral;
       // cashIntent: user explicitly wants a cash offer, but not already resolved to CC via Rule 0/1
       S.cashIntent  = selected.has('cash') && !isCrossCollateral;
-      // gbc_base: user's raw DTI intent, before Rule 3 gating may suppress it
-      S.gbc_base    = selected.has('dti')  && !isCrossCollateral;
       // Reset Option A override whenever challenge selection changes
       S.forceCashOffer = false;
       applyRule3Gating();
@@ -1794,7 +1842,6 @@
       if (S.statesDiffer) {
         if (S.noCash_base) {
           if (!S.downsize) S.cashIntent = true;
-          S.gbc_base = true;
         }
         S.noCash_base = false;
         isRule3CC     = false;
@@ -1806,16 +1853,22 @@
         // Option A override: user chose Standalone Cash Offer over CC
         S.noCash = false;
         S.cash   = true;
-        S.gbc    = S.gbc_base;
       } else {
         S.noCash = S.naturalIsCC;
         S.cash   = S.cashIntent && !isRule3CC;
-        // Suppress GBC when Rule 3 gates to CC (CC cannot pair with GBC per §5C)
-        S.gbc    = isRule3CC ? false : S.gbc_base;
       }
+      // GBC/DTI Buster is part of the resolved combo exactly when the final resolved product
+      // isn't Cross Collateral (§5C: "CC cannot combine with GBC Fee") — derived from the same
+      // S.noCash flag that already drives the DTI Buster card's own visibility (applyProductLabel's
+      // showGBC), so the fee can never disagree with whether the card is actually shown. This
+      // replaced a separately-tracked `S.gbc_base` computed at checkbox-change time, which went
+      // stale (and silently dropped the GBC fee) in two cases: (1) when DTI Buster was auto-
+      // triggered rather than manually checked, and (2) the Option A override above, which flips
+      // S.noCash to false but previously left the pre-override gbc_base untouched. (Fixed 2026-09-09.)
+      S.gbc = !S.noCash;
     }
 
-    function applyProductLabel() {
+    function applyProductLabel(r) {
       const has           = id => selected.has(id);
       // Read resolved flags (applyRule3Gating() always runs before this in render())
       const isCrossCollat = S.noCash;  // includes Rule 0, Rule 1, and Rule 3 auto-gating
@@ -1835,7 +1888,11 @@
       const isCashDtiCombo   = showGBC && showMain && $('solution-name').textContent === 'All-Cash Advantage';
       const reorderMainFirst = isEquityDtiCombo || isCashDtiCombo;
       $('number-card').classList.toggle('hidden',           dtiOnly || noneSelected);
-      $('cost-benefit-card').classList.toggle('hidden',     dtiOnly || noneSelected);
+      // When the loan amount isn't actually available (below Instant Equity's $75,000 minimum,
+      // or Cross Collateral's dual-capped formula clamps to $0), the loan amount card swaps to
+      // a contact-us message (see render()), and the cost/benefit numbers built on that loan
+      // amount are hidden too since they'd just be showing fees on a loan that doesn't exist.
+      $('cost-benefit-card').classList.toggle('hidden',     dtiOnly || noneSelected || r.loanUnavailable);
       $('cta-card').classList.toggle('hidden',              noneSelected);
       $('solution-card-wrapper').classList.toggle('hidden', !showWrapper);
       $('solution-card-wrapper').classList.toggle('dti-solo', dtiOnly);
