@@ -119,11 +119,11 @@
 
     /* ── Print / Save as PDF ── */
     @media print {
-      @page { size: letter portrait; margin: 0.75in 0.4in 0.4in 0.4in; }
+      @page { size: letter portrait; margin: 0.4in 0.4in 0.2in 0.4in; }
 
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 
-      body { background: #fff !important; zoom: 0.78; }
+      body { background: #fff !important; zoom: 0.7; }
 
       /* Hide chrome & interactive elements */
       header,
@@ -147,8 +147,15 @@
       /* Show print-only elements */
       .print-only { display: block !important; }
 
-      /* Force explicit 2-column grid: left (steps 1+2 summary) | right (step 3) */
-      #main-grid { display: grid !important; grid-template-columns: 1fr 360px !important; gap: 96px !important; }
+      /* Single column: Step 1 + Step 2 summary, then Step 3 results, stacked vertically */
+      #main-grid { display: grid !important; grid-template-columns: 1fr !important; gap: 14px !important; }
+
+      /* Step 1 + Step 2 side by side (2 columns) to save vertical space */
+      #print-summary { display: grid !important; grid-template-columns: 1fr 1fr !important; column-gap: 40px !important; }
+      #print-step1-heading { grid-column: 1; grid-row: 1; }
+      #print-challenges { grid-column: 1; grid-row: 2; margin-bottom: 0 !important; }
+      #print-step2-heading { grid-column: 2; grid-row: 1; }
+      #print-details { grid-column: 2; grid-row: 2; }
 
       /* Kill sticky so right column flows naturally */
       .sticky-panel { position: static !important; }
@@ -162,8 +169,46 @@
       #solution-card-wrapper,
       #cost-benefit-card { break-inside: avoid; }
 
-      /* Pin footer disclaimer to bottom of page */
-      footer { position: fixed; bottom: 0; left: 0; right: 0; background: #fff !important; }
+      /* Step 3: two columns — left = solution card(s) + Estimated Max Loan Amount,
+         right = Estimated Cost / Estimated Total Value. Explicit grid placement (rather than
+         wrapping these in a new HTML container) keeps this purely a print-CSS concern. Only
+         meaningful in the standard combo view — the DTI-only ("dti-solo") card has no separate
+         #number-card, so it simply occupies column 1 alone. */
+      /* grid-template-rows pins rows 2 and 3 to min-content so column 1's two cards can't be
+         stretched apart by column 2's taller #cost-benefit-card spanning both of them — without
+         this, CSS Grid distributes the extra height *between* solution-card-wrapper and
+         number-card (a visible gap), instead of leaving it as trailing empty space below column
+         1's actual content (row 4, which has nothing in column 1 and can grow freely). */
+      #results-panel { display: grid !important; grid-template-columns: 1fr 1fr !important; grid-template-rows: auto min-content min-content auto !important; gap: 20px !important; align-items: start !important; }
+      #results-panel > * + * { margin-top: 0 !important; } /* neutralize space-y-4 under grid */
+      #results-heading { grid-column: 1 / -1; grid-row: 1; }
+      #solution-card-wrapper { grid-column: 1; grid-row: 2; }
+      #number-card { grid-column: 1; grid-row: 3; }
+      #cost-benefit-card { grid-column: 2; grid-row: 2 / span 3; }
+
+      /* Force the Estimated Cost / Estimated Total Value dropdowns open in print — nobody can
+         click a PDF. Only the two top-level accordions; nested per-item rows (staging, HPA,
+         moving, cash-offer breakdowns) stay collapsed, matching the reference design. */
+      #cost-breakdown, #sav-outer-body, #gbc-cost-breakdown, #g-sav-outer-body {
+        max-height: none !important; overflow: visible !important;
+      }
+      #cost-chevron, #sav-outer-chevron, #gbc-cost-chevron, #g-sav-outer-chevron {
+        transform: rotate(180deg) !important;
+      }
+
+      /* Footer disclaimer flows after the content. NOTE: this used to be `position: fixed` to
+         pin it to the bottom of the page, but a fixed footer combined with content taller than
+         one page (as happens now that Steps 1/2/3 stack in a single column) causes Chrome's
+         print engine to silently drop overflowing content instead of flowing it onto page 2 —
+         confirmed by A/B testing the single-column layout with and without the fixed footer.
+         Do not reintroduce `position: fixed` here. (Fixed 2026-09-10.) */
+      footer { background: #fff !important; padding-top: 8px !important; padding-bottom: 0 !important; }
+
+      /* Tighten the footer's screen-tuned spacing so the legal disclaimer fits on page 1 too,
+         alongside Steps 1-3, instead of spilling onto an otherwise-empty page 2. */
+      footer .pt-6 { padding-top: 8px !important; }
+      footer .mt-4.pt-4 { margin-top: 8px !important; padding-top: 8px !important; }
+      footer p.mt-3.pt-3 { margin-top: 6px !important; padding-top: 6px !important; }
     }
   </style>
 </head>
@@ -261,9 +306,9 @@
 
         <!-- Print-only: Step 1 + Step 2 summary (left column in PDF) -->
         <div id="print-summary" class="print-only" hidden>
-          <p class="text-[13px] font-semibold text-[#232226] uppercase tracking-widest mb-2.5">Step 1: What you are solving</p>
+          <p id="print-step1-heading" class="text-[13px] font-semibold text-[#232226] uppercase tracking-widest mb-2.5">Step 1: What you are solving</p>
           <ul id="print-challenges" class="space-y-2 text-sm text-gray-800 mb-6"></ul>
-          <p class="text-[13px] font-semibold text-[#232226] uppercase tracking-widest mb-1.5">Step 2: Your move</p>
+          <p id="print-step2-heading" class="text-[13px] font-semibold text-[#232226] uppercase tracking-widest mb-1.5">Step 2: Your move</p>
           <dl id="print-details" class="space-y-2.5"></dl>
         </div>
 
@@ -394,7 +439,7 @@
 
       <!-- ── COLUMN 3: RESULTS (STEP 3) ───────────────────────────────────────── -->
       <div id="results-panel" class="sticky-panel space-y-4">
-        <div class="min-h-[48px]">
+        <div id="results-heading" class="min-h-[48px]">
           <p class="text-[13px] font-semibold text-[#4C7994] uppercase tracking-widest mb-1">Step 3</p>
           <p class="text-[18px] font-semibold text-[#232226] whitespace-nowrap">Your Results</p>
         </div>
@@ -436,11 +481,14 @@
                     </div>
                   </span>
                 </span>
-                <div class="flex items-center gap-1.5">
+                <div class="flex items-center gap-3">
                   <span id="gbc-dti-cost-value" class="text-sm font-bold text-gray-900">—</span>
-                  <svg id="gbc-cost-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
-                  </svg>
+                  <span class="inline-flex items-center gap-0.5 text-xs text-gray-500">
+                    Details
+                    <svg id="gbc-cost-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </span>
                 </div>
               </div>
               <!-- Breakdown rows -->
@@ -470,11 +518,14 @@
                    role="button" aria-expanded="false" tabindex="0"
                    onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
                 <span class="text-sm font-semibold text-white">Estimated Total Value</span>
-                <div class="flex items-center gap-1.5">
+                <div class="flex items-center gap-3">
                   <span id="g-total-savings" class="text-sm font-bold text-white">—</span>
-                  <svg id="g-sav-outer-chevron" class="w-4 h-4 text-white" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
-                  </svg>
+                  <span class="inline-flex items-center gap-0.5 text-xs text-white/70">
+                    Details
+                    <svg id="g-sav-outer-chevron" class="w-4 h-4 text-white" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </span>
                 </div>
               </div>
 
@@ -708,6 +759,7 @@
                   </span>
                 </span>
                 <div id="max-loan" class="text-white text-3xl font-bold pop">—</div>
+                <p class="text-white/50 text-[12px] mt-0.5">11-month term · balloon payment due at maturity</p>
               </div>
               <p id="loan-unavailable-message" class="hidden text-white text-[15px] leading-snug"></p>
             </div>
@@ -717,8 +769,24 @@
         <!-- Card 2: Estimated Cost + Estimated Benefit from BBYS -->
         <div id="cost-benefit-card" class="rounded-2xl overflow-visible" style="border:1px solid #E5E7EB">
 
+          <!-- Required Down Payment (All-Cash Advantage only) -->
+          <div id="down-payment-row" class="hidden bg-white px-6 py-4 rounded-t-2xl border-b border-gray-100">
+            <div class="flex items-center justify-between">
+              <span class="inline-flex items-center text-sm font-medium text-gray-700 gap-1">
+                Required Down Payment
+                <span class="tip">
+                  <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about required down payment" tabindex="0">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                  </button>
+                  <div class="tip-box">All-Cash Advantage solution requires a down payment of at least 5% of the new home purchase price.</div>
+                </span>
+              </span>
+              <span id="down-payment-display" class="text-sm font-bold text-gray-900">—</span>
+            </div>
+          </div>
+
           <!-- White: Estimated Cost (expandable) -->
-          <div class="bg-white px-6 py-4 rounded-t-2xl">
+          <div id="estimated-cost-section" class="bg-white px-6 py-4 rounded-t-2xl">
             <div id="cost-toggle" class="flex items-center justify-between cursor-pointer select-none" role="button" aria-expanded="false" aria-controls="cost-breakdown" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
               <span class="inline-flex items-center text-sm font-medium text-gray-700 gap-1">
                 Estimated Cost
@@ -731,16 +799,35 @@
                   </div>
                 </span>
               </span>
-              <div class="flex items-center gap-1.5">
+              <div class="flex items-center gap-3">
                 <span id="total-cost" class="text-sm font-bold text-gray-900">—</span>
-                <svg id="cost-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
-                </svg>
+                <span class="inline-flex items-center gap-0.5 text-xs text-gray-500">
+                  Details
+                  <svg id="cost-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </span>
               </div>
             </div>
             <!-- Breakdown rows -->
             <div id="cost-breakdown" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
               <div class="pt-3 mt-2 border-t border-gray-100 space-y-2">
+                <div class="flex justify-between items-center px-3 py-2 rounded-lg" style="background:#EEF4F8">
+                  <span class="inline-flex items-center text-xs text-gray-500 gap-1">
+                    Estimated Transition Days
+                    <span class="tip">
+                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated transition days" tabindex="0">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                      </button>
+                      <div class="tip-box">The time between buying your new home and selling your current one. We use it to estimate both your costs and your savings.</div>
+                    </span>
+                  </span>
+                  <div class="flex items-center gap-1.5">
+                    <input id="inp-td-cost" type="text" inputmode="numeric" value="60"
+                      class="w-12 text-center text-xs font-medium py-1 px-1.5 border border-gray-200 rounded-md focus:outline-none focus:border-brand transition-colors text-gray-700" />
+                    <span class="text-xs text-gray-500">days</span>
+                  </div>
+                </div>
                 <div class="flex justify-between items-center">
                   <span class="inline-flex items-center text-xs text-gray-500 gap-1">
                     One Time Fees
@@ -781,22 +868,6 @@
                   </div>
                   <span id="accrued-interest-display" class="text-xs font-medium text-gray-700 shrink-0 ml-2">—</span>
                 </div>
-                <div class="flex justify-between items-center pt-1 mt-1">
-                  <span class="inline-flex items-center text-xs text-gray-500 gap-1">
-                    Estimated Transition Days
-                    <span class="tip">
-                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated transition days" tabindex="0">
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                      </button>
-                      <div class="tip-box">The time between buying your new home and selling your current one. We use it to estimate both your costs and your savings.</div>
-                    </span>
-                  </span>
-                  <div class="flex items-center gap-1.5">
-                    <input id="inp-td-cost" type="text" inputmode="numeric" value="60"
-                      class="w-12 text-center text-xs font-medium py-1 px-1.5 border border-gray-200 rounded-md focus:outline-none focus:border-brand transition-colors text-gray-700" />
-                    <span class="text-xs text-gray-500">days</span>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -810,11 +881,14 @@
                  role="button" aria-expanded="false" tabindex="0"
                  onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
               <span class="text-sm font-semibold text-white">Estimated Total Value</span>
-              <div class="flex items-center gap-1.5">
+              <div class="flex items-center gap-3">
                 <span id="total-savings" class="text-sm font-bold text-white">—</span>
-                <svg id="sav-outer-chevron" class="w-4 h-4 text-white" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
-                </svg>
+                <span class="inline-flex items-center gap-0.5 text-xs text-white/70">
+                  Details
+                  <svg id="sav-outer-chevron" class="w-4 h-4 text-white" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </span>
               </div>
             </div>
             <div id="roi-sentence" class="hidden -mx-5 px-5 py-3" style="background:#3c4659;border-top:1px solid rgba(255,255,255,0.15)">
@@ -832,6 +906,24 @@
             <!-- Collapsible items container -->
             <div id="sav-outer-body" style="max-height:0;overflow:hidden;transition:max-height 0.35s ease">
             <div class="mt-3">
+
+            <!-- Estimated Transition Days (highlighted, always first) -->
+            <div class="flex justify-between items-center px-3 py-2 mb-2 rounded-lg" style="background:#EEF4F8">
+              <span class="inline-flex items-center text-xs text-[#374151] gap-1">
+                Estimated Transition Days
+                <span class="tip">
+                  <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated transition days" tabindex="0">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                  </button>
+                  <div class="tip-box">The time between buying your new home and selling your current one. We use it to estimate both your costs and your savings.</div>
+                </span>
+              </span>
+              <div class="flex items-center gap-1.5">
+                <input id="inp-td-sav" type="text" inputmode="numeric" value="60"
+                  class="w-12 text-center text-xs font-medium py-1 px-1.5 border border-gray-200 rounded-md focus:outline-none focus:border-brand transition-colors text-gray-700" />
+                <span class="text-xs text-[#374151]">days</span>
+              </div>
+            </div>
 
             <!-- 1. Cash Offer Price Advantage (conditional on isCashOfferSelected) -->
             <div id="sav-cash-row" class="hidden mb-2">
@@ -1053,22 +1145,6 @@
               </div>
             </div>
             </div><!-- /mt-3 -->
-            <div class="flex justify-between items-center pt-3 mt-1">
-              <span class="inline-flex items-center text-xs text-[#374151] gap-1">
-                Estimated Transition Days
-                <span class="tip">
-                  <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated transition days" tabindex="0">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                  </button>
-                  <div class="tip-box">The time between buying your new home and selling your current one. We use it to estimate both your costs and your savings.</div>
-                </span>
-              </span>
-              <div class="flex items-center gap-1.5">
-                <input id="inp-td-sav" type="text" inputmode="numeric" value="60"
-                  class="w-12 text-center text-xs font-medium py-1 px-1.5 border border-gray-200 rounded-md focus:outline-none focus:border-brand transition-colors text-gray-700" />
-                <span class="text-xs text-[#374151]">days</span>
-              </div>
-            </div>
             </div><!-- /sav-outer-body -->
           </div>
 
@@ -1408,8 +1484,8 @@
       banner.classList.toggle('hidden', !show);
       if (!show) return;
       $('switch-offer-text').innerHTML = S.forceCashOffer
-        ? 'Want to lower your long term debt? <br><strong class="font-semibold" style="color:#374151;white-space:nowrap">Switch back to Cross Collateral <svg style="display:inline;vertical-align:-2px" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></strong>'
-        : 'Want to keep more cash from your sale and carry a higher mortgage? <br><strong class="font-semibold" style="color:#374151;white-space:nowrap">Switch to Cash Offer <svg style="display:inline;vertical-align:-2px" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></strong>';
+        ? 'Want to lower your long term debt? <br><strong class="font-semibold" style="color:#374151;white-space:nowrap">Switch back to Move With $0 Out of Pocket <svg style="display:inline;vertical-align:-2px" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></strong>'
+        : 'Want to keep more cash from your sale and carry a higher mortgage? <br><strong class="font-semibold" style="color:#374151;white-space:nowrap">Switch to All-Cash Advantage <svg style="display:inline;vertical-align:-2px" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></strong>';
     }
 
     function toggleForceCashOffer() {
@@ -1678,6 +1754,19 @@
       }
       pop('max-loan');
       if (r.maxLoan > 0 && !r.loanUnavailable) triggerConfetti();
+
+      // Required Down Payment (All-Cash Advantage only): purchase price minus the estimated
+      // max loan amount. Lives inside #cost-benefit-card, above "Estimated Cost" — when shown,
+      // it becomes the top of the card, so its rounded-t-2xl moves off the Estimated Cost
+      // section onto this row instead (avoids a doubled/mismatched top corner). (Confirmed
+      // 2026-09-10, merged into the same card as Estimated Cost/Total Value.)
+      const isCashOffer = r.productName === 'Cash Offer';
+      $('down-payment-row').classList.toggle('hidden', !isCashOffer);
+      $('estimated-cost-section').classList.toggle('rounded-t-2xl', !isCashOffer);
+      if (isCashOffer) {
+        $('down-payment-display').textContent = fmtMoney(S.newPrice - r.maxLoan);
+      }
+
       lastCostTotal = r.total;
       lastGbcFee = r.gbcFee ?? 0;
       initSavingsDefaults();
