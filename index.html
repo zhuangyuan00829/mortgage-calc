@@ -123,7 +123,7 @@
 
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 
-      body { background: #fff !important; zoom: 0.66; }
+      body { background: #fff !important; zoom: 0.68; }
 
       /* Hide chrome & interactive elements. This is a static, non-interactive document — a
          "loan estimate" collateral a loan officer sends a buyer, not a screenshot of the live
@@ -144,28 +144,24 @@
       /* Any remaining bare chevron icons (nested savings items, which have no "Details" text) */
       svg[id$="-chevron"] { display: none !important; }
 
-      /* Hide interactive children of column 1; keep only the print summary */
-      #step1-col > *:not(#print-summary) { display: none !important; }
-
-      /* Column 2 (Step 2 inputs) has no print-only content of its own; drop it entirely
-         so #main-grid is left with exactly 2 visible children (step1-col, results-panel)
-         to match the explicit 2-column template below. */
-      #step2-col { display: none !important; }
+      /* Step 1/2/3's live screen content is fully replaced by the print-only document below —
+         hide all of it rather than trying to reuse pieces via grid placement (the approach
+         used until 2026-09-14, replaced because the new reference design's structure — a
+         unified results stat band, and solution cards folded into the Step 1/2 area — doesn't
+         map onto the screen DOM's card boundaries at all). */
+      #step1-col > *, #step2-col > *, #results-panel > * { display: none !important; }
 
       /* Show print-only elements */
       .print-only { display: block !important; }
+      /* Conditionally hides pieces of the print-only document (e.g. #print-doc when nothing is
+         selected, or #print-results-warning/#print-results-normal depending on loan
+         availability). Must come after .print-only above so it wins at equal specificity. */
+      .print-hide { display: none !important; }
 
-      /* Single column: Step 1 + Step 2 summary, then Step 3 results, stacked vertically */
-      #main-grid { display: grid !important; grid-template-columns: 1fr !important; gap: 14px !important; }
+      /* Single column: page flows straight down (title band, print document, footer) */
+      #main-grid { display: block !important; }
 
-      /* Step 1 + Step 2 side by side (2 columns) to save vertical space */
-      #print-summary { display: grid !important; grid-template-columns: 1fr 1fr !important; column-gap: 40px !important; }
-      #print-step1-heading { grid-column: 1; grid-row: 1; }
-      #print-challenges { grid-column: 1; grid-row: 2; margin-bottom: 0 !important; }
-      #print-step2-heading { grid-column: 2; grid-row: 1; }
-      #print-details { grid-column: 2; grid-row: 2; }
-
-      /* Kill sticky so right column flows naturally */
+      /* Kill sticky so content flows naturally */
       .sticky-panel { position: static !important; }
 
       /* Tighten main wrapper */
@@ -173,62 +169,37 @@
 
       /* Prevent cards splitting across pages */
       .bg-white.rounded-2xl,
-      .bg-white.rounded-xl,
-      #solution-card-wrapper,
-      #cost-benefit-card { break-inside: avoid; }
+      .bg-white.rounded-xl { break-inside: avoid; }
 
-      /* Step 3: two columns — left = solution card(s) + Estimated Max Loan Amount,
-         right = Estimated Cost / Estimated Total Value. Explicit grid placement (rather than
-         wrapping these in a new HTML container) keeps this purely a print-CSS concern. Only
-         meaningful in the standard combo view — the DTI-only ("dti-solo") card has no separate
-         #number-card, so it simply occupies column 1 alone. */
-      /* grid-template-rows pins rows 2 and 3 to min-content so column 1's two cards can't be
-         stretched apart by column 2's taller #cost-benefit-card spanning both of them — without
-         this, CSS Grid distributes the extra height *between* solution-card-wrapper and
-         number-card (a visible gap), instead of leaving it as trailing empty space below column
-         1's actual content (row 4, which has nothing in column 1 and can grow freely). */
-      #results-panel { display: grid !important; grid-template-columns: 1fr 1fr !important; grid-template-rows: auto min-content min-content auto !important; gap: 20px !important; align-items: start !important; }
-      #results-panel > * + * { margin-top: 0 !important; } /* neutralize space-y-4 under grid */
-      #results-heading { grid-column: 1 / -1; grid-row: 1; }
-      #solution-card-wrapper { grid-column: 1; grid-row: 2; }
-      #number-card { grid-column: 1; grid-row: 3; }
-      #cost-benefit-card { grid-column: 2; grid-row: 2 / span 3; }
+      /* Print-only document (Confirmed 2026-09-14, replacing the previous card-grid-based
+         print layout) — see #print-doc below and updatePrintResults() in the script. Two
+         internal 2-column grids: the "What You Are Solving / Recommended Solutions" +
+         "Your Move" pair, and the "What It Costs" / "What It Is Worth" card pair. */
+      #print-top-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 40px !important; }
+      /* stretch (not start) so both cards match the taller one's height — combined with the
+         flex-column + margin-top:auto on the total row (see printCard() in the script), this
+         keeps "Estimated Cost" and "Estimated Total Value" flush with each other along the
+         bottom, regardless of which card has more line items. (Confirmed 2026-09-15.) */
+      #print-cards-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 20px !important; align-items: stretch !important; }
+      #print-stat-row { display: grid !important; gap: 24px !important; }
 
-      /* Force the Estimated Cost / Estimated Total Value dropdowns open in print — nobody can
-         click a PDF. Only the two top-level accordions; nested per-item rows (staging, HPA,
-         moving, cash-offer breakdowns) stay collapsed, matching the reference design. (Their
-         chevrons are hidden entirely now — see `svg[id$="-chevron"]` above — rather than
-         rotated, since a static document has no "collapsed vs. expanded" state to hint at.) */
-      #cost-breakdown, #sav-outer-body, #gbc-cost-breakdown, #g-sav-outer-body {
-        max-height: none !important; overflow: visible !important;
-      }
-
-      /* Estimated Transition Days becomes its own standalone section at the very top of
-         #cost-benefit-card — parallel to Estimated Cost / Estimated Total Value, not nested
-         inside either — since it's the one input on this page that isn't just a static number
-         (it's still shown as a real "your choice" value, just without the editable text-box
-         styling, which would be misleading in a document nobody can actually type into). The
-         two live, editable rows inside the dropdowns are hidden in print; this print-only
-         section replaces them. (Confirmed 2026-09-11.) */
-      #cost-td-row, #sav-td-row { display: none !important; }
-      #print-transition-days { display: flex !important; }
-      /* This new section is now the actual top of the card, so the elements that used to be
-         first (and carried the card's rounded-t-2xl corner) no longer should. */
-      #down-payment-row, #estimated-cost-section { border-top-left-radius: 0 !important; border-top-right-radius: 0 !important; }
-
-      /* Footer disclaimer flows after the content. NOTE: this used to be `position: fixed` to
-         pin it to the bottom of the page, but a fixed footer combined with content taller than
-         one page (as happens now that Steps 1/2/3 stack in a single column) causes Chrome's
-         print engine to silently drop overflowing content instead of flowing it onto page 2 —
-         confirmed by A/B testing the single-column layout with and without the fixed footer.
-         Do not reintroduce `position: fixed` here. (Fixed 2026-09-10.) */
+      /* Footer disclaimer flows after the content (Confirmed 2026-09-14: pinning it to the
+         literal bottom of the page was attempted and reverted — see CLAUDE.md for what was
+         tried and why it doesn't work in Chrome's print engine). NOTE: this used to be
+         `position: fixed` to pin it to the bottom of the page, but a fixed footer combined with
+         content taller than one page (as happens now that Steps 1/2/3 stack in a single column)
+         causes Chrome's print engine to silently drop overflowing content instead of flowing it
+         onto page 2 — confirmed by A/B testing the single-column layout with and without the
+         fixed footer. Do not reintroduce `position: fixed` here. (Fixed 2026-09-10.) */
       footer { background: #fff !important; padding-top: 8px !important; padding-bottom: 0 !important; }
 
       /* Tighten the footer's screen-tuned spacing so the legal disclaimer fits on page 1 too,
          alongside Steps 1-3, instead of spilling onto an otherwise-empty page 2. */
       footer .pt-6 { padding-top: 8px !important; }
-      footer .mt-4.pt-4 { margin-top: 8px !important; padding-top: 8px !important; }
-      footer p.mt-3.pt-3 { margin-top: 6px !important; padding-top: 6px !important; }
+      /* Reference design doc shows the two disclaimer paragraphs stacked directly with no
+         divider line between them (only the single rule above "This calculator is for
+         illustrative...") — drop the screen layout's second border-top to match. */
+      footer .mt-4.pt-4 { margin-top: 8px !important; padding-top: 8px !important; border-top: none !important; }
     }
   </style>
 </head>
@@ -303,12 +274,13 @@
     </div>
 
     <!-- Print-only: dark title band above both columns -->
-    <div class="print-only mb-5" style="background:#3c4659;border-radius:14px;padding:26px 32px;position:relative;overflow:hidden">
-      <div style="position:absolute;top:-30px;right:-30px;width:140px;height:140px;border-radius:9999px;background:rgba(255,255,255,0.04)"></div>
-      <div style="position:absolute;bottom:-50px;right:40px;width:100px;height:100px;border-radius:9999px;background:rgba(217,132,139,0.10)"></div>
-      <p class="text-[11px] font-semibold uppercase tracking-widest mb-1.5" style="color:#D9848B;position:relative">Buy Before You Sell</p>
-      <h1 class="text-[32px] font-bold text-white leading-tight mb-1.5" style="position:relative">Scenario Summary</h1>
-      <p class="text-[12px]" style="color:rgba(255,255,255,0.55);position:relative">Prepared <span id="print-date">—</span> &nbsp;&middot;&nbsp; Flyhomes Buy Before You Sell</p>
+    <div class="print-only mb-6" style="background:#3c4659;border-radius:14px;padding:30px 34px 28px">
+      <p class="text-[12px] font-semibold uppercase tracking-widest mb-2" style="color:#D9848B">Buy Before You Sell &middot; Scenario Summary</p>
+      <h1 class="text-[34px] font-bold text-white leading-tight">
+        <span id="print-headline-1"></span><br>
+        <span id="print-headline-2" style="color:#D9848B"></span>
+      </h1>
+      <p class="text-[13px] mt-3" style="color:rgba(255,255,255,0.55)"><span id="print-date">—</span></p>
     </div>
 
     <!-- Print-only estimate banner -->
@@ -319,24 +291,48 @@
       </div>
     </div>
 
+    <!-- Print-only: the whole results document (Confirmed 2026-09-14). Populated entirely by
+         updatePrintResults() in the script, reading the same computed values already shown on
+         screen — see CLAUDE.md for the full design rationale. -->
+    <div id="print-doc" class="print-only" hidden>
+      <div id="print-top-grid" class="mb-6" style="padding-bottom:26px;border-bottom:1px solid #E5E7EB">
+        <div>
+          <p class="text-[12px] font-semibold uppercase tracking-widest text-gray-500 mb-3">What You Are Solving</p>
+          <div id="print-challenge-text" class="mb-6"></div>
+          <p class="text-[12px] font-semibold uppercase tracking-widest text-gray-500 mb-3">Recommended Solutions</p>
+          <div id="print-solution-bars"></div>
+        </div>
+        <div>
+          <p class="text-[12px] font-semibold uppercase tracking-widest text-gray-500 mb-3">Your Move</p>
+          <dl id="print-move-details"></dl>
+        </div>
+      </div>
+
+      <!-- Shown instead of #print-results-normal when the loan amount isn't available
+           (below Equity for Down Payment's $75,000 minimum, or a $0 Cross Collateral loan) —
+           mirrors the on-screen r.loanUnavailable messaging. -->
+      <div id="print-results-warning" class="print-hide" style="padding:18px 22px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:10px;font-size:14px;color:#92400E"></div>
+
+      <div id="print-results-normal">
+        <div class="mb-5" style="background:#3c4659;border-radius:12px;padding:26px 30px">
+          <div class="flex items-baseline gap-2 mb-4">
+            <span class="text-[12px] font-semibold uppercase tracking-widest" style="color:#D9848B">Your Results</span>
+            <span id="print-transition-note" class="text-[13px]" style="color:rgba(255,255,255,0.55)"></span>
+          </div>
+          <div id="print-stat-row"></div>
+        </div>
+
+        <div id="print-cards-grid">
+          <div id="print-costs-card" class="bg-white rounded-xl" style="border:1px solid #E5E7EB;padding:24px 26px;display:flex;flex-direction:column"></div>
+          <div id="print-worth-card" class="bg-white rounded-xl" style="border:1px solid #E5E7EB;padding:24px 26px;display:flex;flex-direction:column"></div>
+        </div>
+      </div>
+    </div>
+
     <div id="main-grid" class="grid grid-cols-1 lg:grid-cols-3 gap-7">
 
       <!-- ── COLUMN 1: CHALLENGE SELECTOR (STEP 1) ───────────────────────────── -->
       <div id="step1-col" class="space-y-5">
-
-        <!-- Print-only: Step 1 + Step 2 summary (left column in PDF) -->
-        <div id="print-summary" class="print-only" hidden>
-          <div id="print-step1-heading" class="flex items-center gap-2 mb-2.5">
-            <span style="width:18px;height:18px;border-radius:9999px;background:#4C7994;color:#fff;font-size:10px;font-weight:700;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;line-height:1;">1</span>
-            <span class="text-[13px] font-semibold text-[#232226] uppercase tracking-widest">What You Are Solving</span>
-          </div>
-          <ul id="print-challenges" class="space-y-2 text-sm text-gray-800 mb-6"></ul>
-          <div id="print-step2-heading" class="flex items-center gap-2 mb-1.5">
-            <span style="width:18px;height:18px;border-radius:9999px;background:#4C7994;color:#fff;font-size:10px;font-weight:700;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;line-height:1;">2</span>
-            <span class="text-[13px] font-semibold text-[#232226] uppercase tracking-widest">Your Move</span>
-          </div>
-          <dl id="print-details" class="space-y-2.5"></dl>
-        </div>
 
         <!-- Challenge Selector -->
         <div class="min-h-[48px]">
@@ -466,12 +462,8 @@
       <!-- ── COLUMN 3: RESULTS (STEP 3) ───────────────────────────────────────── -->
       <div id="results-panel" class="sticky-panel space-y-4">
         <div id="results-heading" class="min-h-[48px]">
-          <p class="no-print text-[13px] font-semibold text-[#4C7994] uppercase tracking-widest mb-1">Step 3</p>
-          <p class="no-print text-[18px] font-semibold text-[#232226] whitespace-nowrap">Your Results</p>
-          <div class="print-only flex items-center gap-2" hidden>
-            <span style="width:18px;height:18px;border-radius:9999px;background:#4C7994;color:#fff;font-size:10px;font-weight:700;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;line-height:1;">3</span>
-            <span class="text-[13px] font-semibold text-[#232226] uppercase tracking-widest">Your Results</span>
-          </div>
+          <p class="text-[13px] font-semibold text-[#4C7994] uppercase tracking-widest mb-1">Step 3</p>
+          <p class="text-[18px] font-semibold text-[#232226] whitespace-nowrap">Your Results</p>
         </div>
 
         <!-- Card 1: GBC / DTI Buster -->
@@ -569,13 +561,6 @@
                     <span class="tip-box">Illustrative estimate based on your inputs and adjustable assumptions. Not a guarantee of savings or return. Actual results vary.</span>
                   </span>
                 </p>
-                <div class="print-only" style="display:flex;align-items:center;justify-content:space-between;gap:16px" hidden>
-                  <p class="text-white text-[12px]" style="max-width:65%">Every $1 you spend on Buy Before You Sell brings an estimated return in value.</p>
-                  <div style="text-align:right;flex-shrink:0">
-                    <div class="text-white font-bold" style="font-size:26px;line-height:1"><span id="print-g-roi-value">—</span></div>
-                    <div style="color:rgba(255,255,255,0.55);font-size:9px;letter-spacing:0.06em;text-transform:uppercase;margin-top:2px">per dollar spent</div>
-                  </div>
-                </div>
               </div>
 
               <!-- Collapsible items container -->
@@ -603,7 +588,6 @@
                       <svg id="g-sav-staged-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                     </div>
                   </div>
-                  <p class="print-only text-[13px] text-gray-500 leading-relaxed px-4 pb-3" hidden>Staging an empty home can lift the sale price. This shows the estimated increase minus a typical $3,500 staging cost.</p>
                   <div id="g-sav-staged-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
                     <div class="px-4 pt-2 pb-3 border-t border-gray-100">
                       <p class="text-xs text-gray-400 mb-2">Because you have already moved out, your current home can be staged and shown vacant, so buyers picture themselves living there and often pay more.</p>
@@ -656,7 +640,6 @@
                       <svg id="g-sav-hpa-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                     </div>
                   </div>
-                  <p class="print-only text-[13px] text-gray-500 leading-relaxed px-4 pb-3" hidden>Based on the price change rate used in this estimate, drawing on historical trends from the FHFA House Price Index. Future prices may rise or fall; this is an illustration, not a forecast. We always recommend selling your current home as soon as possible.</p>
                   <div id="g-sav-hpa-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
                     <div class="px-4 pt-2 pb-3 border-t border-gray-100">
                       <p class="text-xs text-gray-400 mb-2">In a rising market, buying now can lock in today's price. Values can also fall, so move the slider to see both.</p>
@@ -705,7 +688,6 @@
                       <svg id="g-sav-move-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                     </div>
                   </div>
-                  <p class="print-only text-[13px] text-gray-500 leading-relaxed px-4 pb-3" hidden>Estimates what you would spend moving twice and bridging the gap between homes, versus moving just once.</p>
                   <div id="g-sav-move-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
                     <div class="px-4 pt-1 pb-3 border-t border-gray-100">
                       <p class="text-xs text-gray-400 py-2">Skip the second move, the temporary rental, and the storage unit. Buy first, move once.</p>
@@ -815,13 +797,6 @@
 
         <!-- Card 2: Estimated Cost + Estimated Benefit from BBYS -->
         <div id="cost-benefit-card" class="rounded-2xl overflow-visible" style="border:1px solid #E5E7EB">
-
-          <!-- Print-only: Estimated Transition Days as its own top section, parallel to
-               Estimated Cost / Estimated Total Value below it (see print CSS) -->
-          <div id="print-transition-days" class="print-only bg-white px-6 py-4 rounded-t-2xl border-b border-gray-100 items-center justify-between" hidden>
-            <span class="text-sm font-medium text-gray-700">Estimated Transition Days Based on Your Choice</span>
-            <span id="print-td-value" class="text-sm font-bold text-gray-900">60 days</span>
-          </div>
 
           <!-- Required Down Payment (All-Cash Advantage only) -->
           <div id="down-payment-row" class="hidden bg-white px-6 py-4 rounded-t-2xl border-b border-gray-100">
@@ -954,13 +929,6 @@
                   <span class="tip-box">Illustrative estimate based on your inputs and adjustable assumptions. Not a guarantee of savings or return. Actual results vary.</span>
                 </span>
               </p>
-              <div class="print-only" style="display:flex;align-items:center;justify-content:space-between;gap:16px" hidden>
-                <p class="text-white text-[12px]" style="max-width:65%">Every $1 you spend on Buy Before You Sell brings an estimated return in value.</p>
-                <div style="text-align:right;flex-shrink:0">
-                  <div class="text-white font-bold" style="font-size:26px;line-height:1"><span id="print-roi-value">—</span></div>
-                  <div style="color:rgba(255,255,255,0.55);font-size:9px;letter-spacing:0.06em;text-transform:uppercase;margin-top:2px">per dollar spent</div>
-                </div>
-              </div>
             </div>
 
             <!-- Collapsible items container -->
@@ -1006,7 +974,6 @@
                     <svg id="sav-cash-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                   </div>
                 </div>
-                <p class="print-only text-[13px] text-gray-500 leading-relaxed px-4 pb-3" hidden>For illustration only. Discounts vary by seller and market; this is a sample comparison, not a predicted or guaranteed saving.</p>
                 <div id="sav-cash-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
                   <div class="px-4 pt-2 pb-3 border-t border-gray-100">
                     <p class="text-xs text-gray-400 mb-2">Sellers often accept less for the certainty of cash, which can mean a lower price for you. Use the slider to explore possible discounts.</p>
@@ -1055,7 +1022,6 @@
                     <svg id="sav-staged-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                   </div>
                 </div>
-                <p class="print-only text-[13px] text-gray-500 leading-relaxed px-4 pb-3" hidden>Staging an empty home can lift the sale price. This shows the estimated increase minus a typical $3,500 staging cost.</p>
                 <div id="sav-staged-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
                   <div class="px-4 pt-2 pb-3 border-t border-gray-100">
                     <p class="text-xs text-gray-400 mb-2">Because you have already moved out, your current home can be staged and shown vacant, so buyers picture themselves living there and often pay more.</p>
@@ -1110,7 +1076,6 @@
                     <svg id="sav-hpa-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                   </div>
                 </div>
-                <p class="print-only text-[13px] text-gray-500 leading-relaxed px-4 pb-3" hidden>Based on the price change rate used in this estimate, drawing on historical trends from the FHFA House Price Index. Future prices may rise or fall; this is an illustration, not a forecast. We always recommend selling your current home as soon as possible.</p>
                 <div id="sav-hpa-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
                   <div class="px-4 pt-2 pb-3 border-t border-gray-100">
                     <p class="text-xs text-gray-400 mb-2">In a rising market, buying now can lock in today's price. Values can also fall, so move the slider to see both.</p>
@@ -1159,7 +1124,6 @@
                     <svg id="sav-move-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                   </div>
                 </div>
-                <p class="print-only text-[13px] text-gray-500 leading-relaxed px-4 pb-3" hidden>Estimates what you would spend moving twice and bridging the gap between homes, versus moving just once.</p>
                 <div id="sav-move-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
                   <div class="px-4 pt-1 pb-3 border-t border-gray-100">
                     <p class="text-xs text-gray-400 py-2">Skip the second move, the temporary rental, and the storage unit. Buy first, move once.</p>
@@ -1258,9 +1222,9 @@
   <footer class="max-w-[1340px] mx-auto px-5 sm:px-8 pt-4 pb-10">
     <div class="border-t border-gray-100 pt-6">
       <p class="text-[12px] text-gray-500 leading-relaxed">
-        <strong class="text-gray-600 font-medium">Disclaimer:</strong> This calculator is for illustrative purposes only and does not constitute financial, legal, or tax advice. Results are estimates based on simplified assumptions and may not reflect actual loan amounts, eligibility, fees, or terms. Subject to Flyhomes underwriting review and approval. Not available in all markets. &copy; 2026 Flyhomes, Inc.
+        <strong class="text-gray-600 font-medium no-print">Disclaimer:</strong> This calculator is for illustrative purposes only and does not constitute financial, legal, or tax advice. Results are estimates based on simplified assumptions and may not reflect actual loan amounts, eligibility, fees, or terms. Subject to Flyhomes underwriting review and approval. Not available in all markets. &copy; 2026 Flyhomes, Inc.
       </p>
-      <div class="flex flex-col sm:flex-row items-center gap-4 mt-4 pt-4 border-t border-gray-100">
+      <div id="footer-nmls-row" class="flex flex-col sm:flex-row items-center gap-4 mt-4 pt-4 border-t border-gray-100">
         <div class="flex-shrink-0">
           <img src="data:image/png;base64,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" alt="Equal Housing Lender" width="36" height="39" style="display:block" />
         </div>
@@ -1268,9 +1232,6 @@
           For informational and educational purposes only. Not an offer to extend credit or a commitment to lend. All loans subject to underwriting approval. NMLS #1733272. Equal Housing Lender. Availability varies by state.
         </p>
       </div>
-      <p class="print-only text-[11px] text-gray-500 leading-relaxed mt-3 pt-3 border-t border-gray-100">
-        Prepared for professional and educational use. Your Loan Officer will review your details with Flyhomes to confirm your exact numbers; estimates are not a commitment to lend.
-      </p>
     </div>
   </footer>
 
@@ -1529,7 +1490,6 @@
       if (lastCostTotal > 0) {
         const roi = calcSavings().total / lastCostTotal;
         $('roi-value').textContent = '$' + roi.toFixed(2);
-        $('print-roi-value').textContent = '$' + roi.toFixed(2);
         roiSentence.classList.remove('hidden');
       } else {
         roiSentence.classList.add('hidden');
@@ -1541,7 +1501,6 @@
       if (lastGbcFee > 0) {
         const gRoi = calcSavings().total / lastGbcFee;
         $('g-roi-value').textContent = '$' + gRoi.toFixed(2);
-        $('print-g-roi-value').textContent = '$' + gRoi.toFixed(2);
         gRoiSentence.classList.remove('hidden');
       } else {
         gRoiSentence.classList.add('hidden');
@@ -1747,49 +1706,175 @@
     }
 
     // ── Render ───────────────────────────────────────────────────────────────
-    function updatePrintSummary() {
-      // Step 1: list selected challenges
-      const ul = $('print-challenges');
-      ul.innerHTML = '';
-      let anySelected = false;
-      CHALLENGES.forEach(c => {
-        if (!selected.has(c.id)) return;
-        anySelected = true;
-        const li = document.createElement('li');
-        li.className = 'flex items-start gap-2';
-        li.innerHTML = `<span style="width:15px;height:15px;border-radius:9999px;background:#4C7994;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;margin-top:1px"><svg width="9" height="9" viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7l3.5 3.5L12 3"/></svg></span><span class="font-medium">${c.label}</span>`;
-        ul.appendChild(li);
-      });
-      if (!anySelected) ul.innerHTML = '<li class="text-gray-400 italic text-xs">None selected</li>';
+    // ── Print-only document (Confirmed 2026-09-14) ────────────────────────────
+    // Builds the whole exported-PDF content from scratch each render(), reading the same
+    // computed values already shown on screen (r, S, selected, and a few already-rendered DOM
+    // values like #total-savings that aren't worth recomputing a second time). See CLAUDE.md
+    // for the full design rationale and a breakdown of each piece.
+    function updatePrintResults(r) {
+      const dtiOnly      = $('solution-card-wrapper').classList.contains('dti-solo');
+      const noneSelected = selected.size === 0;
 
-      // Step 2: scenario details
-      const dl = $('print-details');
+      // ── Header headline (2 lines, second line in brand pink) ──────────────────────────────
+      let headline;
+      if (dtiOnly) {
+        headline = ['Qualify for the home you want.', 'Without carrying two mortgages.'];
+      } else if (r.solutionName === 'Retire & Downsize') {
+        headline = ['Downsize for retirement.', 'Often without a new mortgage.'];
+      } else if (r.productName === 'Cross Collateral') {
+        headline = ['Buy your next home first.', 'Move with $0 out of pocket.'];
+      } else if (r.productName === 'Cash Offer') {
+        headline = ['Make offers as strong as cash.', 'Close in as little as 10 days.'];
+      } else {
+        headline = ['Buy the next home first.', 'Sell yours on your timeline.'];
+      }
+      $('print-headline-1').textContent = headline[0];
+      $('print-headline-2').textContent = headline[1];
+      $('print-date').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+      $('print-doc').classList.toggle('print-hide', noneSelected);
+      if (noneSelected) return;
+
+      // ── What You Are Solving ───────────────────────────────────────────────────────────────
+      const chosen = CHALLENGES.filter(c => selected.has(c.id));
+      $('print-challenge-text').innerHTML = chosen.length
+        ? chosen.map(c => `<p class="text-[19px] font-bold text-[#232226] leading-snug mb-1">${c.label}.</p>`).join('')
+        : '<p class="text-[15px] text-gray-400 italic">None selected</p>';
+
+      // ── Recommended Solutions bars ─────────────────────────────────────────────────────────
+      // Read the badges/visibility straight off the DOM rather than recomputing the combo logic
+      // a second time — applyProductLabel(r) (called right before this) already resolved it.
+      const showMain = !$('main-solution-card').classList.contains('hidden');
+      const showGBC  = !$('gbc-solution-card').classList.contains('hidden');
+      const bars = [];
+      if (showMain) {
+        const recommended = !$('core-badge').classList.contains('hidden');
+        bars.push({ name: r.solutionName, badge: recommended ? 'Recommended' : '', pink: true });
+      }
+      if (showGBC) {
+        const gbcBadgeEl = $('gbc-badge');
+        bars.push({ name: 'DTI Buster', badge: gbcBadgeEl.classList.contains('hidden') ? '' : gbcBadgeEl.textContent, pink: !showMain });
+      }
+      $('print-solution-bars').innerHTML = bars.map(b => `
+        <div class="flex items-center justify-between" style="background:${b.pink ? '#FDF1F2' : '#F3F5F7'};padding:16px 20px;border-radius:8px;margin-bottom:10px">
+          <span class="font-bold text-[17px]" style="color:#232226">${b.name}</span>
+          ${b.badge ? `<span class="text-[11px] font-bold uppercase tracking-wider" style="color:${b.pink ? '#D9848B' : '#4C7994'}">${b.badge}</span>` : ''}
+        </div>`).join('');
+
+      // ── Your Move ───────────────────────────────────────────────────────────────────────────
       const fmt = n => n > 0 ? '$' + n.toLocaleString() : '—';
       const currentState = $('inp-currentState').value || '—';
       const buyingState  = $('inp-buyingState').value  || '—';
-      const rows = [
+      const moveRows = [
+        ['Current home value',     fmt(S.homeValue)],
+        ['Purchase price',        fmt(S.newPrice)],
+        ['Current mortgage',      fmt(S.mortgage)],
+        ['Cash and liquid assets', fmt(S.assets)],
         ['Current home state',    currentState],
         ['Buying state',          buyingState],
-        ['Current home value',     fmt(S.homeValue)],
-        ['Current mortgage',      fmt(S.mortgage)],
-        ['Purchase price',        fmt(S.newPrice)],
-        ['Cash and liquid assets', fmt(S.assets)],
       ];
-      dl.innerHTML = rows.map(([label, val]) =>
-        `<div class="flex justify-between items-baseline gap-2">
-          <dt class="text-base text-gray-500 shrink-0">${label}</dt>
-          <dd class="text-base font-semibold text-gray-800 text-right">${val}</dd>
+      $('print-move-details').innerHTML = moveRows.map(([label, val]) =>
+        `<div class="flex justify-between items-center py-2.5" style="border-bottom:1px solid #F3F4F6">
+          <dt class="text-[15px] text-gray-500">${label}</dt>
+          <dd class="text-[15px] font-semibold text-gray-800">${val}</dd>
         </div>`
       ).join('');
 
-      // Print-only "Estimated Transition Days Based on Your Choice" section (see print CSS —
-      // it replaces the two live, editable transition-days rows in the PDF export).
-      $('print-td-value').textContent = `${S.transitionDays} days`;
+      // ── Your Results: stat band + cost/worth cards, or a plain warning box ────────────────
+      // Mirrors the same r.loanUnavailable logic used on screen (§ CLAUDE.md "Loan-amount-
+      // unavailable messaging") — when there's no real loan/cost/benefit numbers to show, don't
+      // try to force them into the stat band, just say so. Must guard with `!dtiOnly` exactly
+      // like every on-screen usage of r.loanUnavailable does (applyProductLabel()'s
+      // #cost-benefit-card/#loan-unavailable-message toggles): calc() still evaluates an Instant
+      // Equity-shaped maxLoan internally even for a DTI-only selection, so r.belowIEMin/
+      // r.loanUnavailable can be spuriously true there even though DTI-only never has a loan at
+      // all — without this guard the warning box would wrongly replace a perfectly valid DTI
+      // Buster cost/benefit breakdown. (Fixed 2026-09-14.)
+      const showLoanWarning = !dtiOnly && r.loanUnavailable;
+      $('print-results-warning').classList.toggle('print-hide', !showLoanWarning);
+      $('print-results-normal').classList.toggle('print-hide', showLoanWarning);
+      if (showLoanWarning) {
+        $('print-results-warning').textContent = r.belowIEMin
+          ? `This loan amount is below Equity for Down Payment's $75,000 minimum. Please contact us to learn more.`
+          : `This loan amount isn't available. Please contact us to learn more.`;
+        return;
+      }
 
-      // Print-only header date (static per page load — doesn't need to update on every render,
-      // but harmless to set here alongside the other print-only content).
-      $('print-date').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      $('print-transition-note').textContent = `Based on a ${S.transitionDays} day transition between homes`;
+
+      const costTotalEl   = dtiOnly ? $('gbc-dti-cost-value')  : $('total-cost');
+      const worthTotalEl  = dtiOnly ? $('g-total-savings')      : $('total-savings');
+      const costTotalText  = costTotalEl.textContent;
+      const worthTotalText = worthTotalEl.textContent;
+      const roi = parseFloat(costTotalText.replace(/[^0-9.]/g, '')) > 0
+        ? (parseFloat(worthTotalText.replace(/[^0-9.]/g, '')) / parseFloat(costTotalText.replace(/[^0-9.]/g, ''))).toFixed(2)
+        : '—';
+
+      const stats = [];
+      if (!dtiOnly) {
+        stats.push({ label: 'Estimated Loan Amount', value: fmtMoney(r.maxLoan), caption: '11 month term. Balloon payment at maturity.' });
+      }
+      stats.push({ label: 'Estimated Cost', value: costTotalText, caption: '' });
+      stats.push({ label: 'Estimated Total Value', value: worthTotalText, caption: '' });
+      stats.push({ label: 'Value Per Dollar Spent', value: '$' + roi, caption: 'Estimated return on every $1 spent.', pink: true });
+
+      $('print-stat-row').style.gridTemplateColumns = `repeat(${stats.length}, 1fr)`;
+      $('print-stat-row').innerHTML = stats.map((s, i) => `
+        <div style="${i > 0 ? 'border-left:1px solid rgba(255,255,255,0.15);padding-left:24px' : ''}">
+          <p class="text-[11px] font-semibold uppercase tracking-widest" style="color:rgba(255,255,255,0.55)">${s.label}</p>
+          <p class="font-bold" style="font-size:32px;line-height:1.2;margin-top:6px;color:#fff">${s.value}</p>
+          ${s.caption ? `<p class="text-[12px] mt-1.5" style="color:${s.pink ? '#D9848B' : 'rgba(255,255,255,0.55)'}">${s.caption}</p>` : ''}
+        </div>`).join('');
+
+      // ── What It Costs / What It Is Worth cards ────────────────────────────────────────────
+      const costRows = [];
+      if (!dtiOnly && !$('down-payment-row').classList.contains('hidden')) {
+        costRows.push(['Required Down Payment', $('down-payment-display').textContent, 'All-Cash Advantage solution requires a down payment of at least 5% of the new home purchase price.']);
+      }
+      if (dtiOnly) {
+        costRows.push(['Guaranteed Backup Contract fee', $('gbc-dti-fee-display').textContent, 'The Guaranteed Backup Contract is a contract, not a loan, so there is no loan interest. A single fee starting at $2,500, subject to program terms.']);
+      } else {
+        costRows.push(['One time fees', $('other-costs-display').textContent, 'A single origination fee and broker fee. Charged once, not monthly.']);
+        if (!$('gbc-fee-row').classList.contains('hidden')) {
+          const optional = $('gbc-fee-label').textContent.includes('Optional');
+          costRows.push(['Guaranteed Backup Contract fee', $('gbc-fee-display').textContent, optional ? 'Optional.' : 'Required.']);
+        }
+        if (!$('accrued-interest-row').classList.contains('hidden')) {
+          costRows.push(['Estimated interest', $('accrued-interest-display').textContent, $('accrued-interest-apr').parentElement.textContent.trim()]);
+        }
+      }
+      $('print-costs-card').innerHTML = printCard('What It Costs', costRows, 'Estimated Cost', costTotalText);
+
+      const worthRows = [];
+      const prefix = dtiOnly ? 'g-' : '';
+      if (!dtiOnly && !$('sav-cash-row').classList.contains('hidden')) {
+        worthRows.push(['Cash Offer Price Advantage', $('sav-cash-val').textContent, 'For illustration only. Discounts vary by seller and market; this is a sample comparison, not a predicted or guaranteed saving.']);
+      }
+      worthRows.push(['Net benefit from staging', $(prefix + 'sav-staged-val').textContent, 'Staging an empty home can lift the sale price. This shows the estimated increase minus a typical $3,500 staging cost.']);
+      worthRows.push(['Market timing benefit', $(prefix + 'sav-hpa-val').textContent, "In a rising market, buying now can lock in today's price."]);
+      worthRows.push(['Move once, not twice', $(prefix + 'sav-move-val').textContent, 'Skip the second move, the temporary rental, and the storage unit. Buy first, move once.']);
+      $('print-worth-card').innerHTML = printCard('What It Is Worth', worthRows, 'Estimated Total Value', worthTotalText);
     }
+
+    // Shared renderer for the two "What It Costs" / "What It Is Worth" print cards.
+    function printCard(title, rows, totalLabel, totalValue) {
+      const rowsHtml = rows.map(([label, value, caption]) => `
+        <div class="mb-4">
+          <div class="flex justify-between items-baseline gap-2">
+            <span class="text-[15px] font-semibold text-gray-800">${label}</span>
+            <span class="text-[15px] font-semibold text-gray-800 shrink-0">${value}</span>
+          </div>
+          ${caption ? `<p class="text-[13px] text-gray-400 leading-snug mt-1">${caption}</p>` : ''}
+        </div>`).join('');
+      return `
+        <p class="text-[12px] font-semibold uppercase tracking-widest text-gray-500 mb-4">${title}</p>
+        ${rowsHtml}
+        <div class="flex justify-between items-baseline pt-3 mt-auto" style="border-top:1px solid #E5E7EB">
+          <span class="text-[12px] font-semibold uppercase tracking-widest text-gray-500">${totalLabel}</span>
+          <span class="text-[18px] font-bold text-gray-900">${totalValue}</span>
+        </div>`;
+    }
+
 
     function render() {
       // Current home value above $2M falls outside the GBC fee matrix (CLAUDE.md §5C) —
@@ -1807,7 +1892,6 @@
       }
 
       applyRule3Gating();   // re-evaluate Rule 3 with current slider values before calc()
-      updatePrintSummary();
       const r = calc();
 
       $('card-header').className      = `px-5 pt-4 pb-4`;
@@ -1930,6 +2014,7 @@
       }
 
       applyProductLabel(r);  // always sync card visibility + GBC badge after calc()
+      updatePrintResults(r); // build the print-only document from the DOM state just set above
     }
 
     // ── Input binding ────────────────────────────────────────────────────────
