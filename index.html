@@ -889,7 +889,7 @@
                         <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated interest" tabindex="0">
                           <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                         </button>
-                        <div class="tip-box">You only pay interest for the days you hold the loan, from buying your new home to selling your current one. Estimated at a 9.99% annual rate. Representative example: APR [APR] on a $100,000 bridge loan, single payment due at payoff. Your actual rate, APR, and terms are set at underwriting.</div>
+                        <div class="tip-box">You only pay interest for the days you hold the loan, from buying your new home to selling your current one. Estimated at a 9.99% annual rate. Your actual rate, APR, and terms are set at underwriting.</div>
                       </span>
                     </span>
                     <p class="text-[12px] text-gray-400 mt-0.5">No monthly payments. Interest is settled when your current home sells. <span id="accrued-interest-apr">APR: —</span></p>
@@ -1341,6 +1341,7 @@
       forceCashOffer : false,
       naturalIsCC    : false,  // true when CC would be shown without force override
       statesDiffer   : false,  // true when buying state ≠ current home state (both selected)
+      texasPause     : false,  // true when either state is Texas — Cross Collateral paused there
       flyhomesLoan : true,   // true = bundle rate, false = standalone rate
       // Savings sliders
       savCashPct    : 3.5,
@@ -2112,7 +2113,12 @@
       //    downsize alone carries no competitive-cash-offer intent, so Cash Offer doesn't fit).
       //  - Rule 1 equity+cash combo: All-Cash Advantage (CO) + DTI Buster (user explicitly
       //    wanted a competitive cash offer via Option 3).
-      if (S.statesDiffer) {
+      // Rule 6 (Confirmed 2026-09-15): Cross Collateral is also paused in Texas — either state
+      // being Texas blocks it the same way, including a same-state Texas/Texas pair that
+      // S.statesDiffer alone wouldn't catch. Shares Rule 5's exact fallback logic below, since
+      // the "product isn't available here" reasoning and the resulting fallback products are
+      // identical regardless of which condition (cross-state or Texas) triggered the block.
+      if (S.statesDiffer || S.texasPause) {
         if (S.noCash_base) {
           if (!S.downsize) S.cashIntent = true;
         }
@@ -2245,6 +2251,10 @@
       const buying   = $('inp-buyingState').value;
       const current  = $('inp-currentState').value;
       S.statesDiffer = buying !== '' && current !== '' && buying !== current;
+      // Cross Collateral paused in Texas (Confirmed 2026-09-15): either state alone is enough
+      // to block it, independent of the cross-state check above — a same-state Texas/Texas
+      // pair still needs to be blocked, which statesDiffer alone would not catch.
+      S.texasPause   = buying === 'Texas' || current === 'Texas';
       syncStateFromChallenges();
       render();
     }
