@@ -1346,14 +1346,21 @@
         grad          = 'grad-a';
       }
 
-      // Confirmed 2026-09-21: when Equity for Down Payment + DTI Buster is shown via
-      // auto-trigger (the "Often Paired With" badge case — DTI Buster wasn't manually checked),
-      // the GBC fee is dropped entirely, not just labeled "(Optional)". Mirrors the exact
-      // condition render()'s badge/label logic uses for that badge (mostLikelyNow &&
-      // !isCashDtiComboNow) so this can never disagree with what the badge/label show.
+      // Confirmed 2026-09-21, extended 2026-09-22: whenever Equity for Down Payment + DTI
+      // Buster are shown together as a combo, the GBC fee is dropped entirely, not just
+      // labeled "(Optional)" — regardless of whether Option 1 (dti) was manually checked or
+      // auto-triggered. (Originally scoped to only the auto-triggered case; per a follow-up
+      // request the "Often Paired With" badge — and this fee exclusion along with it — now
+      // shows unconditionally whenever DTI Buster is paired with Equity for Down Payment, the
+      // same way "Required" already applies unconditionally for the All-Cash Advantage combo.)
+      // Excludes the pure-DTI-only scenario (dtiOnlyForCombo), which resolves to this same
+      // 'Equity for Down Payment' solutionName internally but is never actually shown as a
+      // combo — that case uses its own standalone GBC fee via #gbc-dti-costs, unrelated to
+      // this flag. Mirrors the exact condition render()'s badge/label logic uses (isEquityDtiComboNow)
+      // so this can never disagree with what the badge/label show.
       const showGBCForCombo     = selected.size > 0 && !noCash;
-      const mostLikelyForCombo  = showGBCForCombo && !selected.has('dti');
-      const isEquityDtiAutoCombo = mostLikelyForCombo && solutionName === 'Equity for Down Payment';
+      const dtiOnlyForCombo     = selected.size === 1 && selected.has('dti');
+      const isEquityDtiAutoCombo = showGBCForCombo && !dtiOnlyForCombo && solutionName === 'Equity for Down Payment';
       if (isEquityDtiAutoCombo) gbcActive = false;
 
       const originationFee    = maxLoan * originationRate;
@@ -1871,18 +1878,16 @@
         $('accrued-interest-row').classList.add('hidden');
       }
 
-      // GBC fee row — shown separately from One Time Fees, labeled the same way as the DTI
-      // Buster badge: "Required" wording when paired with All-Cash Advantage, "(Optional)" when
-      // auto-triggered ("Often Paired With"), plain otherwise (Option 1 manually checked).
-      const gbcFeeRow          = $('gbc-fee-row');
-      const showGBCNow         = selected.size > 0 && !S.noCash;
-      const mostLikelyNow      = showGBCNow && !selected.has('dti');
-      const isCashDtiComboNow  = showGBCNow && r.solutionName === 'All-Cash Advantage';
+      // GBC fee row — shown separately from One Time Fees. As of 2026-09-22, the GBC fee is
+      // excluded entirely (r.gbcActive false) whenever DTI Buster is paired with Equity for
+      // Down Payment, in every case (see calc()'s isEquityDtiAutoCombo) — so this row can now
+      // only ever be visible for the All-Cash Advantage + DTI Buster ("Required") combo, and
+      // the label is always the plain, unqualified name (no "(Optional)" variant is reachable
+      // anymore; the "Required" wording itself lives on the badge, not this label).
+      const gbcFeeRow = $('gbc-fee-row');
       gbcFeeRow.classList.toggle('hidden', !r.gbcActive);
       if (r.gbcActive) {
-        $('gbc-fee-label').textContent = mostLikelyNow && !isCashDtiComboNow
-          ? 'Guaranteed Backup Contract Fee (Optional)'
-          : 'Guaranteed Backup Contract Fee';
+        $('gbc-fee-label').textContent = 'Guaranteed Backup Contract Fee';
         $('gbc-fee-display').textContent = r.gbcFee === null ? 'Exception, contact us' : fmtMoney(r.gbcFee);
       }
 
@@ -2072,7 +2077,6 @@
       // list. (Confirmed 2026-09-21.)
       updateStateOptionsAvailability(dtiOnly);
       const showGBC       = !noneSelected && !isCrossCollat;
-      const mostLikely    = showGBC && !has('dti');
 
       // ── Card visibility ───────────────────────────────────────────────────
       const showMain = !dtiOnly && !noneSelected;
@@ -2118,11 +2122,17 @@
       // logic; per explicit follow-up request, unified to always-gray so the same solution
       // reads the same color in every scenario). See #core-badge/#card-header for the main
       // solution's always-pink counterpart, which was already scenario-independent.
+      // Confirmed 2026-09-22: "Often Paired With" now shows unconditionally whenever DTI Buster
+      // is paired with Equity for Down Payment (isEquityDtiCombo), regardless of whether Option
+      // 1 was manually checked or auto-triggered — matching how "Required" already shows
+      // unconditionally for the All-Cash Advantage combo. (Was gated on `!has('dti')`, i.e.
+      // only the auto-triggered case; manually checking both Option 1 + 2 used to hide the
+      // badge entirely.)
       const gbcBadge = $('gbc-badge');
       if (isCashDtiCombo) {
         gbcBadge.textContent = 'Required';
         gbcBadge.classList.remove('hidden');
-      } else if (mostLikely) {
+      } else if (isEquityDtiCombo) {
         gbcBadge.textContent = 'Often Paired With';
         gbcBadge.classList.remove('hidden');
       } else {
