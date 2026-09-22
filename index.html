@@ -401,10 +401,10 @@
                 <label for="inp-homeValue" class="block text-xs font-medium text-gray-700 mb-1.5">Estimated Value of Your Current Home</label>
                 <div class="has-prefix relative">
                   <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">$</span>
-                  <input id="inp-homeValue" type="text" inputmode="numeric" value="1,200,000"
+                  <input id="inp-homeValue" type="text" inputmode="numeric" value="600,000"
                     class="field-input w-full py-2.5 pr-4 rounded-lg border border-gray-200 text-sm transition-all" />
                 </div>
-                <input id="sl-homeValue" type="range" min="200000" max="2000000" step="10000" value="1200000" class="w-full mt-3 no-print" />
+                <input id="sl-homeValue" type="range" min="200000" max="2000000" step="10000" value="600000" class="w-full mt-3 no-print" />
                 <div class="no-print flex justify-between text-[11px] text-gray-400 mt-0.5"><span>$200K</span><span>$2M</span></div>
                 <p id="homeValue-limit-warning" class="hidden text-xs text-amber-700 mt-1.5">Please contact us to learn more.</p>
               </div>
@@ -412,10 +412,10 @@
                 <label for="inp-mortgage" class="block text-xs font-medium text-gray-700 mb-1.5">Current Mortgage Balance</label>
                 <div class="has-prefix relative">
                   <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">$</span>
-                  <input id="inp-mortgage" type="text" inputmode="numeric" value="300,000"
+                  <input id="inp-mortgage" type="text" inputmode="numeric" value="155,000"
                     class="field-input w-full py-2.5 pr-4 rounded-lg border border-gray-200 text-sm transition-all" />
                 </div>
-                <input id="sl-mortgage" type="range" min="0" max="2000000" step="10000" value="300000" class="w-full mt-3 no-print" />
+                <input id="sl-mortgage" type="range" min="0" max="2000000" step="10000" value="155000" class="w-full mt-3 no-print" />
                 <div class="no-print flex justify-between text-[11px] text-gray-400 mt-0.5"><span>$0</span><span>$2M</span></div>
               </div>
             </div>
@@ -428,10 +428,10 @@
                 <label for="inp-newPrice" class="block text-xs font-medium text-gray-700 mb-1.5">Price of the Home You Want to Buy</label>
                 <div class="has-prefix relative">
                   <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">$</span>
-                  <input id="inp-newPrice" type="text" inputmode="numeric" value="800,000"
+                  <input id="inp-newPrice" type="text" inputmode="numeric" value="650,000"
                     class="field-input w-full py-2.5 pr-4 rounded-lg border border-gray-200 text-sm transition-all" />
                 </div>
-                <input id="sl-newPrice" type="range" min="200000" max="3000000" step="10000" value="800000" class="w-full mt-3 no-print" />
+                <input id="sl-newPrice" type="range" min="200000" max="3000000" step="10000" value="650000" class="w-full mt-3 no-print" />
                 <div class="no-print flex justify-between text-[11px] text-gray-400 mt-0.5"><span>$200K</span><span>$3M</span></div>
               </div>
               <div>
@@ -619,55 +619,7 @@
                 </div>
               </div>
 
-              <!-- 2. Market Timing Benefit -->
-              <div class="mb-2">
-                <div class="rounded-lg bg-white border border-gray-200">
-                  <div class="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
-                       onclick="savToggle(this)" data-target="g-sav-hpa-body" data-chevron="g-sav-hpa-chevron"
-                       role="button" aria-expanded="false" tabindex="0"
-                       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
-                    <span class="inline-flex items-center text-sm font-medium text-gray-700 gap-1">
-                      Market Timing Benefit
-                      <span class="tip">
-                        <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about market timing benefit" tabindex="0">
-                          <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                        </button>
-                        <div class="tip-box">Based on the rate you set, using historical trends from the FHFA House Price Index. Future prices may rise or fall. This is an illustration, not a forecast. We always recommend selling your current home as soon as possible.</div>
-                      </span>
-                    </span>
-                    <div class="flex items-center gap-1.5">
-                      <span id="g-sav-hpa-val" class="text-sm font-semibold text-[#374151]">—</span>
-                      <svg id="g-sav-hpa-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
-                    </div>
-                  </div>
-                  <div id="g-sav-hpa-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
-                    <div class="px-4 pt-2 pb-3 border-t border-gray-100">
-                      <p class="text-xs text-gray-400 mb-2">In a rising market, buying now can lock in today's price. Values can also fall, so move the slider to see both.</p>
-                      <div class="flex justify-between items-center mb-1">
-                        <span class="text-xs text-gray-500">Estimated annual home price increase rate</span>
-                        <span id="g-sav-hpa-pct-label" class="text-xs font-medium text-gray-700">4%</span>
-                      </div>
-                      <input id="g-sl-sav-hpa" type="range" min="-10" max="10" step="0.5" value="4" class="w-full">
-                      <div class="flex justify-between text-[10px] text-gray-400 mt-1 mb-3"><span>-10%</span><span>10%</span></div>
-                      <div class="flex items-center justify-between py-2 border-t border-gray-100">
-                        <span class="text-xs text-gray-500">Buy side price increase avoided</span>
-                        <span id="g-sav-hpa-buy" class="text-xs font-medium text-gray-700">—</span>
-                      </div>
-                      <!-- Research reference dropdown -->
-                      <div class="border-t border-gray-100 pt-2 mt-1">
-                        <button onclick="this.nextElementSibling.classList.toggle('hidden');this.querySelector('svg').classList.toggle('rotate-180');var p=$('g-sav-hpa-body');if(p.style.maxHeight&&p.style.maxHeight!=='0px')p.style.maxHeight=p.scrollHeight+'px';"
-                          class="flex items-center gap-1 text-[11px] text-gray-400 hover:text-gray-600 transition-colors select-none w-full">
-                          <svg class="w-3 h-3 flex-shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
-                          Research reference
-                        </button>
-                        <p class="hidden text-[11px] text-gray-400 leading-relaxed mt-1.5 pl-4">FHFA House Price Index: national average +5.8% YoY (Q4 2024). Regional variation ranges from -3% to +12% annually depending on metro area.</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 3. Move Once, Not Twice -->
+              <!-- 2. Move Once, Not Twice -->
               <div class="mb-0">
                 <div class="rounded-lg bg-white border border-gray-200">
                   <div class="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
@@ -767,10 +719,6 @@
         <div id="number-card" style="overflow:visible">
           <div class="grad-a px-6 pt-5 pb-6 rounded-2xl" style="position:relative">
             <canvas id="confetti-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;border-radius:1rem"></canvas>
-            <div id="number-card-eyebrow" class="hidden inline-flex items-center gap-1.5 text-[12px] font-medium text-white mb-3">
-              <span style="width:6px;height:6px;border-radius:9999px;background:#10B981;flex-shrink:0"></span>
-              Small loan, low cost
-            </div>
             <div class="bg-white/10 rounded-xl px-4 py-3.5">
               <div id="max-loan-normal">
                 <span class="text-white/60 text-[11px] font-semibold uppercase tracking-widest mb-1 gap-1 inline-flex items-center">
@@ -785,11 +733,11 @@
                   </span>
                 </span>
                 <div id="max-loan" class="text-white text-3xl font-bold pop">—</div>
-                <p class="text-white/50 text-[12px] mt-0.5">11-month term · balloon payment due at maturity</p>
               </div>
             </div>
           </div>
         </div><!-- /card 2 -->
+        <p id="loan-term-caption" class="text-gray-500 text-[12px]" style="margin-top:4px">11-month term · balloon payment due at maturity</p>
 
         <!-- Below-minimum / unavailable loan amount warning (own box, separate from the loan
              amount card above it) -->
@@ -1055,55 +1003,7 @@
               </div>
             </div>
 
-            <!-- 3. Market Timing Benefit -->
-            <div class="mb-2">
-              <div class="rounded-lg bg-white border border-gray-200">
-                <div class="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
-                     onclick="savToggle(this)" data-target="sav-hpa-body" data-chevron="sav-hpa-chevron"
-                     role="button" aria-expanded="false" tabindex="0"
-                     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
-                  <span class="inline-flex items-center text-sm font-medium text-gray-700 gap-1">
-                    Market Timing Benefit
-                    <span class="tip">
-                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about market timing benefit" tabindex="0">
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                      </button>
-                      <div class="tip-box">Based on the rate you set, using historical trends from the FHFA House Price Index. Future prices may rise or fall. This is an illustration, not a forecast. We always recommend selling your current home as soon as possible.</div>
-                    </span>
-                  </span>
-                  <div class="flex items-center gap-1.5">
-                    <span id="sav-hpa-val" class="text-sm font-semibold text-[#374151]">—</span>
-                    <svg id="sav-hpa-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
-                  </div>
-                </div>
-                <div id="sav-hpa-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
-                  <div class="px-4 pt-2 pb-3 border-t border-gray-100">
-                    <p class="text-xs text-gray-400 mb-2">In a rising market, buying now can lock in today's price. Values can also fall, so move the slider to see both.</p>
-                    <div class="flex justify-between items-center mb-1">
-                      <span class="text-xs text-gray-500">Estimated annual home price increase rate</span>
-                      <span id="sav-hpa-pct-label" class="text-xs font-medium text-gray-700">4%</span>
-                    </div>
-                    <input id="sl-sav-hpa" type="range" min="-10" max="10" step="0.5" value="4" class="w-full">
-                    <div class="flex justify-between text-[10px] text-gray-400 mt-1 mb-3"><span>-10%</span><span>10%</span></div>
-                    <div class="flex items-center justify-between py-2 border-t border-gray-100">
-                      <span class="text-xs text-gray-500">Buy side price increase avoided</span>
-                      <span id="sav-hpa-buy" class="text-xs font-medium text-gray-700">—</span>
-                    </div>
-                    <!-- Research reference dropdown -->
-                    <div class="border-t border-gray-100 pt-2 mt-1">
-                      <button onclick="this.nextElementSibling.classList.toggle('hidden');this.querySelector('svg').classList.toggle('rotate-180');var p=$('sav-hpa-body');if(p.style.maxHeight&&p.style.maxHeight!=='0px')p.style.maxHeight=p.scrollHeight+'px';"
-                        class="flex items-center gap-1 text-[11px] text-gray-400 hover:text-gray-600 transition-colors select-none w-full">
-                        <svg class="w-3 h-3 flex-shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
-                        Research reference
-                      </button>
-                      <p class="hidden text-[11px] text-gray-400 leading-relaxed mt-1.5 pl-4">FHFA House Price Index: national average +5.8% YoY (Q4 2024). Regional variation ranges from -3% to +12% annually depending on metro area.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 4. Move Once, Not Twice -->
+            <!-- 3. Move Once, Not Twice -->
             <div class="mb-0">
               <div class="rounded-lg bg-white border border-gray-200">
                 <div class="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
@@ -1326,9 +1226,9 @@
 
     // ── State ────────────────────────────────────────────────────────────────
     const S = {
-      homeValue : 1_200_000,
-      mortgage  :   300_000,
-      newPrice  :   800_000,
+      homeValue :   600_000,
+      mortgage  :   155_000,
+      newPrice  :   650_000,
       assets    :    40_000,
       gbc          : false,
       cash         : false,
@@ -1346,9 +1246,8 @@
       // Savings sliders
       savCashPct    : 3.5,
       savStagedPct  : 5,
-      savHpaPct     : 4,
       savStagingCost  : 3500,  // deducted from Estimated Net Benefit from Staging
-      transitionDays  : 60,    // used for HPA and logistics defaults
+      transitionDays  : 60,    // used for logistics defaults
       // Savings logistics (initialized from homeValue in initSavingsDefaults)
       savMovingFee : 0,
       savHousing   : 0,
@@ -1384,7 +1283,7 @@
       const cashEligible  = assets >= cashThreshold;
 
       // CLAUDE.md §5A: GBC cannot pair with Cross Collateral
-      const gbcActive = S.gbc && !noCash;
+      let gbcActive = S.gbc && !noCash;
 
       let maxLoan, originationRate, brokerFee, productName, solutionName, grad;
 
@@ -1433,6 +1332,16 @@
         productIntro  = 'Turns the equity in your current home into cash for your down payment and closing costs, before you sell';
         grad          = 'grad-a';
       }
+
+      // Confirmed 2026-09-21: when Equity for Down Payment + DTI Buster is shown via
+      // auto-trigger (the "Often Paired With" badge case — DTI Buster wasn't manually checked),
+      // the GBC fee is dropped entirely, not just labeled "(Optional)". Mirrors the exact
+      // condition render()'s badge/label logic uses for that badge (mostLikelyNow &&
+      // !isCashDtiComboNow) so this can never disagree with what the badge/label show.
+      const showGBCForCombo     = selected.size > 0 && !noCash;
+      const mostLikelyForCombo  = showGBCForCombo && !selected.has('dti');
+      const isEquityDtiAutoCombo = mostLikelyForCombo && solutionName === 'Equity for Down Payment';
+      if (isEquityDtiAutoCombo) gbcActive = false;
 
       const originationFee    = maxLoan * originationRate;
       // isBundle = false when no Flyhomes loan product is shown alongside GBC (DTI-only, Rule 4)
@@ -1526,17 +1435,16 @@
 
     // ── Savings calculation ───────────────────────────────────────────────────
     function calcSavings() {
-      const { newPrice, homeValue, cash, noCash, savCashPct, savStagedPct, savHpaPct,
+      const { newPrice, homeValue, cash, noCash, savCashPct, savStagedPct,
               savMovingFee, savHousing, savStorage } = S;
       // Show Cash Offer Price Advantage whenever the recommended product uses a cash offer:
       // Cash Offer track (S.cash) or Cross Collateral / Retire & Downsize (S.noCash)
       const isCash       = cash || noCash;
       const cashDiscount = isCash ? newPrice * (savCashPct / 100) : 0;
       const staged       = Math.max(0, homeValue * (savStagedPct / 100) - S.savStagingCost);
-      const hpa          = newPrice * (savHpaPct / 100) * (S.transitionDays / 30) / 12;
       const logistics    = savMovingFee + savHousing + savStorage;
-      return { isCash, cashDiscount, staged, hpa, logistics,
-               total: cashDiscount + staged + hpa + logistics };
+      return { isCash, cashDiscount, staged, logistics,
+               total: cashDiscount + staged + logistics };
     }
 
     // ── Savings render ────────────────────────────────────────────────────────
@@ -1558,12 +1466,6 @@
       // Per-item values (main card)
       $('sav-staged-val').textContent = fmtSav(s.staged);
       $('sav-staged-price-increase').textContent = '$' + Math.round(S.homeValue * (S.savStagedPct / 100)).toLocaleString();
-      $('sav-hpa-val').textContent    = fmtSav(s.hpa);
-      $('sav-hpa-val').className      = `text-sm font-semibold ${Math.round(s.hpa) < 0 ? 'text-red-500' : 'text-[#374151]'}`;
-      const hpaMonthly2 = S.savHpaPct / 100 / 12 * (S.transitionDays / 30);
-      const hpaBuy  = Math.round(S.newPrice  * hpaMonthly2);
-      const fmtHpa  = n => (n < 0 ? '-$' : '$') + Math.abs(n).toLocaleString();
-      $('sav-hpa-buy').textContent  = fmtHpa(hpaBuy);
       $('sav-move-val').textContent      = fmtSav(s.logistics);
       $('sav-move-subtotal').textContent = fmtSav(s.logistics);
 
@@ -1574,19 +1476,15 @@
       $('g-sav-staged-val').textContent = fmtSav(s.staged);
       $('g-sav-staged-pct-label').textContent = S.savStagedPct + '%';
       $('g-sav-staged-price-increase').textContent = '$' + Math.round(S.homeValue * (S.savStagedPct / 100)).toLocaleString();
-      $('g-sav-hpa-val').textContent    = fmtSav(s.hpa);
-      $('g-sav-hpa-val').className      = `text-sm font-semibold ${Math.round(s.hpa) < 0 ? 'text-red-500' : 'text-[#374151]'}`;
-      $('g-sav-hpa-pct-label').textContent = S.savHpaPct + '%';
-      $('g-sav-hpa-buy').textContent  = fmtHpa(hpaBuy);
       $('g-sav-move-val').textContent      = fmtSav(s.logistics);
       $('g-sav-move-subtotal').textContent = fmtSav(s.logistics);
       // DTI-only total excludes cash discount (never active in DTI-only mode)
-      $('g-total-savings').textContent = fmtSav(s.staged + s.hpa + s.logistics);
+      $('g-total-savings').textContent = fmtSav(s.staged + s.logistics);
 
       // Re-expand any open inner accordion panels (height may change when items toggle)
       // sav-outer-body uses max-height:none once open, so it auto-sizes — skip it
-      ['sav-cash-body','sav-staged-body','sav-hpa-body','sav-move-body',
-       'g-sav-staged-body','g-sav-hpa-body','g-sav-move-body'].forEach(id => {
+      ['sav-cash-body','sav-staged-body','sav-move-body',
+       'g-sav-staged-body','g-sav-move-body'].forEach(id => {
         const el = $(id);
         if (el && el.style.maxHeight !== '0px' && el.style.maxHeight !== '0') {
           el.style.maxHeight = el.scrollHeight + 'px';
@@ -1636,11 +1534,6 @@
         $('sav-staged-pct-label').textContent = S.savStagedPct + '%';
         renderSavings();
       });
-      $('sl-sav-hpa').addEventListener('input', function () {
-        S.savHpaPct = parseFloat(this.value);
-        $('sav-hpa-pct-label').textContent = S.savHpaPct + '%';
-        renderSavings();
-      });
       // Logistics text fields
       [['inp-sav-moving','savMovingFee'],['inp-sav-housing','savHousing'],['inp-sav-storage','savStorage'],
        ['g-inp-sav-moving','savMovingFee'],['g-inp-sav-housing','savHousing'],['g-inp-sav-storage','savStorage']]
@@ -1662,12 +1555,6 @@
         S.savStagedPct = parseFloat(this.value);
         $('sav-staged-pct-label').textContent = S.savStagedPct + '%';
         $('sl-sav-staged').value = this.value;
-        renderSavings();
-      });
-      $('g-sl-sav-hpa').addEventListener('input', function () {
-        S.savHpaPct = parseFloat(this.value);
-        $('sav-hpa-pct-label').textContent = S.savHpaPct + '%';
-        $('sl-sav-hpa').value = this.value;
         renderSavings();
       });
     }
@@ -1810,6 +1697,9 @@
       const roi = parseFloat(costTotalText.replace(/[^0-9.]/g, '')) > 0
         ? (parseFloat(worthTotalText.replace(/[^0-9.]/g, '')) / parseFloat(costTotalText.replace(/[^0-9.]/g, ''))).toFixed(2)
         : '—';
+      const roiCaption = roi === '—'
+        ? 'Estimated return on every $1 spent.'
+        : `Every $1 you spend on Buy Before You Sell brings an estimated $${roi} in value.`;
 
       const stats = [];
       if (!dtiOnly) {
@@ -1817,7 +1707,7 @@
       }
       stats.push({ label: 'Estimated Cost', value: costTotalText, caption: '' });
       stats.push({ label: 'Estimated Total Value', value: worthTotalText, caption: '' });
-      stats.push({ label: 'Value Per Dollar Spent', value: '$' + roi, caption: 'Estimated return on every $1 spent.', pink: true });
+      stats.push({ label: 'Value Per Dollar Spent', value: '$' + roi, caption: roiCaption, pink: true });
 
       $('print-stat-row').style.gridTemplateColumns = `repeat(${stats.length}, 1fr)`;
       $('print-stat-row').innerHTML = stats.map((s, i) => `
@@ -1852,7 +1742,6 @@
         worthRows.push(['Cash Offer Price Advantage', $('sav-cash-val').textContent, 'For illustration only. Discounts vary by seller and market; this is a sample comparison, not a predicted or guaranteed saving.']);
       }
       worthRows.push(['Net benefit from staging', $(prefix + 'sav-staged-val').textContent, 'Staging an empty home can lift the sale price. This shows the estimated increase minus a typical $3,500 staging cost.']);
-      worthRows.push(['Market timing benefit', $(prefix + 'sav-hpa-val').textContent, "In a rising market, buying now can lock in today's price."]);
       worthRows.push(['Move once, not twice', $(prefix + 'sav-move-val').textContent, 'Skip the second move, the temporary rental, and the storage unit. Buy first, move once.']);
       $('print-worth-card').innerHTML = printCard('What It Is Worth', worthRows, 'Estimated Total Value', worthTotalText);
     }
@@ -1928,15 +1817,12 @@
       pop('max-loan');
       if (r.maxLoan > 0 && !r.loanUnavailable) triggerConfetti();
 
-      // Eyebrow above the loan amount card, Instant Equity only. Hidden alongside the loan
-      // figure itself when the loan is unavailable (e.g. below the $75,000 minimum) — showing
-      // "Small loan, low cost" over a "contact us" message would contradict it. (2026-09-11.)
-      $('number-card-eyebrow').classList.toggle('hidden', !(r.productName === 'Instant Equity' && !r.loanUnavailable));
-
       // Label: Instant Equity drops "Max" — it's presented as a single fixed advance amount,
       // not a ceiling the way Cash Offer/Cross Collateral's LTV-driven amounts are. (2026-09-11.)
+      // "Low-Cost" carries a hyphen as of 2026-09-21 per explicit design request, overriding the
+      // global no-dash copy rule (§4A) for this one label only — see CLAUDE.md for the exception.
       $('max-loan-label').textContent = r.productName === 'Instant Equity'
-        ? 'Estimated Loan Amount'
+        ? 'Estimated Low-Cost Small Loan'
         : 'Estimated Max Loan Amount';
 
       // Required Down Payment (All-Cash Advantage only): purchase price minus the estimated
@@ -2171,6 +2057,7 @@
       // render()); Instant Equity's below-$75,000-minimum case keeps this card visible (the
       // small real dollar figure is shown alongside that same message box).
       $('number-card').classList.toggle('hidden',           dtiOnly || noneSelected || r.ccZeroLoan);
+      $('loan-term-caption').classList.toggle('hidden',     dtiOnly || noneSelected || r.ccZeroLoan);
       // The cost/benefit numbers built on the loan amount are hidden whenever that loan amount
       // isn't actually available (either case above), since they'd just be showing fees on a
       // loan that doesn't exist.
@@ -2272,7 +2159,7 @@
     // ── Share link: encode/restore the inputs that drive calc() so a shared URL
     // reproduces the same numbers and results for whoever opens it ──────────────
     const SHARE_STATE_KEYS = ['homeValue', 'mortgage', 'newPrice', 'assets',
-      'forceCashOffer', 'flyhomesLoan', 'savCashPct', 'savStagedPct', 'savHpaPct', 'transitionDays'];
+      'forceCashOffer', 'flyhomesLoan', 'savCashPct', 'savStagedPct', 'transitionDays'];
 
     function buildShareState() {
       const state = { v: 1, selected: Array.from(selected),
@@ -2336,8 +2223,6 @@
       $('sav-cash-pct-label').textContent = S.savCashPct + '%';
       $('sl-sav-staged').value = S.savStagedPct; $('g-sl-sav-staged').value = S.savStagedPct;
       $('sav-staged-pct-label').textContent = S.savStagedPct + '%';
-      $('sl-sav-hpa').value = S.savHpaPct; $('g-sl-sav-hpa').value = S.savHpaPct;
-      $('sav-hpa-pct-label').textContent = S.savHpaPct + '%';
       $('inp-td-cost').value = S.transitionDays; $('inp-td-sav').value = S.transitionDays;
     }
 
