@@ -56,6 +56,41 @@
       box-shadow: 0 0 0 3px rgba(76,121,148,0.14);
     }
     .grad-a { background: #3c4659; }
+
+    /* ── Tooltip (reused from calculator) ── */
+    .tip { position: relative; display: inline-flex; align-items: center; }
+    .tip-box {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%; transform: translateX(-50%);
+      width: 230px;
+      background: #1c2f3c; color: #e2edf4;
+      padding: 10px 13px; border-radius: 8px;
+      font-size: 11.5px; line-height: 1.55;
+      font-weight: 400;
+      text-transform: none; letter-spacing: normal;
+      z-index: 60; box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+      pointer-events: none;
+    }
+    .tip-box::after {
+      content: ''; position: absolute;
+      top: 100%; left: 50%; transform: translateX(-50%);
+      border: 6px solid transparent; border-top-color: #1c2f3c;
+    }
+    /* Narrow-sidebar variants: open downward and align to whichever side the icon actually has
+       room on — the default centered/upward box overflows this widget's narrow results column
+       (see dti-buster.html's identical fix, CLAUDE.md 2026-09-21). This page's sentence wraps
+       so the icon lands near the LEFT edge of the card (unlike dti-buster.html's, where it lands
+       near the right), so tip-left is used here instead of tip-right. */
+    .tip-box.tip-left { left: 0; right: auto; transform: none; }
+    .tip-box.tip-left::after { left: 16px; right: auto; transform: none; }
+    .tip-box.tip-right { left: auto; right: 0; transform: none; }
+    .tip-box.tip-right::after { left: auto; right: 16px; transform: none; }
+    .tip-box.tip-down { bottom: auto; top: calc(100% + 10px); }
+    .tip-box.tip-down::after { top: auto; bottom: 100%; border-top-color: transparent; border-bottom-color: #1c2f3c; }
+    .tip:hover .tip-box, .tip:focus-within .tip-box { display: block; }
+
     @keyframes pop { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
     .pop { animation: pop 0.25s ease-out both; }
     @media (prefers-reduced-motion: reduce) { .pop { animation: none; } }
@@ -253,12 +288,13 @@
   </section>
 
   <!-- ══════════════════════════════════════════════════════════════════════════
-       INTERACTIVE CALCULATOR ENTRY POINT — "See What You Could Unlock"
+       INTERACTIVE CALCULATOR ENTRY POINT — "See How DREAM Solutions Solve Your
+       Borrowers' Challenges" (was "See What You Could Unlock")
        Placed directly below "How to partner with Flyhomes as a loan officer".
        ══════════════════════════════════════════════════════════════════════════ -->
   <section id="calculator" class="bg-[#F7F7F8] border-t border-b border-gray-100">
     <div class="max-w-7xl mx-auto px-5 sm:px-8 pt-16 pb-6 text-center">
-      <h2 class="text-[#232226] text-[30px] sm:text-[36px] font-semibold leading-tight mb-2">See What You Could Unlock</h2>
+      <h2 class="text-[#232226] text-[30px] sm:text-[36px] font-semibold leading-tight mb-2">See How DREAM Solutions Solve Your Borrowers' Challenges</h2>
       <p class="text-gray-500 text-base">Answer a few quick questions and get an instant estimate.</p>
     </div>
 
@@ -270,9 +306,9 @@
           <div class="p-6 sm:p-8">
             <p class="text-sm mb-3">
               <span class="font-semibold text-[#232226]">What's getting in the way of your next move?</span>
-              <span class="text-gray-400">Select all that apply.</span>
+              <span class="text-gray-400">Select all that apply. Most buyers face more than one.</span>
             </p>
-            <div id="lo-pills" class="flex flex-wrap gap-2.5 mb-6"></div>
+            <div id="lo-pills" class="grid grid-cols-2 gap-2.5 mb-6"></div>
 
             <div class="h-px bg-gray-100 mb-6"></div>
 
@@ -281,27 +317,27 @@
                 <label for="lo-homeValue" class="block text-xs font-medium text-gray-700 mb-1.5">Estimated Value of Your Current Home</label>
                 <div class="has-prefix relative">
                   <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">$</span>
-                  <input id="lo-homeValue" type="text" inputmode="numeric" value="1,200,000" class="field-input w-full py-2.5 pr-4 rounded-lg border border-gray-200 text-sm font-semibold transition-all" />
+                  <input id="lo-homeValue" type="text" inputmode="numeric" value="600,000" class="field-input w-full py-2.5 pr-4 rounded-lg border border-gray-200 text-sm font-semibold transition-all" />
                 </div>
-                <input id="lo-sl-homeValue" type="range" min="200000" max="2000000" step="10000" value="1200000" class="w-full mt-3" />
+                <input id="lo-sl-homeValue" type="range" min="200000" max="2000000" step="10000" value="600000" class="w-full mt-3" />
                 <div class="flex justify-between text-[11px] text-gray-400 mt-0.5"><span>$200K</span><span>$2M</span></div>
               </div>
               <div>
                 <label for="lo-mortgage" class="block text-xs font-medium text-gray-700 mb-1.5">Current Mortgage Balance</label>
                 <div class="has-prefix relative">
                   <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">$</span>
-                  <input id="lo-mortgage" type="text" inputmode="numeric" value="300,000" class="field-input w-full py-2.5 pr-4 rounded-lg border border-gray-200 text-sm font-semibold transition-all" />
+                  <input id="lo-mortgage" type="text" inputmode="numeric" value="155,000" class="field-input w-full py-2.5 pr-4 rounded-lg border border-gray-200 text-sm font-semibold transition-all" />
                 </div>
-                <input id="lo-sl-mortgage" type="range" min="0" max="2000000" step="10000" value="300000" class="w-full mt-3" />
+                <input id="lo-sl-mortgage" type="range" min="0" max="2000000" step="10000" value="155000" class="w-full mt-3" />
                 <div class="flex justify-between text-[11px] text-gray-400 mt-0.5"><span>$0</span><span>$2M</span></div>
               </div>
               <div>
                 <label for="lo-newPrice" class="block text-xs font-medium text-gray-700 mb-1.5">Price of the Home You Want to Buy</label>
                 <div class="has-prefix relative">
                   <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">$</span>
-                  <input id="lo-newPrice" type="text" inputmode="numeric" value="800,000" class="field-input w-full py-2.5 pr-4 rounded-lg border border-gray-200 text-sm font-semibold transition-all" />
+                  <input id="lo-newPrice" type="text" inputmode="numeric" value="650,000" class="field-input w-full py-2.5 pr-4 rounded-lg border border-gray-200 text-sm font-semibold transition-all" />
                 </div>
-                <input id="lo-sl-newPrice" type="range" min="200000" max="3000000" step="10000" value="800000" class="w-full mt-3" />
+                <input id="lo-sl-newPrice" type="range" min="200000" max="3000000" step="10000" value="650000" class="w-full mt-3" />
                 <div class="flex justify-between text-[11px] text-gray-400 mt-0.5"><span>$200K</span><span>$3M</span></div>
               </div>
               <div>
@@ -318,19 +354,28 @@
 
           <!-- RIGHT: results -->
           <div class="p-6 sm:p-8 border-t lg:border-t-0 lg:border-l border-gray-200 flex flex-col gap-3" style="background:#FAFAFB">
-            <div class="grad-a rounded-xl px-4 py-3.5 flex items-start justify-between gap-3">
-              <div class="min-w-0">
-                <span class="text-white/60 text-[10px] font-semibold uppercase tracking-widest">Recommended</span>
-                <div id="lo-product-name" class="text-white text-base font-bold leading-snug mt-1">—</div>
-              </div>
-              <div class="text-right flex-shrink-0">
-                <span class="text-white/60 text-[10px] font-semibold uppercase tracking-widest">Est. Loan Amount</span>
-                <div id="lo-loan-amount" class="text-white text-xl font-bold pop mt-1">—</div>
-              </div>
+            <div class="grad-a rounded-xl px-4 py-3.5">
+              <span class="text-white/60 text-[10px] font-semibold uppercase tracking-widest">Recommended</span>
+              <div id="lo-product-name" class="text-white text-base font-bold leading-snug mt-1">—</div>
             </div>
-            <div class="rounded-xl px-4 py-3.5 flex items-center justify-between" style="background:#3c4659">
-              <span class="text-white text-sm font-semibold">Estimated Total Value</span>
-              <span id="lo-total-value" class="text-white text-sm font-bold">—</span>
+            <div class="grad-a rounded-xl px-4 py-3.5">
+              <span class="text-white/60 text-[10px] font-semibold uppercase tracking-widest">Est. Loan Amount</span>
+              <div id="lo-loan-amount" class="text-white text-xl font-bold pop mt-1">—</div>
+            </div>
+            <div class="rounded-xl px-4 py-3.5" style="background:#3c4659">
+              <div class="flex items-center justify-between">
+                <span class="text-white text-sm font-semibold">Estimated Total Value</span>
+                <span id="lo-total-value" class="text-white text-sm font-bold">—</span>
+              </div>
+              <p class="text-white text-xs font-medium mt-2 pt-2" style="border-top:1px solid rgba(255,255,255,0.15)">
+                Every <strong>$1</strong> you spend on Buy Before You Sell brings an estimated <span id="lo-roi-value" class="text-white font-semibold">—</span> in value.
+                <span class="tip">
+                  <button onclick="event.stopPropagation()" class="text-white/60 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about estimated total value" tabindex="0" style="display:inline-flex;vertical-align:middle">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                  </button>
+                  <span class="tip-box tip-down tip-right">Illustrative estimate based on your inputs and adjustable assumptions. Not a guarantee of savings or return. Actual results vary.</span>
+                </span>
+              </p>
             </div>
             <a href="#" id="lo-full-calc-link" class="inline-flex items-center justify-center gap-1.5 w-full font-medium py-3 rounded-lg text-[15px] transition-colors mt-1" style="background:#D9848B;color:#232226" onmouseover="this.style.background='#CB7178'" onmouseout="this.style.background='#D9848B'">
               View Full Calculator for Details
@@ -626,7 +671,7 @@
     const loSelected = new Set(['equity']);
 
     const LOS = {
-      homeValue: 1_200_000, mortgage: 300_000, newPrice: 800_000, assets: 40_000,
+      homeValue: 600_000, mortgage: 155_000, newPrice: 650_000, assets: 40_000,
       downsize: false, noCash_base: false, cashIntent: false, gbc_base: false,
       naturalIsCC: false, noCash: false, cash: false, gbc: false,
     };
@@ -689,6 +734,44 @@
       return cashDisc + staged + hpa + movingFee + housing + storage;
     }
 
+    // Mirrors index.html's getGbcFee() (§5C GBC Fee Matrix).
+    function loGetGbcFee(homeValue, isBundle) {
+      let standaloneFee, bundleCredit;
+      if      (homeValue <= 500_000)   { standaloneFee = 2_500;  bundleCredit = 0;     }
+      else if (homeValue <= 750_000)   { standaloneFee = 3_500;  bundleCredit = 1_000; }
+      else if (homeValue <= 1_000_000) { standaloneFee = 5_000;  bundleCredit = 2_500; }
+      else if (homeValue <= 1_500_000) { standaloneFee = 7_500;  bundleCredit = 2_500; }
+      else if (homeValue <= 2_000_000) { standaloneFee = 10_000; bundleCredit = 2_500; }
+      else { return 0; } // >$2M exception — not reachable, sliders cap at $2M
+      return isBundle ? standaloneFee - bundleCredit : standaloneFee;
+    }
+
+    // Estimated Cost total — mirrors index.html's calc() (§5A/§5B/§5D: origination fee + broker
+    // fee + GBC fee + accrued interest). Needed only to derive the "Every $1 you spend..." ratio
+    // below the Estimated Total Value figure — not shown as its own line item on this widget.
+    // Uses this widget's own LOS.gbc flag for whether the GBC fee applies (see CLAUDE.md for a
+    // known drift between this flag and index.html's fixed/current GBC-inclusion logic).
+    function loCalcCost(maxLoan) {
+      const { homeValue, mortgage, newPrice, cash, noCash, assets } = LOS;
+      let originationRate, brokerFee;
+      if (noCash) {
+        const ltvAcq = newPrice > 0 ? maxLoan / newPrice : 0;
+        originationRate = ltvAcq > 0.90 ? 0.015 : 0.010;
+        brokerFee = maxLoan * 0.01;
+      } else if (cash && assets >= newPrice * 0.05) {
+        const ltv = newPrice > 0 ? maxLoan / newPrice : 0;
+        originationRate = ltv > 0.90 ? 0.015 : 0.010;
+        brokerFee = maxLoan * 0.01;
+      } else {
+        originationRate = mortgage > 0 ? 0.025 : 0.02;
+        brokerFee = maxLoan * 0.005;
+      }
+      const originationFee  = maxLoan * originationRate;
+      const gbcFee           = LOS.gbc ? loGetGbcFee(homeValue, true) : 0;
+      const accruedInterest  = maxLoan * 0.0999 * (60 / 365);
+      return originationFee + brokerFee + gbcFee + accruedInterest;
+    }
+
     function loRenderPills() {
       const wrap = lo$('lo-pills');
       wrap.innerHTML = '';
@@ -696,7 +779,7 @@
         const active = loSelected.has(c.id);
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = `pill ${active ? 'active' : ''} inline-flex items-center gap-1.5 px-4 py-2 rounded-full border text-sm`;
+        btn.className = `pill ${active ? 'active' : ''} flex items-center justify-center gap-1.5 px-4 py-2 rounded-full border text-sm text-center`;
         btn.innerHTML = (active
           ? '<svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 12 12" fill="none"><path d="M2 6l2.5 2.5L10 3" stroke="#4C7994" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
           : '') + c.label;
@@ -718,6 +801,7 @@
       const isCrossCollat = LOS.noCash;
       const showGBC       = !noneSelected && !isCrossCollat;
 
+      let roi = null;
       if (noneSelected) {
         lo$('lo-product-name').textContent = 'Select an option above';
         lo$('lo-loan-amount').textContent  = '—';
@@ -725,13 +809,22 @@
       } else if (dtiOnly) {
         lo$('lo-product-name').textContent = 'DTI Buster';
         lo$('lo-loan-amount').textContent  = '—'; // GBC is a contract, not a loan — no loan amount to show
-        lo$('lo-total-value').textContent  = loFmtMoney(loCalcSavings());
+        const totalValue = loCalcSavings();
+        lo$('lo-total-value').textContent  = loFmtMoney(totalValue);
+        // DTI-only uses the standalone GBC fee as its cost basis — no Flyhomes loan is present
+        // to bundle against (mirrors index.html's g-roi-sentence).
+        const costTotal = loGetGbcFee(LOS.homeValue, false);
+        roi = costTotal > 0 ? (totalValue / costTotal).toFixed(2) : null;
       } else {
         const { maxLoan, solutionName } = loCalc();
         lo$('lo-product-name').textContent = (showGBC ? 'DTI Buster + ' : '') + solutionName;
         lo$('lo-loan-amount').textContent  = loFmtMoney(maxLoan);
-        lo$('lo-total-value').textContent  = loFmtMoney(loCalcSavings());
+        const totalValue = loCalcSavings();
+        lo$('lo-total-value').textContent  = loFmtMoney(totalValue);
+        const costTotal = loCalcCost(maxLoan);
+        roi = costTotal > 0 ? (totalValue / costTotal).toFixed(2) : null;
       }
+      lo$('lo-roi-value').textContent = roi === null ? '—' : `$${roi}`;
 
       const payload = { v: 1, selected: Array.from(loSelected), currentState: '', buyingState: '',
         homeValue: LOS.homeValue, mortgage: LOS.mortgage, newPrice: LOS.newPrice, assets: LOS.assets };

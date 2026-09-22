@@ -34,12 +34,16 @@
   <style>
     body { font-family: 'Libre Franklin', sans-serif; -webkit-font-smoothing: antialiased; }
 
-    /* ── DTI-only solo cards: DTI Buster title and Estimated Cost/Total Value become two separate cards ── */
-    #solution-card-wrapper.dti-solo { background: transparent !important; border: none !important; display: flex; flex-direction: column; gap: 1rem; }
-    #solution-card-wrapper.dti-solo #gbc-solution-card { background: #fff; border: 1px solid #E5E7EB; border-radius: 0.75rem; }
+    /* ── Recommended Solutions: bar-style cards matching the exported PDF's "Recommended
+       Solutions" design (Confirmed 2026-09-21) — each solution is its own colored, rounded bar
+       rather than a single bordered box: the main solution's bar (#card-header) is always
+       pink-tinted, DTI Buster's bar (#gbc-bar) is always gray-tinted — both static in the HTML,
+       the same color in every scenario a given solution appears in (not scenario-dependent).
+       The wrapper itself carries no background/border of its own — it's just a flex column with
+       a gap between bars, the same in every mode (dti-solo included). ── */
+    #solution-card-wrapper { display: flex; flex-direction: column; gap: 0.625rem; }
     /* ── Main solution + DTI Buster combos (Equity for Down Payment, All-Cash Advantage):
        main solution leads, DTI Buster follows ── */
-    #solution-card-wrapper.reorder-main-first { display: flex; flex-direction: column; }
     #solution-card-wrapper.reorder-main-first #main-solution-card { order: 0; }
     #solution-card-wrapper.reorder-main-first #solution-divider { order: 1; }
     #solution-card-wrapper.reorder-main-first #gbc-solution-card { order: 2; }
@@ -376,7 +380,7 @@
                 <div class="relative">
                   <select id="inp-currentState" class="field-input w-full px-3.5 py-2.5 pr-9 rounded-lg border border-gray-200 text-sm text-gray-700 transition-all bg-white appearance-none cursor-pointer">
                     <option value="" disabled>Select a state</option>
-                    <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option disabled style="color:#9CA3AF">Delaware (Coming soon)</option><option>Florida</option><option>Georgia</option><option disabled style="color:#9CA3AF">Hawaii (Coming soon)</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option disabled style="color:#9CA3AF">Missouri (Coming soon)</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option disabled style="color:#9CA3AF">New Jersey (Coming soon)</option><option>New Mexico</option><option disabled style="color:#9CA3AF">New York (Coming soon)</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option><option disabled style="color:#9CA3AF">Virginia (Coming soon)</option><option selected>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
+                    <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option class="limited-state" value="Delaware" disabled style="color:#9CA3AF">Delaware (Coming soon)</option><option>Florida</option><option>Georgia</option><option class="limited-state" value="Hawaii" disabled style="color:#9CA3AF">Hawaii (Coming soon)</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option class="limited-state" value="Missouri" disabled style="color:#9CA3AF">Missouri (Coming soon)</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option class="limited-state" value="New Jersey" disabled style="color:#9CA3AF">New Jersey (Coming soon)</option><option>New Mexico</option><option class="limited-state" value="New York" disabled style="color:#9CA3AF">New York (Coming soon)</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option><option class="limited-state" value="Virginia" disabled style="color:#9CA3AF">Virginia (Coming soon)</option><option selected>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
                   </select>
                   <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                 </div>
@@ -388,13 +392,12 @@
                 <div class="relative">
                   <select id="inp-buyingState" class="field-input w-full px-3.5 py-2.5 pr-9 rounded-lg border border-gray-200 text-sm text-gray-700 transition-all bg-white appearance-none cursor-pointer">
                     <option value="" disabled>Select a state</option>
-                    <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option disabled style="color:#9CA3AF">Delaware (Coming soon)</option><option>Florida</option><option>Georgia</option><option disabled style="color:#9CA3AF">Hawaii (Coming soon)</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option disabled style="color:#9CA3AF">Missouri (Coming soon)</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option disabled style="color:#9CA3AF">New Jersey (Coming soon)</option><option>New Mexico</option><option disabled style="color:#9CA3AF">New York (Coming soon)</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option><option disabled style="color:#9CA3AF">Virginia (Coming soon)</option><option selected>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
+                    <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option class="limited-state" value="Delaware" disabled style="color:#9CA3AF">Delaware (Coming soon)</option><option>Florida</option><option>Georgia</option><option class="limited-state" value="Hawaii" disabled style="color:#9CA3AF">Hawaii (Coming soon)</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option class="limited-state" value="Missouri" disabled style="color:#9CA3AF">Missouri (Coming soon)</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option class="limited-state" value="New Jersey" disabled style="color:#9CA3AF">New Jersey (Coming soon)</option><option>New Mexico</option><option class="limited-state" value="New York" disabled style="color:#9CA3AF">New York (Coming soon)</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option><option class="limited-state" value="Virginia" disabled style="color:#9CA3AF">Virginia (Coming soon)</option><option selected>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
                   </select>
                   <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                 </div>
               </div>
             </div>
-            <p class="text-xs text-gray-400 -mt-1">Some Flyhomes loan options are not available in every state yet. We will flag any that do not fit. The Guaranteed Backup Contract works in all 50 states.</p>
             <!-- Row 1: Home Value + Mortgage -->
             <div class="grid grid-cols-1 gap-4">
               <div>
@@ -468,21 +471,22 @@
 
         <!-- Card 1: GBC / DTI Buster -->
         <!-- Combined Solution Card -->
-        <div id="solution-card-wrapper" class="hidden bg-white rounded-xl" style="border:1px solid #E5E7EB;position:relative">
+        <p id="solutions-eyebrow" class="hidden text-[12px] font-semibold tracking-widest text-gray-500 mb-1">Your Best-Fit DREAM Solutions</p>
+        <div id="solution-card-wrapper" class="hidden" style="position:relative">
 
         <!-- GBC / DTI Buster section -->
         <div id="gbc-solution-card" class="hidden">
           <canvas id="gbc-confetti-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:10;border-radius:inherit"></canvas>
-          <div class="px-5 pt-4 pb-4">
-            <div class="flex items-center gap-3 mb-1 flex-wrap">
-              <a href="https://flyhomes.com/solutions/dti-buster" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-[#3c4659] text-[17px] font-bold leading-snug hover:opacity-80 transition-opacity">DTI Buster<svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
+          <div id="gbc-bar" class="rounded-xl" style="padding:16px 20px;border:1px solid #E5E7EB;background:#fff">
+            <div class="flex items-center gap-3 flex-wrap">
+              <a href="https://flyhomes.com/solutions/dti-buster" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-[#4C7994] text-[17px] font-bold leading-snug hover:opacity-80 transition-opacity"><span class="underline">DTI Buster</span><svg class="w-3.5 h-3.5 text-[#4C7994] flex-shrink-0 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
               <span class="tip">
                 <button onclick="event.stopPropagation()" class="flex-shrink-0 text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full mt-0.5" aria-label="More info about DTI Buster" tabindex="0">
                   <svg class="w-4 h-4" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                 </button>
                 <div class="tip-box tip-down">Sets your current mortgage aside so you qualify for more, and lets you drop the home sale contingency. Guaranteed Backup Contract product is recommended for this scenario.</div>
               </span>
-              <span id="gbc-badge" class="hidden ml-auto inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full border whitespace-nowrap" style="background:#FFF7F8;color:#D87486;border-color:#D87486">Often Paired With</span>
+              <span id="gbc-badge" class="hidden ml-auto text-[11px] font-bold uppercase tracking-wider whitespace-nowrap" style="color:#4C7994">Often Paired With</span>
             </div>
           </div>
         </div><!-- /gbc-solution-card -->
@@ -531,6 +535,22 @@
                 </div>
               </div>
             </div>
+
+            <!-- ROI sentence, moved below Estimated Cost (Confirmed 2026-09-22) — mirrors the
+                 main card's #roi-sentence move; white background, matching this card's light
+                 sections rather than the dark "Estimated Total Value" section below it. -->
+            <div id="g-roi-sentence" class="hidden bg-white px-6 py-3 border-t border-gray-100">
+              <p class="no-print text-gray-700 text-xs font-medium">
+                Every <strong>$1</strong> you spend on Buy Before You Sell brings an estimated <span id="g-roi-value" class="text-gray-900 font-semibold">—</span> in value. <span class="text-[#4C7994] font-semibold">See how below.</span>
+                <span class="tip">
+                  <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated total value" tabindex="0" style="display:inline-flex;vertical-align:middle">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                  </button>
+                  <span class="tip-box">Illustrative estimate based on your inputs and adjustable assumptions. Not a guarantee of savings or return. Actual results vary.</span>
+                </span>
+              </p>
+            </div>
+
             <!-- Green: full savings accordion (mirrors main card, g- prefix IDs) -->
             <div class="bg-white border-t border-gray-200 px-5 py-4 rounded-b-xl">
               <!-- Section header (outer toggle) -->
@@ -551,76 +571,12 @@
                 </div>
               </div>
 
-              <div id="g-roi-sentence" class="hidden -mx-5 px-5 py-3" style="background:#3c4659;border-top:1px solid rgba(255,255,255,0.15)">
-                <p class="no-print text-white text-xs font-medium">
-                  Every <strong>$1</strong> you spend on Buy Before You Sell brings an estimated <span id="g-roi-value" class="text-white font-semibold">—</span> in value.
-                  <span class="tip">
-                    <button onclick="event.stopPropagation()" class="text-white/60 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about estimated total value" tabindex="0" style="display:inline-flex;vertical-align:middle">
-                      <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                    </button>
-                    <span class="tip-box">Illustrative estimate based on your inputs and adjustable assumptions. Not a guarantee of savings or return. Actual results vary.</span>
-                  </span>
-                </p>
-              </div>
-
               <!-- Collapsible items container -->
               <div id="g-sav-outer-body" style="max-height:0;overflow:hidden;transition:max-height 0.35s ease">
               <div class="mt-3">
 
-              <!-- 1. Net Benefit from Staging -->
+              <!-- 1. Move Once, Not Twice -->
               <div class="mb-2">
-                <div class="rounded-lg bg-white border border-gray-200">
-                  <div class="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
-                       onclick="savToggle(this)" data-target="g-sav-staged-body" data-chevron="g-sav-staged-chevron"
-                       role="button" aria-expanded="false" tabindex="0"
-                       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
-                    <span class="inline-flex items-center text-sm font-medium text-gray-700 gap-1">
-                      Net Benefit from Staging
-                      <span class="tip">
-                        <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about net benefit from staging" tabindex="0">
-                          <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                        </button>
-                        <div class="tip-box">Staging an empty home can lift the sale price. This shows the estimated increase minus a typical $3,500 staging cost.</div>
-                      </span>
-                    </span>
-                    <div class="flex items-center gap-1.5">
-                      <span id="g-sav-staged-val" class="text-sm font-semibold text-[#374151]">—</span>
-                      <svg id="g-sav-staged-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
-                    </div>
-                  </div>
-                  <div id="g-sav-staged-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
-                    <div class="px-4 pt-2 pb-3 border-t border-gray-100">
-                      <p class="text-xs text-gray-400 mb-2">Because you have already moved out, your current home can be staged and shown vacant, so buyers picture themselves living there and often pay more.</p>
-                      <div class="flex justify-between items-center mb-1">
-                        <span class="text-xs text-gray-500">Estimated price increase rate from staging</span>
-                        <span id="g-sav-staged-pct-label" class="text-xs font-medium text-gray-700">5%</span>
-                      </div>
-                      <input id="g-sl-sav-staged" type="range" min="1" max="10" step="0.5" value="5" class="w-full">
-                      <div class="flex justify-between text-[10px] text-gray-400 mt-1 mb-3"><span>1%</span><span>10%</span></div>
-                      <div class="flex items-center justify-between py-2 border-t border-gray-100">
-                        <span class="text-xs text-gray-500">Increased Sale Price Due to Staging</span>
-                        <span id="g-sav-staged-price-increase" class="text-xs font-medium text-gray-700">—</span>
-                      </div>
-                      <div class="flex items-center justify-between py-2 border-t border-gray-100">
-                        <span class="text-xs text-gray-500">Professional Staging Cost <span class="text-red-400">(deducted)</span></span>
-                        <span class="text-xs font-medium text-gray-700">$3,500</span>
-                      </div>
-                      <!-- Research reference dropdown -->
-                      <div class="border-t border-gray-100 pt-2 mt-1">
-                        <button onclick="this.nextElementSibling.classList.toggle('hidden');this.querySelector('svg').classList.toggle('rotate-180');var p=$('g-sav-staged-body');if(p.style.maxHeight&&p.style.maxHeight!=='0px')p.style.maxHeight=p.scrollHeight+'px';"
-                          class="flex items-center gap-1 text-[11px] text-gray-400 hover:text-gray-600 transition-colors select-none w-full">
-                          <svg class="w-3 h-3 flex-shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
-                          Research reference
-                        </button>
-                        <p class="hidden text-[11px] text-gray-400 leading-relaxed mt-1.5 pl-4">NAR 2025 Profile of Home Staging: 29% of agents reported 1% to 10% higher offers on staged homes. 83% of buyer's agents said staging helped buyers visualize the property as their own.</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 2. Move Once, Not Twice -->
-              <div class="mb-0">
                 <div class="rounded-lg bg-white border border-gray-200">
                   <div class="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
                        onclick="savToggle(this)" data-target="g-sav-move-body" data-chevron="g-sav-move-chevron"
@@ -689,26 +645,80 @@
                 </div>
               </div>
 
+              <!-- 2. Net Benefit from Staging -->
+              <div class="mb-0">
+                <div class="rounded-lg bg-white border border-gray-200">
+                  <div class="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
+                       onclick="savToggle(this)" data-target="g-sav-staged-body" data-chevron="g-sav-staged-chevron"
+                       role="button" aria-expanded="false" tabindex="0"
+                       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
+                    <span class="inline-flex items-center text-sm font-medium text-gray-700 gap-1">
+                      Net Benefit from Staging
+                      <span class="tip">
+                        <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about net benefit from staging" tabindex="0">
+                          <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                        </button>
+                        <div class="tip-box">Staging an empty home can lift the sale price. This shows the estimated increase minus a typical $3,500 staging cost.</div>
+                      </span>
+                    </span>
+                    <div class="flex items-center gap-1.5">
+                      <span id="g-sav-staged-val" class="text-sm font-semibold text-[#374151]">—</span>
+                      <svg id="g-sav-staged-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                    </div>
+                  </div>
+                  <div id="g-sav-staged-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
+                    <div class="px-4 pt-2 pb-3 border-t border-gray-100">
+                      <p class="text-xs text-gray-400 mb-2">Because you have already moved out, your current home can be staged and shown vacant, so buyers picture themselves living there and often pay more.</p>
+                      <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs text-gray-500">Estimated price increase rate from staging</span>
+                        <span id="g-sav-staged-pct-label" class="text-xs font-medium text-gray-700">5%</span>
+                      </div>
+                      <input id="g-sl-sav-staged" type="range" min="1" max="10" step="0.5" value="5" class="w-full">
+                      <div class="flex justify-between text-[10px] text-gray-400 mt-1 mb-3"><span>1%</span><span>10%</span></div>
+                      <div class="flex items-center justify-between py-2 border-t border-gray-100">
+                        <span class="text-xs text-gray-500">Increased Sale Price Due to Staging</span>
+                        <span id="g-sav-staged-price-increase" class="text-xs font-medium text-gray-700">—</span>
+                      </div>
+                      <div class="flex items-center justify-between py-2 border-t border-gray-100">
+                        <span class="text-xs text-gray-500">Professional Staging Cost <span class="text-red-400">(deducted)</span></span>
+                        <span class="text-xs font-medium text-gray-700">$3,500</span>
+                      </div>
+                      <!-- Research reference dropdown -->
+                      <div class="border-t border-gray-100 pt-2 mt-1">
+                        <button onclick="this.nextElementSibling.classList.toggle('hidden');this.querySelector('svg').classList.toggle('rotate-180');var p=$('g-sav-staged-body');if(p.style.maxHeight&&p.style.maxHeight!=='0px')p.style.maxHeight=p.scrollHeight+'px';"
+                          class="flex items-center gap-1 text-[11px] text-gray-400 hover:text-gray-600 transition-colors select-none w-full">
+                          <svg class="w-3 h-3 flex-shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                          Research reference
+                        </button>
+                        <p class="hidden text-[11px] text-gray-400 leading-relaxed mt-1.5 pl-4">NAR 2025 Profile of Home Staging: 29% of agents reported 1% to 10% higher offers on staged homes. 83% of buyer's agents said staging helped buyers visualize the property as their own.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               </div><!-- /mt-3 -->
               </div><!-- /g-sav-outer-body -->
             </div>
           </div><!-- /gbc-dti-costs -->
 
-        <!-- Divider between GBC and main solution (only when both are visible) -->
+        <!-- Divider between GBC and main solution — no longer shown now that each solution is
+             its own colored bar with a gap between them (matching the exported PDF's design);
+             kept in the DOM only so nothing that references the id breaks. -->
         <div id="solution-divider" class="hidden border-t border-gray-100"></div>
 
         <!-- Main solution section -->
         <div id="main-solution-card" class="hidden">
-          <div id="card-header" class="px-5 pt-4 pb-4">
-            <div class="flex items-center gap-2 mb-1 flex-wrap">
-              <a id="solution-link" href="https://flyhomes.com/solutions/equity-for-down-payment" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-[#3c4659] text-[17px] font-bold leading-snug hover:opacity-80 transition-opacity"><span id="solution-name">Equity for Down Payment</span><svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
+          <div id="card-header" class="rounded-xl" style="padding:16px 20px;background:#fff;border:1px solid #E5E7EB">
+            <div class="flex items-center gap-2 flex-wrap">
+              <a id="solution-link" href="https://flyhomes.com/solutions/equity-for-down-payment" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-[#4C7994] text-[17px] font-bold leading-snug hover:opacity-80 transition-opacity"><span id="solution-name" class="underline">Equity for Down Payment</span><svg class="w-3.5 h-3.5 text-[#4C7994] flex-shrink-0 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
               <span class="tip">
                 <button onclick="event.stopPropagation()" class="flex-shrink-0 text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full mt-0.5" aria-label="More info about this solution" tabindex="0">
                   <svg class="w-4 h-4" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                 </button>
                 <div class="tip-box tip-down" id="solution-tooltip-text">Turns the equity in your current home into cash for your down payment and closing costs, before you sell</div>
               </span>
-              <span id="core-badge" class="hidden ml-auto inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full border whitespace-nowrap" style="background:#FFF7F8;color:#D87486;border-color:#D87486">Recommended</span>
+              <span id="core-badge" class="hidden ml-auto text-[11px] font-bold uppercase tracking-wider whitespace-nowrap" style="color:#D9848B">Recommended</span>
             </div>
           </div>
         </div><!-- /main-solution-card -->
@@ -848,6 +858,21 @@
             </div>
           </div>
 
+          <!-- ROI sentence, moved below Estimated Cost (Confirmed 2026-09-22) — white background,
+               matching the surrounding card's light sections rather than the dark "Estimated
+               Total Value" section it used to live inside. -->
+          <div id="roi-sentence" class="hidden bg-white px-6 py-3 border-t border-gray-100">
+            <p class="no-print text-gray-700 text-xs font-medium">
+              Every <strong>$1</strong> you spend on Buy Before You Sell brings an estimated <span id="roi-value" class="text-gray-900 font-semibold">—</span> in value. <span class="text-[#4C7994] font-semibold">See how below.</span>
+              <span class="tip">
+                <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated total value" tabindex="0" style="display:inline-flex;vertical-align:middle">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                </button>
+                <span class="tip-box">Illustrative estimate based on your inputs and adjustable assumptions. Not a guarantee of savings or return. Actual results vary.</span>
+              </span>
+            </p>
+          </div>
+
           <!-- Green: Estimated Benefit from BBYS -->
           <div class="bg-white border-t border-gray-200 px-5 py-4 rounded-b-2xl">
             <!-- Section header (outer toggle) -->
@@ -867,18 +892,6 @@
                 </span>
               </div>
             </div>
-            <div id="roi-sentence" class="hidden -mx-5 px-5 py-3" style="background:#3c4659;border-top:1px solid rgba(255,255,255,0.15)">
-              <p class="no-print text-white text-xs font-medium">
-                Every <strong>$1</strong> you spend on Buy Before You Sell brings an estimated <span id="roi-value" class="text-white font-semibold">—</span> in value.
-                <span class="tip">
-                  <button onclick="event.stopPropagation()" class="text-white/60 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about estimated total value" tabindex="0" style="display:inline-flex;vertical-align:middle">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                  </button>
-                  <span class="tip-box">Illustrative estimate based on your inputs and adjustable assumptions. Not a guarantee of savings or return. Actual results vary.</span>
-                </span>
-              </p>
-            </div>
-
             <!-- Collapsible items container -->
             <div id="sav-outer-body" style="max-height:0;overflow:hidden;transition:max-height 0.35s ease">
             <div class="mt-3">
@@ -949,62 +962,8 @@
               </div>
             </div>
 
-            <!-- 2. Net Benefit from Staging -->
+            <!-- 2. Move Once, Not Twice -->
             <div class="mb-2">
-              <div class="rounded-lg bg-white border border-gray-200">
-                <div class="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
-                     onclick="savToggle(this)" data-target="sav-staged-body" data-chevron="sav-staged-chevron"
-                     role="button" aria-expanded="false" tabindex="0"
-                     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
-                  <span class="inline-flex items-center text-sm font-medium text-gray-700 gap-1">
-                    Net Benefit from Staging
-                    <span class="tip">
-                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about net benefit from staging" tabindex="0">
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
-                      </button>
-                      <div class="tip-box">Staging an empty home can lift the sale price. This shows the estimated increase minus a typical $3,500 staging cost.</div>
-                    </span>
-                  </span>
-                  <div class="flex items-center gap-1.5">
-                    <span id="sav-staged-val" class="text-sm font-semibold text-[#374151]">—</span>
-                    <svg id="sav-staged-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
-                  </div>
-                </div>
-                <div id="sav-staged-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
-                  <div class="px-4 pt-2 pb-3 border-t border-gray-100">
-                    <p class="text-xs text-gray-400 mb-2">Because you have already moved out, your current home can be staged and shown vacant, so buyers picture themselves living there and often pay more.</p>
-                    <div class="flex justify-between items-center mb-1">
-                      <span class="text-xs text-gray-500">Estimated price increase rate from staging</span>
-                      <span id="sav-staged-pct-label" class="text-xs font-medium text-gray-700">5%</span>
-                    </div>
-                    <input id="sl-sav-staged" type="range" min="1" max="10" step="0.5" value="5" class="w-full">
-                    <div class="flex justify-between text-[10px] text-gray-400 mt-1 mb-3"><span>1%</span><span>10%</span></div>
-                    <!-- Increased sale price due to staging -->
-                    <div class="flex items-center justify-between py-2 border-t border-gray-100">
-                      <span class="text-xs text-gray-500">Increased Sale Price Due to Staging</span>
-                      <span id="sav-staged-price-increase" class="text-xs font-medium text-gray-700">—</span>
-                    </div>
-                    <!-- Professional Staging Cost (deducted) -->
-                    <div class="flex items-center justify-between py-2 border-t border-gray-100">
-                      <span class="text-xs text-gray-500">Professional Staging Cost <span class="text-red-400">(deducted)</span></span>
-                      <span class="text-xs font-medium text-gray-700">$3,500</span>
-                    </div>
-                    <!-- Research reference dropdown -->
-                    <div class="border-t border-gray-100 pt-2 mt-1">
-                      <button onclick="this.nextElementSibling.classList.toggle('hidden');this.querySelector('svg').classList.toggle('rotate-180');var p=$('sav-staged-body');if(p.style.maxHeight&&p.style.maxHeight!=='0px')p.style.maxHeight=p.scrollHeight+'px';"
-                        class="flex items-center gap-1 text-[11px] text-gray-400 hover:text-gray-600 transition-colors select-none w-full">
-                        <svg class="w-3 h-3 flex-shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
-                        Research reference
-                      </button>
-                      <p class="hidden text-[11px] text-gray-400 leading-relaxed mt-1.5 pl-4">NAR 2025 Profile of Home Staging: 29% of agents reported 1% to 10% higher offers on staged homes. 83% of buyer's agents said staging helped buyers visualize the property as their own.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 3. Move Once, Not Twice -->
-            <div class="mb-0">
               <div class="rounded-lg bg-white border border-gray-200">
                 <div class="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
                      onclick="savToggle(this)" data-target="sav-move-body" data-chevron="sav-move-chevron"
@@ -1067,6 +1026,60 @@
                         Research reference
                       </button>
                       <p class="hidden text-[11px] text-gray-400 leading-relaxed mt-1.5 pl-4">NAR 2025: median days on market is 40 to 70 depending on price tier. Add 30 to 45 days for closing. Most traditional sell then buy transitions take 2 to 4 months.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. Net Benefit from Staging -->
+            <div class="mb-0">
+              <div class="rounded-lg bg-white border border-gray-200">
+                <div class="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
+                     onclick="savToggle(this)" data-target="sav-staged-body" data-chevron="sav-staged-chevron"
+                     role="button" aria-expanded="false" tabindex="0"
+                     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
+                  <span class="inline-flex items-center text-sm font-medium text-gray-700 gap-1">
+                    Net Benefit from Staging
+                    <span class="tip">
+                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about net benefit from staging" tabindex="0">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                      </button>
+                      <div class="tip-box">Staging an empty home can lift the sale price. This shows the estimated increase minus a typical $3,500 staging cost.</div>
+                    </span>
+                  </span>
+                  <div class="flex items-center gap-1.5">
+                    <span id="sav-staged-val" class="text-sm font-semibold text-[#374151]">—</span>
+                    <svg id="sav-staged-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                  </div>
+                </div>
+                <div id="sav-staged-body" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
+                  <div class="px-4 pt-2 pb-3 border-t border-gray-100">
+                    <p class="text-xs text-gray-400 mb-2">Because you have already moved out, your current home can be staged and shown vacant, so buyers picture themselves living there and often pay more.</p>
+                    <div class="flex justify-between items-center mb-1">
+                      <span class="text-xs text-gray-500">Estimated price increase rate from staging</span>
+                      <span id="sav-staged-pct-label" class="text-xs font-medium text-gray-700">5%</span>
+                    </div>
+                    <input id="sl-sav-staged" type="range" min="1" max="10" step="0.5" value="5" class="w-full">
+                    <div class="flex justify-between text-[10px] text-gray-400 mt-1 mb-3"><span>1%</span><span>10%</span></div>
+                    <!-- Increased sale price due to staging -->
+                    <div class="flex items-center justify-between py-2 border-t border-gray-100">
+                      <span class="text-xs text-gray-500">Increased Sale Price Due to Staging</span>
+                      <span id="sav-staged-price-increase" class="text-xs font-medium text-gray-700">—</span>
+                    </div>
+                    <!-- Professional Staging Cost (deducted) -->
+                    <div class="flex items-center justify-between py-2 border-t border-gray-100">
+                      <span class="text-xs text-gray-500">Professional Staging Cost <span class="text-red-400">(deducted)</span></span>
+                      <span class="text-xs font-medium text-gray-700">$3,500</span>
+                    </div>
+                    <!-- Research reference dropdown -->
+                    <div class="border-t border-gray-100 pt-2 mt-1">
+                      <button onclick="this.nextElementSibling.classList.toggle('hidden');this.querySelector('svg').classList.toggle('rotate-180');var p=$('sav-staged-body');if(p.style.maxHeight&&p.style.maxHeight!=='0px')p.style.maxHeight=p.scrollHeight+'px';"
+                        class="flex items-center gap-1 text-[11px] text-gray-400 hover:text-gray-600 transition-colors select-none w-full">
+                        <svg class="w-3 h-3 flex-shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                        Research reference
+                      </button>
+                      <p class="hidden text-[11px] text-gray-400 leading-relaxed mt-1.5 pl-4">NAR 2025 Profile of Home Staging: 29% of agents reported 1% to 10% higher offers on staged homes. 83% of buyer's agents said staging helped buyers visualize the property as their own.</p>
                     </div>
                   </div>
                 </div>
@@ -1784,7 +1797,6 @@
       applyRule3Gating();   // re-evaluate Rule 3 with current slider values before calc()
       const r = calc();
 
-      $('card-header').className      = `px-5 pt-4 pb-4`;
       $('solution-name').textContent         = r.solutionName;
       $('solution-link').href                = SOLUTION_URLS[r.solutionName] || 'https://flyhomes.com/';
       $('solution-tooltip-text').textContent = r.productIntro + ' ' + r.productName + ' product is recommended for this scenario.';
@@ -2033,12 +2045,32 @@
       S.gbc = !S.noCash;
     }
 
+    // States where every Flyhomes loan product except the Guaranteed Backup Contract (DTI
+    // Buster) is still "Coming soon" — GBC itself works in all 50 states. Flagged in the HTML
+    // via each <option class="limited-state">; each one's clean state name lives in its `value`
+    // attribute (independent of the toggled label/disabled state below), so
+    // $('inp-currentState').value / $('inp-buyingState').value always read a plain state name
+    // regardless of availability. (Confirmed 2026-09-21.)
+    function updateStateOptionsAvailability(dtiOnly) {
+      document.querySelectorAll('#inp-currentState option.limited-state, #inp-buyingState option.limited-state').forEach(opt => {
+        const name = opt.value;
+        opt.disabled    = !dtiOnly;
+        opt.textContent = dtiOnly ? name : `${name} (Coming soon)`;
+        opt.style.color = dtiOnly ? '' : '#9CA3AF';
+      });
+    }
+
     function applyProductLabel(r) {
       const has           = id => selected.has(id);
       // Read resolved flags (applyRule3Gating() always runs before this in render())
       const isCrossCollat = S.noCash;  // includes Rule 0, Rule 1, and Rule 3 auto-gating
       const dtiOnly       = selected.size === 1 && has('dti');
       const noneSelected  = selected.size === 0;
+      // DTI Buster is the only product behind a pure-DTI-only result, and it's available
+      // everywhere — so unlock every state in that scenario only. Any other recommended
+      // product (Instant Equity, Cash Offer, Cross Collateral) keeps the normal limited-state
+      // list. (Confirmed 2026-09-21.)
+      updateStateOptionsAvailability(dtiOnly);
       const showGBC       = !noneSelected && !isCrossCollat;
       const mostLikely    = showGBC && !has('dti');
 
@@ -2069,25 +2101,29 @@
       // recommended solution above it. (Fixed 2026-09-11.)
       $('loan-unavailable-message').classList.toggle('hidden', dtiOnly || noneSelected || !r.loanUnavailable);
       $('cta-card').classList.toggle('hidden',              noneSelected);
+      $('solutions-eyebrow').classList.toggle('hidden',     !showWrapper);
       $('solution-card-wrapper').classList.toggle('hidden', !showWrapper);
       $('solution-card-wrapper').classList.toggle('dti-solo', dtiOnly);
       $('solution-card-wrapper').classList.toggle('reorder-main-first', reorderMainFirst);
       $('main-solution-card').classList.toggle('hidden',    !showMain);
       $('gbc-solution-card').classList.toggle('hidden',     !showGBC);
-      $('solution-divider').classList.toggle('hidden',      !(showGBC && showMain));
       $('gbc-dti-costs').classList.toggle('hidden',         !dtiOnly);
       $('core-badge').classList.toggle('hidden',            !reorderMainFirst);
 
       // ── GBC badge ─────────────────────────────────────────────────────────
+      // Text color is always the brand-blue "paired with a main solution" color, and the DTI
+      // Buster bar itself (#gbc-bar) is always gray-tinted — both are static in the HTML now,
+      // not scenario-dependent (Confirmed 2026-09-21: DTI Buster previously showed pink when it
+      // was the sole/primary solution and gray when paired, per the exported PDF's own bars
+      // logic; per explicit follow-up request, unified to always-gray so the same solution
+      // reads the same color in every scenario). See #core-badge/#card-header for the main
+      // solution's always-pink counterpart, which was already scenario-independent.
       const gbcBadge = $('gbc-badge');
-      gbcBadge.className   = 'ml-auto inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full border whitespace-nowrap';
       if (isCashDtiCombo) {
-        gbcBadge.style.cssText = 'background:#FFF7F8;color:#D87486;border-color:#D87486';
-        gbcBadge.textContent   = 'Required';
+        gbcBadge.textContent = 'Required';
         gbcBadge.classList.remove('hidden');
       } else if (mostLikely) {
-        gbcBadge.style.cssText = 'background:#FFF7F8;color:#D87486;border-color:#D87486';
-        gbcBadge.textContent   = 'Often Paired With';
+        gbcBadge.textContent = 'Often Paired With';
         gbcBadge.classList.remove('hidden');
       } else {
         gbcBadge.classList.add('hidden');

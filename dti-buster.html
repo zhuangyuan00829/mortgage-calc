@@ -58,6 +58,37 @@
       box-shadow: 0 0 0 3px rgba(76,121,148,0.14);
     }
     .grad-a { background: #3c4659; }
+
+    /* ── Tooltip (reused from calculator) ── */
+    .tip { position: relative; display: inline-flex; align-items: center; }
+    .tip-box {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%; transform: translateX(-50%);
+      width: 230px;
+      background: #1c2f3c; color: #e2edf4;
+      padding: 10px 13px; border-radius: 8px;
+      font-size: 11.5px; line-height: 1.55;
+      font-weight: 400;
+      text-transform: none; letter-spacing: normal;
+      z-index: 60; box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+      pointer-events: none;
+    }
+    .tip-box::after {
+      content: ''; position: absolute;
+      top: 100%; left: 50%; transform: translateX(-50%);
+      border: 6px solid transparent; border-top-color: #1c2f3c;
+    }
+    /* Narrow-sidebar variant: right-align to the icon and open downward, since the default
+       centered/upward box overflows this widget's 360px results column and overlaps the card
+       content above it. */
+    .tip-box.tip-right { left: auto; right: 0; transform: none; }
+    .tip-box.tip-right::after { left: auto; right: 16px; transform: none; }
+    .tip-box.tip-down { bottom: auto; top: calc(100% + 10px); }
+    .tip-box.tip-down::after { top: auto; bottom: 100%; border-top-color: transparent; border-bottom-color: #1c2f3c; }
+    .tip:hover .tip-box, .tip:focus-within .tip-box { display: block; }
+
     @keyframes pop { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
     .pop { animation: pop 0.25s ease-out both; }
     @media (prefers-reduced-motion: reduce) { .pop { animation: none; } }
@@ -258,27 +289,27 @@
                 <label for="mc-homeValue" class="block text-xs font-medium text-gray-700 mb-1.5">Estimated Value of Your Current Home</label>
                 <div class="has-prefix relative">
                   <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">$</span>
-                  <input id="mc-homeValue" type="text" inputmode="numeric" value="1,200,000" class="field-input w-full py-2.5 pr-4 rounded-lg border border-gray-200 text-sm font-semibold transition-all" />
+                  <input id="mc-homeValue" type="text" inputmode="numeric" value="600,000" class="field-input w-full py-2.5 pr-4 rounded-lg border border-gray-200 text-sm font-semibold transition-all" />
                 </div>
-                <input id="mc-sl-homeValue" type="range" min="200000" max="2000000" step="10000" value="1200000" class="w-full mt-3" />
+                <input id="mc-sl-homeValue" type="range" min="200000" max="2000000" step="10000" value="600000" class="w-full mt-3" />
                 <div class="flex justify-between text-[11px] text-gray-400 mt-0.5"><span>$200K</span><span>$2M</span></div>
               </div>
               <div>
                 <label for="mc-mortgage" class="block text-xs font-medium text-gray-700 mb-1.5">Current Mortgage Balance</label>
                 <div class="has-prefix relative">
                   <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">$</span>
-                  <input id="mc-mortgage" type="text" inputmode="numeric" value="300,000" class="field-input w-full py-2.5 pr-4 rounded-lg border border-gray-200 text-sm font-semibold transition-all" />
+                  <input id="mc-mortgage" type="text" inputmode="numeric" value="155,000" class="field-input w-full py-2.5 pr-4 rounded-lg border border-gray-200 text-sm font-semibold transition-all" />
                 </div>
-                <input id="mc-sl-mortgage" type="range" min="0" max="2000000" step="10000" value="300000" class="w-full mt-3" />
+                <input id="mc-sl-mortgage" type="range" min="0" max="2000000" step="10000" value="155000" class="w-full mt-3" />
                 <div class="flex justify-between text-[11px] text-gray-400 mt-0.5"><span>$0</span><span>$2M</span></div>
               </div>
               <div>
                 <label for="mc-newPrice" class="block text-xs font-medium text-gray-700 mb-1.5">Price of the Home You Want to Buy</label>
                 <div class="has-prefix relative">
                   <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">$</span>
-                  <input id="mc-newPrice" type="text" inputmode="numeric" value="800,000" class="field-input w-full py-2.5 pr-4 rounded-lg border border-gray-200 text-sm font-semibold transition-all" />
+                  <input id="mc-newPrice" type="text" inputmode="numeric" value="650,000" class="field-input w-full py-2.5 pr-4 rounded-lg border border-gray-200 text-sm font-semibold transition-all" />
                 </div>
-                <input id="mc-sl-newPrice" type="range" min="200000" max="3000000" step="10000" value="800000" class="w-full mt-3" />
+                <input id="mc-sl-newPrice" type="range" min="200000" max="3000000" step="10000" value="650000" class="w-full mt-3" />
                 <div class="flex justify-between text-[11px] text-gray-400 mt-0.5"><span>$200K</span><span>$3M</span></div>
               </div>
               <div>
@@ -299,9 +330,20 @@
               <span class="text-white/60 text-[11px] font-semibold uppercase tracking-widest">Estimated Loan Amount Available</span>
               <div id="mc-loan-amount" class="text-white text-3xl font-bold pop mt-1">—</div>
             </div>
-            <div class="rounded-xl px-4 py-3.5 flex items-center justify-between" style="background:#3c4659">
-              <span class="text-white text-sm font-semibold">Estimated Total Value</span>
-              <span id="mc-total-value" class="text-white text-sm font-bold">—</span>
+            <div class="rounded-xl px-4 py-3.5" style="background:#3c4659">
+              <div class="flex items-center justify-between">
+                <span class="text-white text-sm font-semibold">Estimated Total Value</span>
+                <span id="mc-total-value" class="text-white text-sm font-bold">—</span>
+              </div>
+              <p class="text-white text-xs font-medium mt-2 pt-2" style="border-top:1px solid rgba(255,255,255,0.15)">
+                Every <strong>$1</strong> you spend on Buy Before You Sell brings an estimated <span id="mc-roi-value" class="text-white font-semibold">—</span> in value.
+                <span class="tip">
+                  <button onclick="event.stopPropagation()" class="text-white/60 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about estimated total value" tabindex="0" style="display:inline-flex;vertical-align:middle">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                  </button>
+                  <span class="tip-box tip-down tip-right">Illustrative estimate based on your inputs and adjustable assumptions. Not a guarantee of savings or return. Actual results vary.</span>
+                </span>
+              </p>
             </div>
             <a href="#" id="mc-full-calc-link" class="inline-flex items-center justify-center gap-1.5 w-full font-medium py-3 rounded-lg text-[15px] transition-colors mt-1" style="background:#D9848B;color:#232226" onmouseover="this.style.background='#CB7178'" onmouseout="this.style.background='#D9848B'">
               View Full Calculator for Details
@@ -604,7 +646,22 @@
     const mcFmtNum   = n => Math.round(n).toLocaleString();
     const mcFmtMoney = n => n <= 0 ? '$0' : `$${Math.round(n).toLocaleString()}`;
 
-    const MC = { homeValue: 1_200_000, mortgage: 300_000, newPrice: 800_000, assets: 40_000 };
+    const MC = { homeValue: 600_000, mortgage: 155_000, newPrice: 650_000, assets: 40_000 };
+
+    // Mirrors index.html's getGbcFee() (§5C GBC Fee Matrix) — this widget's scenario always
+    // pre-checks Option 1 (DTI) alongside Option 2 (equity), so per CLAUDE.md's Rule 2 "Option 1
+    // manually checked" case the GBC fee is charged (not the auto-triggered "Often Paired With"
+    // case, which excludes it) — isBundle defaults true, matching index.html's S.flyhomesLoan.
+    function mcGetGbcFee(homeValue, isBundle) {
+      let standaloneFee, bundleCredit;
+      if      (homeValue <= 500_000)   { standaloneFee = 2_500;  bundleCredit = 0;     }
+      else if (homeValue <= 750_000)   { standaloneFee = 3_500;  bundleCredit = 1_000; }
+      else if (homeValue <= 1_000_000) { standaloneFee = 5_000;  bundleCredit = 2_500; }
+      else if (homeValue <= 1_500_000) { standaloneFee = 7_500;  bundleCredit = 2_500; }
+      else if (homeValue <= 2_000_000) { standaloneFee = 10_000; bundleCredit = 2_500; }
+      else { return 0; } // >$2M exception — not reachable, this widget's slider caps at $2M
+      return isBundle ? standaloneFee - bundleCredit : standaloneFee;
+    }
 
     function mcCalc() {
       const { homeValue, mortgage, newPrice } = MC;
@@ -623,13 +680,27 @@
       const storage   = (150 + homeValue * 0.0002) * (transitionDays / 30);
       const totalValue = staged + hpa + movingFee + housing + storage;
 
-      return { loanAmount, totalValue };
+      // §5A/§5B/§5D Estimated Cost — origination fee (2nd lien 2.5% since mortgage > 0 is the
+      // common case, else 1st lien 2%) + broker fee (0.5% of advance) + GBC fee (bundle rate) +
+      // accrued interest (9.99% APR), same four components as index.html's calc(). Needed here
+      // only to derive the "Every $1 you spend..." ratio below — not shown as its own line item
+      // on this widget.
+      const originationRate = mortgage > 0 ? 0.025 : 0.02;
+      const originationFee  = loanAmount * originationRate;
+      const brokerFee        = loanAmount * 0.005;
+      const gbcFee            = mcGetGbcFee(homeValue, true);
+      const accruedInterest   = loanAmount * 0.0999 * (transitionDays / 365);
+      const costTotal = originationFee + brokerFee + gbcFee + accruedInterest;
+      const roi = costTotal > 0 ? (totalValue / costTotal).toFixed(2) : null;
+
+      return { loanAmount, totalValue, roi };
     }
 
     function mcRender() {
-      const { loanAmount, totalValue } = mcCalc();
+      const { loanAmount, totalValue, roi } = mcCalc();
       mc$('mc-loan-amount').textContent = mcFmtMoney(loanAmount);
       mc$('mc-total-value').textContent = mcFmtMoney(totalValue);
+      mc$('mc-roi-value').textContent   = roi === null ? '—' : `$${roi}`;
 
       // Carry entered numbers into the full calculator via the same #s= share-link
       // payload format index.html's restoreFromShareLink() already understands.
