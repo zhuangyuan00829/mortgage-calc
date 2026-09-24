@@ -725,10 +725,16 @@
 
         </div><!-- /solution-card-wrapper -->
 
-        <!-- Card 2: Max Loan Amount -->
-        <div id="number-card" style="overflow:visible">
-          <div class="grad-a px-6 pt-5 pb-6 rounded-2xl" style="position:relative">
-            <canvas id="confetti-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;border-radius:1rem"></canvas>
+        <!-- Unified Results Card: Loan Amount + Estimated Cost + ROI + Estimated Financial
+             Value, merged into one #3c4659 card (was two separate cards — a dark loan-amount
+             box and a white bordered card below it) per explicit design request (2026-09-23).
+             Sections are separated by border-t border-white/10 dividers instead of separate
+             boxes/background colors. The nested white "chip" cards further down (Cash Offer
+             Price Advantage, Move Once Not Twice, staging) are left as-is — white cards on a
+             dark section background is an intentional, common pattern, not an oversight. -->
+        <div id="number-card" class="rounded-2xl overflow-visible" style="background:#3c4659;position:relative">
+          <canvas id="confetti-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;border-radius:1rem"></canvas>
+          <div class="px-6 pt-5 pb-5">
             <div class="bg-white/10 rounded-xl px-4 py-3.5">
               <div id="max-loan-normal">
                 <span class="text-white/60 text-[11px] font-semibold uppercase tracking-widest mb-1 gap-1 inline-flex items-center">
@@ -744,43 +750,36 @@
                 </span>
                 <div id="max-loan" class="text-white text-3xl font-bold pop">—</div>
                 <p id="max-loan-subtitle" class="hidden text-white/60 text-xs mt-1">Estimated amount to cover your down payment gap</p>
-                <div id="max-loan-cost-line" class="text-white/80 text-xs mt-3 pt-3 border-t border-white/10">Estimated cost: <span id="max-loan-cost-value" class="font-semibold text-white">—</span></div>
+                <div id="max-loan-cost-line" class="text-white/60 text-xs mt-3 pt-3 border-t border-white/10">11-month term · balloon payment due at maturity</div>
               </div>
             </div>
           </div>
-        </div><!-- /card 2 -->
-        <p id="loan-term-caption" class="text-gray-500 text-[12px]" style="margin-top:4px">11-month term · balloon payment due at maturity</p>
 
-        <!-- Below-minimum / unavailable loan amount warning (own box, separate from the loan
-             amount card above it) -->
-        <p id="loan-unavailable-message" class="hidden rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 text-xs text-amber-700 leading-relaxed"></p>
-
-        <!-- Card 2: Estimated Cost + Estimated Benefit from BBYS -->
-        <div id="cost-benefit-card" class="rounded-2xl overflow-visible" style="border:1px solid #E5E7EB">
+          <div id="cost-benefit-card">
 
           <!-- Required Down Payment (All-Cash Advantage only) -->
-          <div id="down-payment-row" class="hidden bg-white px-6 py-4 rounded-t-2xl border-b border-gray-100">
+          <div id="down-payment-row" class="hidden px-6 py-4 border-t border-white/10">
             <div class="flex items-center justify-between">
-              <span class="inline-flex items-center text-sm font-medium text-gray-700 gap-1">
+              <span class="inline-flex items-center text-sm font-medium text-white/80 gap-1">
                 Required Down Payment
                 <span class="tip">
-                  <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about required down payment" tabindex="0">
+                  <button onclick="event.stopPropagation()" class="text-white/40 hover:text-white/70 transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about required down payment" tabindex="0">
                     <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                   </button>
                   <div class="tip-box">All-Cash Advantage solution requires a down payment of at least 5% of the new home purchase price.</div>
                 </span>
               </span>
-              <span id="down-payment-display" class="text-sm font-bold text-gray-900">—</span>
+              <span id="down-payment-display" class="text-sm font-bold text-white">—</span>
             </div>
           </div>
 
-          <!-- White: Estimated Cost (expandable) -->
-          <div id="estimated-cost-section" class="bg-white px-6 py-4 rounded-t-2xl">
+          <!-- Estimated Cost (expandable) -->
+          <div id="estimated-cost-section" class="px-6 py-4 border-t border-white/10">
             <div id="cost-toggle" class="flex items-center justify-between cursor-pointer select-none" role="button" aria-expanded="false" aria-controls="cost-breakdown" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
-              <span class="inline-flex items-center text-sm font-medium text-gray-700 gap-1">
+              <span class="inline-flex items-center text-sm font-medium text-white gap-1">
                 Estimated Cost
                 <span class="tip">
-                  <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated cost" tabindex="0">
+                  <button onclick="event.stopPropagation()" class="text-white/40 hover:text-white/70 transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about estimated cost" tabindex="0">
                     <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                   </button>
                   <div class="tip-box">
@@ -789,10 +788,10 @@
                 </span>
               </span>
               <div class="flex items-center gap-3">
-                <span id="total-cost" class="text-sm font-bold text-gray-900">—</span>
-                <span class="details-toggle-label inline-flex items-center gap-0.5 text-xs text-gray-500">
+                <span id="total-cost" class="text-sm font-bold text-white">—</span>
+                <span class="details-toggle-label inline-flex items-center gap-0.5 text-xs text-white/70">
                   Details
-                  <svg id="cost-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <svg id="cost-chevron" class="w-3.5 h-3.5 text-white/70" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
                   </svg>
                 </span>
@@ -800,7 +799,7 @@
             </div>
             <!-- Breakdown rows -->
             <div id="cost-breakdown" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
-              <div class="pt-3 mt-2 border-t border-gray-100 space-y-2">
+              <div class="pt-3 mt-2 border-t border-white/10 space-y-2">
                 <div id="cost-td-row" class="flex justify-between items-center px-3 py-2 rounded-lg" style="background:#EEF4F8">
                   <span class="inline-flex items-center text-xs text-gray-500 gap-1">
                     Estimated Transition Days
@@ -818,56 +817,55 @@
                   </div>
                 </div>
                 <div class="flex justify-between items-center">
-                  <span class="inline-flex items-center text-xs text-gray-500 gap-1">
+                  <span class="inline-flex items-center text-xs text-white/60 gap-1">
                     One Time Fees
                     <span class="tip">
-                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about one time fees" tabindex="0">
+                      <button onclick="event.stopPropagation()" class="text-white/40 hover:text-white/70 transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about one time fees" tabindex="0">
                         <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                       </button>
                       <div class="tip-box">A single origination fee and broker fee. Charged once, not monthly.</div>
                     </span>
                   </span>
-                  <span id="other-costs-display" class="text-xs font-medium text-gray-700">—</span>
+                  <span id="other-costs-display" class="text-xs font-medium text-white/90">—</span>
                 </div>
                 <div id="gbc-fee-row" class="hidden flex justify-between items-center pt-1 mt-1">
-                  <span class="inline-flex items-center text-xs text-gray-500 gap-1">
+                  <span class="inline-flex items-center text-xs text-white/60 gap-1">
                     <span id="gbc-fee-label">Guaranteed Backup Contract Fee</span>
                     <span class="tip">
-                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about Guaranteed Backup Contract fee" tabindex="0">
+                      <button onclick="event.stopPropagation()" class="text-white/40 hover:text-white/70 transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about Guaranteed Backup Contract fee" tabindex="0">
                         <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                       </button>
                       <div class="tip-box">The Guaranteed Backup Contract is a contract, not a loan, so there is no loan interest. A single fee starting at $2,500, subject to program terms.</div>
                     </span>
                   </span>
-                  <span id="gbc-fee-display" class="text-xs font-medium text-gray-700">—</span>
+                  <span id="gbc-fee-display" class="text-xs font-medium text-white/90">—</span>
                 </div>
                 <div id="accrued-interest-row" class="hidden flex justify-between items-start">
                   <div>
-                    <span class="inline-flex items-center text-xs text-gray-500 gap-1">
+                    <span class="inline-flex items-center text-xs text-white/60 gap-1">
                       Estimated Interest
                       <span class="tip">
-                        <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated interest" tabindex="0">
+                        <button onclick="event.stopPropagation()" class="text-white/40 hover:text-white/70 transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about estimated interest" tabindex="0">
                           <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                         </button>
                         <div class="tip-box">You only pay interest for the days you hold the loan, from buying your new home to selling your current one. Estimated at a 9.99% annual rate. Your actual rate, APR, and terms are set at underwriting.</div>
                       </span>
                     </span>
-                    <p class="text-[12px] text-gray-400 mt-0.5">No monthly payments. Interest is settled when your current home sells. <span id="accrued-interest-apr">APR: —</span></p>
+                    <p class="text-[12px] text-white/50 mt-0.5">No monthly payments. Interest is settled when your current home sells. <span id="accrued-interest-apr">APR: —</span></p>
                   </div>
-                  <span id="accrued-interest-display" class="text-xs font-medium text-gray-700 shrink-0 ml-2">—</span>
+                  <span id="accrued-interest-display" class="text-xs font-medium text-white/90 shrink-0 ml-2">—</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- ROI sentence, moved below Estimated Cost (Confirmed 2026-09-22) — white background,
-               matching the surrounding card's light sections rather than the dark "Estimated
-               Total Value" section it used to live inside. -->
-          <div id="roi-sentence" class="hidden bg-white px-6 py-3 border-t border-gray-100">
-            <p class="no-print text-gray-700 text-xs font-medium">
-              Every <strong>$1</strong> you spend on Buy Before You Sell brings an estimated <span id="roi-value" class="text-gray-900 font-semibold">—</span> in financial value. Beyond the numbers, you can move once and skip temporary housing.
+          <!-- ROI sentence, moved below Estimated Cost (Confirmed 2026-09-22); now part of the
+               unified dark card (2026-09-23) rather than its own white section. -->
+          <div id="roi-sentence" class="hidden px-6 py-3 border-t border-white/10">
+            <p class="no-print text-white/80 text-xs font-medium">
+              Every <strong>$1</strong> you spend on Buy Before You Sell brings an estimated <span id="roi-value" class="text-white font-semibold">—</span> in financial value. Beyond the numbers, you can move once and skip temporary housing.
               <span class="tip">
-                <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated total value" tabindex="0" style="display:inline-flex;vertical-align:middle">
+                <button onclick="event.stopPropagation()" class="text-white/40 hover:text-white/70 transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about estimated total value" tabindex="0" style="display:inline-flex;vertical-align:middle">
                   <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                 </button>
                 <span class="tip-box">Illustrative estimate based on your inputs and adjustable assumptions. Not a guarantee of savings or return. Actual results vary.</span>
@@ -875,11 +873,10 @@
             </p>
           </div>
 
-          <!-- Green: Estimated Benefit from BBYS -->
-          <div class="bg-white border-t border-gray-200 px-5 py-4 rounded-b-2xl">
+          <!-- Estimated financial value -->
+          <div class="border-t border-white/10 px-5 py-4">
             <!-- Section header (outer toggle) -->
-            <div class="flex items-center justify-between cursor-pointer select-none -mx-5 -mt-4 px-5 py-3.5"
-                 style="background:#3c4659"
+            <div class="flex items-center justify-between cursor-pointer select-none"
                  onclick="savToggle(this)" data-target="sav-outer-body" data-chevron="sav-outer-chevron"
                  role="button" aria-expanded="false" tabindex="0"
                  onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();savToggle(this)}">
@@ -1091,7 +1088,12 @@
             </div><!-- /sav-outer-body -->
           </div>
 
-        </div><!-- /card 2 -->
+          </div><!-- /cost-benefit-card -->
+        </div><!-- /number-card -->
+
+        <!-- Below-minimum / unavailable loan amount warning (own box, separate from the loan
+             amount card above it) -->
+        <p id="loan-unavailable-message" class="hidden rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 text-xs text-amber-700 leading-relaxed"></p>
 
         <!-- Option A: Switch offer type (shown when CC is the natural recommendation) -->
         <div id="switch-offer-banner" class="hidden">
@@ -1845,19 +1847,15 @@
         ? 'Borrow only what you need'
         : 'Estimated Max Loan Amount';
       $('max-loan-subtitle').classList.toggle('hidden', !isInstantEquity);
-      // Inline cost line merges the loan-amount card with the headline cost figure (2026-09-23)
-      // so the two don't read as separate heavy-bordered boxes — same total as #total-cost
-      // below, just also surfaced here. Hidden alongside #cost-benefit-card in applyProductLabel().
-      $('max-loan-cost-value').textContent = fmtMoney(r.total);
 
       // Required Down Payment (All-Cash Advantage only): purchase price minus the estimated
-      // max loan amount. Lives inside #cost-benefit-card, above "Estimated Cost" — when shown,
-      // it becomes the top of the card, so its rounded-t-2xl moves off the Estimated Cost
-      // section onto this row instead (avoids a doubled/mismatched top corner). (Confirmed
-      // 2026-09-10, merged into the same card as Estimated Cost/Total Value.)
+      // max loan amount. Lives inside #cost-benefit-card, above "Estimated Cost". (Confirmed
+      // 2026-09-10, merged into the same card as Estimated Cost/Total Value. The rounded-t-2xl
+      // corner-swap this used to need was removed 2026-09-23 when #cost-benefit-card's sections
+      // stopped owning their own visible corners/background — see the unified dark card note
+      // near #number-card.)
       const isCashOffer = r.productName === 'Cash Offer';
       $('down-payment-row').classList.toggle('hidden', !isCashOffer);
-      $('estimated-cost-section').classList.toggle('rounded-t-2xl', !isCashOffer);
       if (isCashOffer) {
         $('down-payment-display').textContent = fmtMoney(S.newPrice - r.maxLoan);
       }
@@ -2101,12 +2099,13 @@
       // render()); Instant Equity's below-$75,000-minimum case keeps this card visible (the
       // small real dollar figure is shown alongside that same message box).
       $('number-card').classList.toggle('hidden',           dtiOnly || noneSelected || r.ccZeroLoan);
-      $('loan-term-caption').classList.toggle('hidden',     dtiOnly || noneSelected || r.ccZeroLoan);
+      // Loan-term caption moved inside #number-card itself (2026-09-23, was a standalone
+      // sibling below it) — same visibility condition as the card it's now part of.
+      $('max-loan-cost-line').classList.toggle('hidden',    dtiOnly || noneSelected || r.ccZeroLoan);
       // The cost/benefit numbers built on the loan amount are hidden whenever that loan amount
       // isn't actually available (either case above), since they'd just be showing fees on a
       // loan that doesn't exist.
       $('cost-benefit-card').classList.toggle('hidden',     dtiOnly || noneSelected || r.loanUnavailable);
-      $('max-loan-cost-line').classList.toggle('hidden',    dtiOnly || noneSelected || r.loanUnavailable);
       // Same gating as the cards above: with nothing selected (or DTI-only, which never
       // produces an Instant Equity/Cash Offer result), calc() still runs and can compute
       // r.loanUnavailable off of stale/default S values — but Step 3 itself is hidden in that
