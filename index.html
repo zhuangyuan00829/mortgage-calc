@@ -541,7 +541,7 @@
                  sections rather than the dark "Estimated Total Value" section below it. -->
             <div id="g-roi-sentence" class="hidden bg-white px-6 py-3 border-t border-gray-100">
               <p class="no-print text-gray-700 text-xs font-medium">
-                Every <strong>$1</strong> you spend on Buy Before You Sell brings an estimated <span id="g-roi-value" class="text-gray-900 font-semibold">—</span> in financial value. Beyond the numbers, you can move once and skip temporary housing.
+                Every <strong>$1</strong> you spend on Buy Before You Sell brings an estimated <span id="g-roi-value" class="text-gray-900 font-semibold">—</span> in financial value. <span style="color:#D9848B">Beyond the numbers, you can move once and skip temporary housing.</span>
                 <span class="tip">
                   <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated total value" tabindex="0" style="display:inline-flex;vertical-align:middle">
                     <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
@@ -758,28 +758,28 @@
           <div id="cost-benefit-card">
 
           <!-- Required Down Payment (All-Cash Advantage only) -->
-          <div id="down-payment-row" class="hidden px-6 py-4 border-t border-white/10">
+          <div id="down-payment-row" class="hidden bg-white px-6 py-4">
             <div class="flex items-center justify-between">
-              <span class="inline-flex items-center text-sm font-medium text-white/80 gap-1">
+              <span class="inline-flex items-center text-sm font-medium text-gray-700 gap-1">
                 Required Down Payment
                 <span class="tip">
-                  <button onclick="event.stopPropagation()" class="text-white/40 hover:text-white/70 transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about required down payment" tabindex="0">
+                  <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about required down payment" tabindex="0">
                     <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                   </button>
                   <div class="tip-box">All-Cash Advantage solution requires a down payment of at least 5% of the new home purchase price.</div>
                 </span>
               </span>
-              <span id="down-payment-display" class="text-sm font-bold text-white">—</span>
+              <span id="down-payment-display" class="text-sm font-bold text-gray-900">—</span>
             </div>
           </div>
 
           <!-- Estimated Cost (expandable) -->
-          <div id="estimated-cost-section" class="px-6 py-4 border-t border-white/10">
+          <div id="estimated-cost-section" class="bg-white px-6 py-4 border-t border-gray-100">
             <div id="cost-toggle" class="flex items-center justify-between cursor-pointer select-none" role="button" aria-expanded="false" aria-controls="cost-breakdown" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
-              <span class="inline-flex items-center text-sm font-medium text-white gap-1">
+              <span class="inline-flex items-center text-sm font-medium text-gray-900 gap-1">
                 Estimated Cost
                 <span class="tip">
-                  <button onclick="event.stopPropagation()" class="text-white/40 hover:text-white/70 transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about estimated cost" tabindex="0">
+                  <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated cost" tabindex="0">
                     <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                   </button>
                   <div class="tip-box">
@@ -788,10 +788,10 @@
                 </span>
               </span>
               <div class="flex items-center gap-3">
-                <span id="total-cost" class="text-sm font-bold text-white">—</span>
-                <span class="details-toggle-label inline-flex items-center gap-0.5 text-xs text-white/70">
+                <span id="total-cost" class="text-sm font-bold text-gray-900">—</span>
+                <span class="details-toggle-label inline-flex items-center gap-0.5 text-xs text-gray-500">
                   Details
-                  <svg id="cost-chevron" class="w-3.5 h-3.5 text-white/70" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <svg id="cost-chevron" class="w-3.5 h-3.5 text-gray-400" style="transition:transform 0.25s ease;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
                   </svg>
                 </span>
@@ -799,7 +799,7 @@
             </div>
             <!-- Breakdown rows -->
             <div id="cost-breakdown" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
-              <div class="pt-3 mt-2 border-t border-white/10 space-y-2">
+              <div class="pt-3 mt-2 border-t border-gray-100 space-y-2">
                 <div id="cost-td-row" class="flex justify-between items-center px-3 py-2 rounded-lg" style="background:#EEF4F8">
                   <span class="inline-flex items-center text-xs text-gray-500 gap-1">
                     Estimated Transition Days
@@ -817,53 +817,58 @@
                   </div>
                 </div>
                 <div class="flex justify-between items-center">
-                  <span class="inline-flex items-center text-xs text-white/60 gap-1">
+                  <span class="inline-flex items-center text-xs text-gray-500 gap-1">
                     One Time Fees
                     <span class="tip">
-                      <button onclick="event.stopPropagation()" class="text-white/40 hover:text-white/70 transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about one time fees" tabindex="0">
+                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about one time fees" tabindex="0">
                         <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                       </button>
                       <div class="tip-box">A single origination fee and broker fee. Charged once, not monthly.</div>
                     </span>
                   </span>
-                  <span id="other-costs-display" class="text-xs font-medium text-white/90">—</span>
+                  <span id="other-costs-display" class="text-xs font-medium text-gray-700">—</span>
                 </div>
                 <div id="gbc-fee-row" class="hidden flex justify-between items-center pt-1 mt-1">
-                  <span class="inline-flex items-center text-xs text-white/60 gap-1">
+                  <span class="inline-flex items-center text-xs text-gray-500 gap-1">
                     <span id="gbc-fee-label">Guaranteed Backup Contract Fee</span>
                     <span class="tip">
-                      <button onclick="event.stopPropagation()" class="text-white/40 hover:text-white/70 transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about Guaranteed Backup Contract fee" tabindex="0">
+                      <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about Guaranteed Backup Contract fee" tabindex="0">
                         <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                       </button>
                       <div class="tip-box">The Guaranteed Backup Contract is a contract, not a loan, so there is no loan interest. A single fee starting at $2,500, subject to program terms.</div>
                     </span>
                   </span>
-                  <span id="gbc-fee-display" class="text-xs font-medium text-white/90">—</span>
+                  <span id="gbc-fee-display" class="text-xs font-medium text-gray-700">—</span>
                 </div>
                 <div id="accrued-interest-row" class="hidden flex justify-between items-start">
                   <div>
-                    <span class="inline-flex items-center text-xs text-white/60 gap-1">
+                    <span class="inline-flex items-center text-xs text-gray-500 gap-1">
                       Estimated Interest
                       <span class="tip">
-                        <button onclick="event.stopPropagation()" class="text-white/40 hover:text-white/70 transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about estimated interest" tabindex="0">
+                        <button onclick="event.stopPropagation()" class="text-gray-300 hover:text-brand transition-colors focus-visible:ring-2 focus-visible:ring-brand rounded-full" aria-label="More info about estimated interest" tabindex="0">
                           <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
                         </button>
                         <div class="tip-box">You only pay interest for the days you hold the loan, from buying your new home to selling your current one. Estimated at a 9.99% annual rate. Your actual rate, APR, and terms are set at underwriting.</div>
                       </span>
                     </span>
-                    <p class="text-[12px] text-white/50 mt-0.5">No monthly payments. Interest is settled when your current home sells. <span id="accrued-interest-apr">APR: —</span></p>
+                    <p class="text-[12px] text-gray-400 mt-0.5">No monthly payments. Interest is settled when your current home sells. <span id="accrued-interest-apr">APR: —</span></p>
                   </div>
-                  <span id="accrued-interest-display" class="text-xs font-medium text-white/90 shrink-0 ml-2">—</span>
+                  <span id="accrued-interest-display" class="text-xs font-medium text-gray-700 shrink-0 ml-2">—</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- ROI sentence, moved below Estimated Cost (Confirmed 2026-09-22); now part of the
-               unified dark card (2026-09-23) rather than its own white section. -->
-          <div id="roi-sentence" class="hidden px-6 py-3 border-t border-white/10">
+          <!-- ROI sentence, moved below Estimated Cost (Confirmed 2026-09-22). Restyled 2026-09-27:
+               given back its original charcoal (#3c4659) background — same as the loan-amount box
+               above and the "Estimated financial value" section below — so only "Estimated Cost"
+               (and Required Down Payment, when shown) are carved out as a white band in between.
+               Font/icon/divider colors switched back to their dark-background (white-based)
+               equivalents accordingly; only the background changed, nothing else about the
+               sentence's copy, layout, or the pink dollar-figure/"Beyond the numbers..." callout. -->
+          <div id="roi-sentence" class="hidden px-6 py-3" style="background:#3c4659">
             <p class="no-print text-white/80 text-xs font-medium">
-              Every <strong>$1</strong> you spend on Buy Before You Sell brings an estimated <span id="roi-value" class="text-white font-semibold">—</span> in financial value. Beyond the numbers, you can move once and skip temporary housing.
+              Every <strong>$1</strong> you spend on Buy Before You Sell brings an estimated <span id="roi-value" class="font-semibold" style="color:#D9848B">—</span> in financial value. <span style="color:#D9848B">Beyond the numbers, you can move once and skip temporary housing.</span>
               <span class="tip">
                 <button onclick="event.stopPropagation()" class="text-white/40 hover:text-white/70 transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about estimated total value" tabindex="0" style="display:inline-flex;vertical-align:middle">
                   <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
