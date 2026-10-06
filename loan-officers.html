@@ -294,7 +294,7 @@
        ══════════════════════════════════════════════════════════════════════════ -->
   <section id="calculator" class="bg-[#F7F7F8] border-t border-b border-gray-100">
     <div class="max-w-7xl mx-auto px-5 sm:px-8 pt-16 pb-6 text-center">
-      <h2 class="text-[#232226] text-[30px] sm:text-[36px] font-semibold leading-tight mb-2">See How DREAM Solutions Solve Your Borrowers' Challenges</h2>
+      <h2 class="text-[#232226] text-[34px] sm:text-[42px] font-normal leading-tight mb-2">See how DREAM<sup class="text-[0.4em] font-normal align-super">TM</sup> solutions solve your borrowers' challenges</h2>
       <p class="text-gray-500 text-base">Answer a few quick questions and get an instant estimate.</p>
     </div>
 
@@ -817,7 +817,7 @@
         roi = costTotal > 0 ? (totalValue / costTotal).toFixed(2) : null;
       } else {
         const { maxLoan, solutionName } = loCalc();
-        lo$('lo-product-name').textContent = (showGBC ? 'DTI Buster + ' : '') + solutionName;
+        lo$('lo-product-name').innerHTML = solutionName + (showGBC ? '<br>DTI Buster' : '');
         lo$('lo-loan-amount').textContent  = loFmtMoney(maxLoan);
         const totalValue = loCalcSavings();
         lo$('lo-total-value').textContent  = loFmtMoney(totalValue);
