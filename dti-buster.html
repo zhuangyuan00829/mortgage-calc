@@ -53,11 +53,82 @@
       width: 18px; height: 18px; border-radius: 50%;
       background: #4C7994; cursor: pointer; border: none;
     }
-    .field-input:focus-visible {
-      outline: none; border-color: #4C7994;
-      box-shadow: 0 0 0 3px rgba(76,121,148,0.14);
+    .grad-a { background: var(--color--charcoal, #3c4659); }
+
+    /* ── Calculator section: Flyhomes site tokens + classes (Confirmed 2026-10-06) ──
+       Values copied from styles/flyhomes.webflow.css; that file is deliberately NOT linked
+       (global body/h2/input/.container rules would collide with Tailwind). Everything below is
+       scoped to #calculator. Class names (.site-btn, .scenario-form-*, .calculator-*) match the
+       main site's. Breakpoints reuse the site's 767px / 991px. */
+    #calculator {
+      --color--blush: #d9848b;
+      --color--charcoal: #3c4659;
+      --color--neutral-black: #232226;
+      --color--blue-horizon: #5988a6;
+      --color--secondary--gray: #e6e7e8;
+      --calc-radius: 10px;
     }
-    .grad-a { background: #3c4659; }
+    #calculator .calculator-wrap {
+      background: #fff; border: 1px solid var(--color--secondary--gray);
+      border-radius: var(--calc-radius); overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    #calculator .calculator-grid { display: grid; grid-template-columns: 1fr; }
+    #calculator .calculator-fields { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+    @media (min-width: 768px) { #calculator .calculator-fields { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 992px) { #calculator .calculator-grid { grid-template-columns: 1fr 360px; } }
+    #calculator .calculator-results { border-top: 1px solid var(--color--secondary--gray); }
+    @media (min-width: 992px) {
+      #calculator .calculator-results { border-top: 0; border-left: 1px solid var(--color--secondary--gray); }
+    }
+    #calculator .calculator-card { background: var(--color--charcoal); border-radius: var(--calc-radius); }
+
+    #calculator .scenario-form-label {
+      display: block; margin-bottom: .5rem; font-size: .8125rem; font-weight: 500;
+      color: var(--color--neutral-black);
+    }
+    #calculator .scenario-form-field {
+      width: 100%; height: 3rem; padding-right: 1rem;
+      border: 1px solid var(--color--charcoal); border-radius: var(--calc-radius);
+      background: #fff; color: var(--color--neutral-black);
+      font-size: 1rem; font-weight: 600;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    #calculator .scenario-form-field:hover { border-color: var(--color--blue-horizon); }
+    #calculator .scenario-form-field:focus,
+    #calculator .scenario-form-field:focus-visible {
+      outline: none; border-color: var(--color--blue-horizon);
+      box-shadow: 0 0 0 3px rgba(89,136,166,0.2);
+    }
+    /* Slider thumb: solid blush (same pink as the site's primary CTA) with a white ring. */
+    #calculator input[type=range]::-webkit-slider-thumb {
+      width: 22px; height: 22px; border: 3px solid #fff; border-radius: 50%;
+      background: var(--color--blush); box-shadow: 0 1px 4px rgba(35,34,38,0.3);
+    }
+    #calculator input[type=range]::-moz-range-thumb {
+      width: 16px; height: 16px; border: 3px solid #fff; border-radius: 50%;
+      background: var(--color--blush); box-shadow: 0 1px 4px rgba(35,34,38,0.3);
+    }
+
+    /* Track: soft pink-to-blue gradient to match the thumb ring */
+    #calculator input[type=range] {
+      background: linear-gradient(90deg, rgba(217,132,139,0.35), rgba(76,121,148,0.35));
+    }
+
+    #calculator .site-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: .5rem; width: 100%;
+      border: 1px solid var(--color--blush); background-color: var(--color--blush);
+      color: var(--color--neutral-black); font-size: 1rem; font-weight: 500; line-height: 115%;
+      text-align: center; text-decoration: none; border-radius: 100px; padding: 1rem 1.25rem; white-space: nowrap;
+      transition: background-color .3s ease-in-out;
+    }
+    #calculator .site-btn:hover { background-color: #fff; }
+    #calculator .site-btn .dt-arrow { display: inline-flex; transition: transform .3s ease-in-out; }
+    #calculator .site-btn:hover .dt-arrow { transform: translateX(4px); }
+    @media (prefers-reduced-motion: reduce) {
+      #calculator .site-btn, #calculator .site-btn .dt-arrow { transition: none; }
+      #calculator .site-btn:hover .dt-arrow { transform: none; }
+    }
 
     /* ── Tooltip (reused from calculator) ── */
     .tip { position: relative; display: inline-flex; align-items: center; }
@@ -272,51 +343,53 @@
   <!-- ══════════════════════════════════════════════════════════════════════════
        INTERACTIVE CALCULATOR ENTRY POINT — "See What You Could Unlock"
        ══════════════════════════════════════════════════════════════════════════ -->
-  <section id="calculator" class="bg-[#F7F7F8] border-t border-b border-gray-100">
-    <div class="max-w-7xl mx-auto px-5 sm:px-8 pt-16 pb-6 text-center">
-      <h2 class="text-[#232226] text-[34px] sm:text-[42px] font-normal leading-tight mb-2">See what you could unlock</h2>
-      <p class="text-gray-500 text-base">Answer a few quick questions and get an instant estimate.</p>
+  <section id="calculator" class="relative overflow-hidden" style="background:#232226">
+    <div class="absolute -top-10 left-0 w-[520px] h-[420px] rounded-full opacity-30" style="background:#D9848B;filter:blur(120px)"></div>
+    <div class="absolute -top-10 right-0 w-[520px] h-[420px] rounded-full opacity-25" style="background:#4C7994;filter:blur(120px)"></div>
+    <div class="relative max-w-7xl mx-auto px-5 sm:px-8 pt-16 pb-6 text-center">
+      <h2 class="text-white text-[34px] sm:text-[42px] font-normal leading-tight mb-2">See what you could unlock</h2>
+      <p class="text-white/70 text-base">Answer a few quick questions and get an instant estimate.</p>
     </div>
 
-    <div class="max-w-7xl mx-auto px-5 sm:px-8 pb-20">
-      <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-        <div class="grid grid-cols-1 lg:grid-cols-[1fr_360px]">
+    <div class="relative max-w-7xl mx-auto px-5 sm:px-8 pb-20">
+      <div class="calculator-wrap">
+        <div class="calculator-grid">
 
           <!-- LEFT: inputs -->
           <div class="p-6 sm:p-8">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="calculator-fields">
               <div>
-                <label for="mc-homeValue" class="block text-xs font-medium text-gray-700 mb-1.5">Estimated Value of Your Current Home</label>
+                <label for="mc-homeValue" class="scenario-form-label">Estimated Value of Your Current Home</label>
                 <div class="has-prefix relative">
                   <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">$</span>
-                  <input id="mc-homeValue" type="text" inputmode="numeric" value="600,000" class="field-input w-full py-2.5 pr-4 rounded-lg border border-gray-200 text-sm font-semibold transition-all" />
+                  <input id="mc-homeValue" type="text" inputmode="numeric" value="600,000" class="field-input scenario-form-field" />
                 </div>
                 <input id="mc-sl-homeValue" type="range" min="200000" max="2000000" step="10000" value="600000" class="w-full mt-3" />
                 <div class="flex justify-between text-[11px] text-gray-400 mt-0.5"><span>$200K</span><span>$2M</span></div>
               </div>
               <div>
-                <label for="mc-mortgage" class="block text-xs font-medium text-gray-700 mb-1.5">Current Mortgage Balance</label>
+                <label for="mc-mortgage" class="scenario-form-label">Current Mortgage Balance</label>
                 <div class="has-prefix relative">
                   <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">$</span>
-                  <input id="mc-mortgage" type="text" inputmode="numeric" value="155,000" class="field-input w-full py-2.5 pr-4 rounded-lg border border-gray-200 text-sm font-semibold transition-all" />
+                  <input id="mc-mortgage" type="text" inputmode="numeric" value="155,000" class="field-input scenario-form-field" />
                 </div>
                 <input id="mc-sl-mortgage" type="range" min="0" max="2000000" step="10000" value="155000" class="w-full mt-3" />
                 <div class="flex justify-between text-[11px] text-gray-400 mt-0.5"><span>$0</span><span>$2M</span></div>
               </div>
               <div>
-                <label for="mc-newPrice" class="block text-xs font-medium text-gray-700 mb-1.5">Price of the Home You Want to Buy</label>
+                <label for="mc-newPrice" class="scenario-form-label">Price of the Home You Want to Buy</label>
                 <div class="has-prefix relative">
                   <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">$</span>
-                  <input id="mc-newPrice" type="text" inputmode="numeric" value="650,000" class="field-input w-full py-2.5 pr-4 rounded-lg border border-gray-200 text-sm font-semibold transition-all" />
+                  <input id="mc-newPrice" type="text" inputmode="numeric" value="650,000" class="field-input scenario-form-field" />
                 </div>
                 <input id="mc-sl-newPrice" type="range" min="200000" max="3000000" step="10000" value="650000" class="w-full mt-3" />
                 <div class="flex justify-between text-[11px] text-gray-400 mt-0.5"><span>$200K</span><span>$3M</span></div>
               </div>
               <div>
-                <label for="mc-assets" class="block text-xs font-medium text-gray-700 mb-1.5">Cash and Liquid Assets Available</label>
+                <label for="mc-assets" class="scenario-form-label">Cash and Liquid Assets Available</label>
                 <div class="has-prefix relative">
                   <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">$</span>
-                  <input id="mc-assets" type="text" inputmode="numeric" value="40,000" class="field-input w-full py-2.5 pr-4 rounded-lg border border-gray-200 text-sm font-semibold transition-all" />
+                  <input id="mc-assets" type="text" inputmode="numeric" value="40,000" class="field-input scenario-form-field" />
                 </div>
                 <input id="mc-sl-assets" type="range" min="0" max="2000000" step="10000" value="40000" class="w-full mt-3" />
                 <div class="flex justify-between text-[11px] text-gray-400 mt-0.5"><span>$0</span><span>$2M</span></div>
@@ -325,12 +398,12 @@
           </div>
 
           <!-- RIGHT: results -->
-          <div class="p-6 sm:p-8 border-t lg:border-t-0 lg:border-l border-gray-200 flex flex-col gap-3" style="background:#FAFAFB">
-            <div class="grad-a rounded-xl px-4 py-3.5">
+          <div class="calculator-results p-6 sm:p-8 flex flex-col gap-3" style="background:#FAFAFB">
+            <div class="calculator-card px-4 py-3.5">
               <span class="text-white/60 text-[11px] font-semibold uppercase tracking-widest">Estimated Loan Amount Available</span>
               <div id="mc-loan-amount" class="text-white text-3xl font-bold pop mt-1">—</div>
             </div>
-            <div class="rounded-xl px-4 py-3.5" style="background:#3c4659">
+            <div class="calculator-card px-4 py-3.5">
               <div class="flex items-center justify-between">
                 <span class="text-white text-sm font-semibold">Estimated Total Value</span>
                 <span id="mc-total-value" class="text-white text-sm font-bold">—</span>
@@ -345,9 +418,9 @@
                 </span>
               </p>
             </div>
-            <a href="#" id="mc-full-calc-link" class="inline-flex items-center justify-center gap-1.5 w-full font-medium py-3 rounded-lg text-[15px] transition-colors mt-1" style="background:#D9848B;color:#232226" onmouseover="this.style.background='#CB7178'" onmouseout="this.style.background='#D9848B'">
+            <a href="#" id="mc-full-calc-link" class="site-btn mt-1">
               View Full Calculator for Details
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
+              <span class="dt-arrow"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg></span>
             </a>
             <p class="text-gray-400 text-[11px] leading-snug text-center mt-1">Estimates only. Your Loan Officer will review your details with Flyhomes to confirm your exact numbers.</p>
           </div>
