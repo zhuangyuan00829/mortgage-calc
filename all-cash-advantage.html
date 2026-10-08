@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DTI Buster | Flyhomes</title>
+  <title>All-Cash Advantage | Flyhomes</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -220,15 +220,20 @@
   </header>
 
   <!-- ══ HERO ══════════════════════════════════════════════════════════════════ -->
-  <section class="relative h-[420px] sm:h-[560px] overflow-hidden" style="background:#2a180f">
-    <img src="assets/dti-buster/hero.jpg" alt="Homeowner packing boxes while preparing to move" class="absolute right-0 top-0 h-full w-[68%] object-cover" />
-    <div class="absolute inset-0" style="background:linear-gradient(90deg, #1a0f09 0%, #2a180f 32%, rgba(42,24,15,0.65) 46%, rgba(42,24,15,0) 60%)"></div>
-    <div class="absolute inset-0 flex items-center">
+  <section class="relative h-[480px] sm:h-[640px] overflow-hidden" style="background:#000">
+    <picture>
+      <source media="(max-width: 767px)" srcset="assets/all-cash-advantage/hero-mobile.avif" />
+      <img src="assets/all-cash-advantage/hero.avif" alt="Happy couple embracing while holding mugs in their kitchen" class="absolute inset-0 w-full h-full object-cover object-[70%_center] sm:object-center" />
+    </picture>
+    <!-- Same gradient as the main site's .full-width-hero__gradient: black on the left fading to transparent; bottom-up on mobile -->
+    <div class="absolute inset-0 hidden sm:block" style="background:linear-gradient(90deg,#000 0%,rgba(165,100,106,0.4) 60%,rgba(217,132,139,0) 100%)"></div>
+    <div class="absolute inset-0 sm:hidden" style="background:linear-gradient(180deg,rgba(0,0,0,0.5) 0%,rgba(0,0,0,0) 20%),linear-gradient(0deg,#000 0%,rgba(165,100,106,0.4) 43%,rgba(217,132,139,0) 100%)"></div>
+    <div class="absolute inset-0 flex items-end sm:items-center pb-10 sm:pb-0">
       <div class="max-w-7xl mx-auto px-5 sm:px-8 w-full">
         <div class="max-w-md">
           <p class="text-white/90 text-sm mb-3">Flyhomes Buy Before You Sell</p>
-          <h1 class="text-white text-[44px] sm:text-[56px] font-normal leading-none mb-5">DTI Buster</h1>
-          <p class="text-white/90 text-lg leading-snug mb-7">Lower debt ratio, remove home sale contingency, and only move once.</p>
+          <h1 class="text-white text-[44px] sm:text-[56px] font-normal leading-[1.1] mb-5">All-Cash Advantage</h1>
+          <p class="text-white text-lg sm:text-xl leading-snug mb-7">Compete like a cash buyer. Win the home. Move only once.</p>
           <a href="#calculator" class="inline-flex items-center px-6 py-3 rounded-full bg-[#D9848B] hover:bg-[#CB7178] text-[#232226] text-sm font-medium transition-colors">Get Started</a>
         </div>
       </div>
@@ -400,8 +405,16 @@
           <!-- RIGHT: results -->
           <div class="calculator-results p-6 sm:p-8 flex flex-col gap-3" style="background:#FAFAFB">
             <div class="calculator-card px-4 py-3.5">
-              <span class="text-white/60 text-[11px] font-semibold uppercase tracking-widest">Recommended</span>
-              <div class="text-white text-xl font-bold leading-snug mt-1">DTI Buster</div>
+              <span class="text-white/60 text-[11px] font-semibold uppercase tracking-widest inline-flex items-center gap-1">
+                Estimated Max Loan Amount
+                <span class="tip">
+                  <button type="button" class="text-white/40 hover:text-white/70 transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about estimated max loan amount" tabindex="0">
+                    <svg class="w-3 h-3" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                  </button>
+                  <span class="tip-box tip-down tip-right normal-case">An estimate based on the numbers you entered. Your actual amount is confirmed after a quick evaluation.</span>
+                </span>
+              </span>
+              <div id="mc-loan-amount" class="text-white text-3xl font-bold pop mt-1">—</div>
             </div>
             <div class="calculator-card px-4 py-3.5">
               <div class="flex items-center justify-between">
@@ -737,41 +750,52 @@
     }
 
     function mcCalc() {
-      const { homeValue } = MC;
+      const { homeValue, newPrice } = MC;
 
-      // This widget always resolves to the pure DTI-only track (CLAUDE.md Rule 4, Step 1 option
-      // "My current mortgage is capping my approval" only): DTI Buster alone, no Flyhomes loan.
-      // So there is no loan amount, and the figures below mirror index.html's DTI-only card.
+      // This widget always resolves to All-Cash Advantage + DTI Buster (CLAUDE.md Rule 3, Step 1
+      // option "My offers keep losing to cash buyers" only, with the "Keep More Cash" override on,
+      // which is how the full calculator reaches this combo when Cross Collateral is the natural
+      // result). §5E Cash Offer: 95% of the new home price.
+      const loanAmount = newPrice * 0.95;
 
-      // §5F Total Estimated Value (DTI-only): staged premium + move-once logistics, 60-day
-      // transition. No cash-offer discount, and no HPA/"Market Timing Benefit" (removed from
-      // index.html 2026-09-21).
+      // §5F Estimated financial value: Cash Offer Price Advantage (3.5% of the new home price) +
+      // staged premium (5% minus $3,500 staging cost) + move-once logistics, 60-day transition.
+      // No HPA (removed 2026-09-21).
       const transitionDays = 60;
+      const cashAdvantage = newPrice * 0.035;
       const staged = Math.max(0, homeValue * 0.05 - 3500);
       const movingFee = homeValue * 0.003 + 500;
       const housing   = homeValue * 0.006 * (transitionDays / 30);
       const storage   = (150 + homeValue * 0.0002) * (transitionDays / 30);
-      const totalValue = staged + movingFee + housing + storage;
+      const totalValue = cashAdvantage + staged + movingFee + housing + storage;
 
-      // §5C Estimated Cost (DTI-only): the Guaranteed Backup Contract fee at the standalone rate
-      // (no loan, so no bundle credit) is the entire cost. Only used for the "Every $1..." ratio.
-      const costTotal = mcGetGbcFee(homeValue, false);
+      // §5A/§5B/§5C/§5D Estimated Cost: origination (1.5% if LTV > 90%, else 1.0%; Cash Offer is
+      // always 95% LTV) + broker fee (1% of loan) + Guaranteed Backup Contract fee at the bundle
+      // rate (DTI Buster is "Required" with All-Cash Advantage) + accrued interest (9.99% APR).
+      // Only used for the "Every $1..." ratio, not shown as a line item.
+      const ltv = newPrice > 0 ? loanAmount / newPrice : 0;
+      const originationFee  = loanAmount * (ltv > 0.90 ? 0.015 : 0.010);
+      const brokerFee       = loanAmount * 0.01;
+      const gbcFee          = mcGetGbcFee(homeValue, true);
+      const accruedInterest = loanAmount * 0.0999 * (transitionDays / 365);
+      const costTotal = originationFee + brokerFee + gbcFee + accruedInterest;
       const roi = costTotal > 0 ? (totalValue / costTotal).toFixed(2) : null;
 
-      return { totalValue, roi };
+      return { loanAmount, totalValue, roi };
     }
 
     function mcRender() {
-      const { totalValue, roi } = mcCalc();
+      const { loanAmount, totalValue, roi } = mcCalc();
+      mc$('mc-loan-amount').textContent = mcFmtMoney(loanAmount);
       mc$('mc-total-value').textContent = mcFmtMoney(totalValue);
       mc$('mc-roi-value').textContent   = roi === null ? '—' : `$${roi}`;
 
       // Carry entered numbers into the full calculator via the same #s= share-link
       // payload format index.html's restoreFromShareLink() already understands.
-      // selected:['dti'] — this widget is the DTI-only scenario, so the full calculator opens with
-      // only Step 1's "My current mortgage is capping my approval" checked and shows the same
-      // DTI Buster-only result.
-      const payload = { v: 1, selected: ['dti'], currentState: '', buyingState: '',
+      // selected:['cash'] + forceCashOffer:true — option 3 alone would naturally resolve to Cross
+      // Collateral for low-LTV scenarios; the override keeps the full calculator on All-Cash
+      // Advantage + DTI Buster, matching this widget.
+      const payload = { v: 1, selected: ['cash'], forceCashOffer: true, currentState: '', buyingState: '',
         homeValue: MC.homeValue, mortgage: MC.mortgage, newPrice: MC.newPrice, assets: MC.assets };
       const hash = encodeURIComponent(btoa(JSON.stringify(payload)));
       mc$('mc-full-calc-link').href = `index.html#s=${hash}`;

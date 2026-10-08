@@ -2248,6 +2248,7 @@
       showShareToast();
     }
 
+    let restoredForceCashOffer = false;
     function restoreFromShareLink() {
       const match = location.hash.match(/(?:^#|&)s=([^&]+)/);
       if (!match) return;
@@ -2256,6 +2257,9 @@
       if (!data || typeof data !== 'object') return;
 
       SHARE_STATE_KEYS.forEach(key => { if (data[key] !== undefined) S[key] = data[key]; });
+      // syncStateFromChallenges() resets S.forceCashOffer on every challenge change, which would
+      // silently drop the restored value at bootstrap, so remember it and re-apply afterwards.
+      restoredForceCashOffer = data.forceCashOffer === true;
       if (Array.isArray(data.selected)) {
         selected.clear();
         data.selected.forEach(id => selected.add(id));
@@ -2280,7 +2284,8 @@
     restoreFromShareLink();
     renderChallenges();
     syncStateFromChallenges();
-    updateStatesDiffer();
+    updateStatesDiffer();  // also calls syncStateFromChallenges(), so re-apply the restored override after it
+    if (restoredForceCashOffer) { S.forceCashOffer = true; applyRule3Gating(); }
     initSavingsDefaults();
     bindSavingsInputs();
     render();  // applyProductLabel() is called inside render()
