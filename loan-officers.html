@@ -367,7 +367,7 @@
     <div class="absolute -top-10 left-0 w-[520px] h-[420px] rounded-full opacity-30" style="background:#D9848B;filter:blur(120px)"></div>
     <div class="absolute -top-10 right-0 w-[520px] h-[420px] rounded-full opacity-25" style="background:#4C7994;filter:blur(120px)"></div>
     <div class="relative max-w-7xl mx-auto px-5 sm:px-8 pt-16 pb-6 text-center">
-      <h2 class="text-white text-[34px] sm:text-[42px] font-normal leading-tight mb-2">See how DREAM<sup class="text-[0.4em] font-normal align-super">TM</sup> solutions solve your borrowers' challenges</h2>
+      <h2 class="text-white text-[34px] sm:text-[42px] font-normal leading-tight mb-2">See how DREAM<sup class="text-[0.4em] font-normal align-super">TM</sup> solutions solve your buyers' challenges</h2>
       <p class="text-white/70 text-base">Answer a few quick questions and get an instant estimate.</p>
     </div>
 
@@ -860,7 +860,7 @@
         const active = loSelected.has(c.id);
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = `pill ${active ? 'active' : ''} flex items-center justify-center gap-1.5 px-4 py-2 rounded-full border text-sm text-center`;
+        btn.className = `pill ${active ? 'active' : ''} flex items-center justify-center gap-1.5 px-3 py-2 rounded-full border text-[13px] text-center xl:whitespace-nowrap`;
         btn.innerHTML = (active
           ? '<svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 12 12" fill="none"><path d="M2 6l2.5 2.5L10 3" stroke="#4C7994" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
           : '') + c.label;

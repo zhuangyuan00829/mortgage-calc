@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Homebuyers | Flyhomes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#4C7994',
+              50:  '#EBF3F8',
+              100: '#D6E7F1',
+              200: '#ADCFE3',
+              300: '#84B7D5',
+              400: '#5B9FC7',
+              500: '#4C7994',
+              600: '#3A5F77',
+              700: '#2B4759',
+              800: '#1C2F3C',
+            }
+          },
+          fontFamily: { sans: ['Libre Franklin', 'ui-sans-serif', 'system-ui'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    .step-chev{position:relative;height:86px;clip-path:polygon(0 0,calc(100% - 30px) 0,100% 50%,calc(100% - 30px) 100%,0 100%);margin-right:-1px}
+    .step-chev::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.18);clip-path:polygon(calc(100% - 70px) 0,calc(100% - 30px) 0,100% 50%,calc(100% - 30px) 100%,calc(100% - 70px) 100%,calc(100% - 40px) 50%)}
+    @media(max-width:767px){.step-chev{clip-path:none}.step-chev::after{display:none}}
+    body { font-family: 'Libre Franklin', sans-serif; -webkit-font-smoothing: antialiased; }
+
+    .has-prefix input { padding-left: 1.85rem; }
+
+    input[type=range] {
+      -webkit-appearance: none; appearance: none;
+      height: 4px; border-radius: 2px;
+      background: #D6E7F1; outline: none; cursor: pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: #4C7994; cursor: pointer;
+      box-shadow: 0 0 0 3px rgba(76,121,148,0.18);
+    }
+    input[type=range]::-moz-range-thumb {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: #4C7994; cursor: pointer; border: none;
+    }
+    .grad-a { background: var(--color--charcoal, #3c4659); }
+
+    /* ── Calculator section: Flyhomes site tokens + classes (Confirmed 2026-10-06) ──
+       Values copied from styles/flyhomes.webflow.css; that file is deliberately NOT linked
+       (global body/h2/input/.container rules would collide with Tailwind). Everything below is
+       scoped to #calculator. Class names (.site-btn, .scenario-form-*, .calculator-*) match the
+       main site's. Breakpoints reuse the site's 767px / 991px. */
+    #calculator {
+      --color--blush: #d9848b;
+      --color--charcoal: #3c4659;
+      --color--neutral-black: #232226;
+      --color--blue-horizon: #5988a6;
+      --color--secondary--gray: #e6e7e8;
+      --calc-radius: 10px;
+    }
+    #calculator .calculator-wrap {
+      background: #fff; border: 1px solid var(--color--secondary--gray);
+      border-radius: var(--calc-radius); overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    #calculator .calculator-grid { display: grid; grid-template-columns: 1fr; }
+    #calculator .calculator-fields { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+    @media (min-width: 768px) { #calculator .calculator-fields { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 992px) { #calculator .calculator-grid { grid-template-columns: 1fr 380px; } }
+    #calculator .calculator-results { border-top: 1px solid var(--color--secondary--gray); }
+    @media (min-width: 992px) {
+      #calculator .calculator-results { border-top: 0; border-left: 1px solid var(--color--secondary--gray); }
+    }
+    #calculator .calculator-card { background: var(--color--charcoal); border-radius: var(--calc-radius); }
+
+    #calculator .scenario-form-label {
+      display: block; margin-bottom: .5rem; font-size: .8125rem; font-weight: 500;
+      color: var(--color--neutral-black);
+    }
+    #calculator .scenario-form-field {
+      width: 100%; height: 3rem; padding-right: 1rem;
+      border: 1px solid var(--color--charcoal); border-radius: var(--calc-radius);
+      background: #fff; color: var(--color--neutral-black);
+      font-size: 1rem; font-weight: 600;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    #calculator .scenario-form-field:hover { border-color: var(--color--blue-horizon); }
+    #calculator .scenario-form-field:focus,
+    #calculator .scenario-form-field:focus-visible {
+      outline: none; border-color: var(--color--blue-horizon);
+      box-shadow: 0 0 0 3px rgba(89,136,166,0.2);
+    }
+    /* Slider thumb: solid blush (same pink as the site's primary CTA) with a white ring. */
+    #calculator input[type=range]::-webkit-slider-thumb {
+      width: 22px; height: 22px; border: 3px solid #fff; border-radius: 50%;
+      background: var(--color--blush); box-shadow: 0 1px 4px rgba(35,34,38,0.3);
+    }
+    #calculator input[type=range]::-moz-range-thumb {
+      width: 16px; height: 16px; border: 3px solid #fff; border-radius: 50%;
+      background: var(--color--blush); box-shadow: 0 1px 4px rgba(35,34,38,0.3);
+    }
+
+    /* Track: soft pink-to-blue gradient to match the thumb ring */
+    #calculator input[type=range] {
+      background: linear-gradient(90deg, rgba(217,132,139,0.35), rgba(76,121,148,0.35));
+    }
+
+    #calculator .site-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: .5rem; width: 100%;
+      border: 1px solid var(--color--blush); background-color: var(--color--blush);
+      color: var(--color--neutral-black); font-size: 1rem; font-weight: 500; line-height: 115%;
+      text-align: center; text-decoration: none; border-radius: 100px; padding: 1rem 1.25rem; white-space: nowrap;
+      transition: background-color .3s ease-in-out;
+    }
+    #calculator .site-btn:hover { background-color: #fff; }
+    #calculator .site-btn .dt-arrow { display: inline-flex; transition: transform .3s ease-in-out; }
+    #calculator .site-btn:hover .dt-arrow { transform: translateX(4px); }
+    @media (prefers-reduced-motion: reduce) {
+      #calculator .site-btn, #calculator .site-btn .dt-arrow { transition: none; }
+      #calculator .site-btn:hover .dt-arrow { transform: none; }
+    }
+
+    /* ── Tooltip (reused from calculator) ── */
+    .tip { position: relative; display: inline-flex; align-items: center; }
+    .tip-box {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%; transform: translateX(-50%);
+      width: 230px;
+      background: #1c2f3c; color: #e2edf4;
+      padding: 10px 13px; border-radius: 8px;
+      font-size: 11.5px; line-height: 1.55;
+      font-weight: 400;
+      text-transform: none; letter-spacing: normal;
+      z-index: 60; box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+      pointer-events: none;
+    }
+    .tip-box::after {
+      content: ''; position: absolute;
+      top: 100%; left: 50%; transform: translateX(-50%);
+      border: 6px solid transparent; border-top-color: #1c2f3c;
+    }
+    /* Narrow-sidebar variants: open downward and align to whichever side the icon actually has
+       room on — the default centered/upward box overflows this widget's narrow results column
+       (see dti-buster.html's identical fix, CLAUDE.md 2026-09-21). This page's sentence wraps
+       so the icon lands near the LEFT edge of the card (unlike dti-buster.html's, where it lands
+       near the right), so tip-left is used here instead of tip-right. */
+    .tip-box.tip-left { left: 0; right: auto; transform: none; }
+    .tip-box.tip-left::after { left: 16px; right: auto; transform: none; }
+    .tip-box.tip-right { left: auto; right: 0; transform: none; }
+    .tip-box.tip-right::after { left: auto; right: 16px; transform: none; }
+    .tip-box.tip-down { bottom: auto; top: calc(100% + 10px); }
+    .tip-box.tip-down::after { top: auto; bottom: 100%; border-top-color: transparent; border-bottom-color: #1c2f3c; }
+    .tip:hover .tip-box, .tip:focus-within .tip-box { display: block; }
+
+    @keyframes pop { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+    .pop { animation: pop 0.25s ease-out both; }
+    @media (prefers-reduced-motion: reduce) { .pop { animation: none; } }
+
+    details[open] .faq-chevron { transform: rotate(180deg); }
+    summary::-webkit-details-marker { display: none; }
+    summary { list-style: none; cursor: pointer; }
+
+    .testi-fade::before, .testi-fade::after {
+      content: ''; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 5; pointer-events: none;
+    }
+    .testi-fade::before { left: 0; background: linear-gradient(90deg, #fff, transparent); }
+    .testi-fade::after  { right: 0; background: linear-gradient(270deg, #fff, transparent); }
+
+    /* ── Challenge pill toggle ── */
+    .pill { transition: all 0.15s ease; }
+    .pill.active { border-color: #4C7994; background: #EEF4F8; color: #232226; }
+    .pill:not(.active) { border-color: #E5E7EB; background: #fff; color: #4B5563; }
+    .pill:not(.active):hover { border-color: #C6D8E2; }
+  </style>
+</head>
+<body class="text-gray-900" style="background:#fff">
+  <!-- ══ NAV ══════════════════════════════════════════════════════════════════ -->
+  <header class="bg-[#1a1a1a] sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
+      <a href="#" class="flex items-center shrink-0" aria-label="Flyhomes home">
+        <svg viewBox="0 0 1412 330" class="h-6 w-auto" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M92.05 129.6V238.6L114.85 245.9V250.2H34.75V245.9L53.05 238.6V129.6H25.65V124.4L53.05 110.7V100C53.05 84.8 55.35 72.3 60.05 62.5C64.75 52.8 71.55 44.3 80.45 37.2C86.35 32.5 92.75 29.2 99.75 27.3C106.75 25.4 113.85 24.4 120.95 24.4C127.25 24.4 132.75 25.3 137.55 27C142.35 28.7 146.25 30.9 149.45 33.5C152.55 36.1 154.95 39.1 156.45 42.3C157.95 45.6 158.75 48.8 158.75 52C158.75 58.1 157.15 63 154.05 66.6C150.85 70.3 146.05 72.1 139.55 72.1C133.05 72.1 127.25 69 122.05 62.8C116.85 56.6 113.15 47.5 110.95 35.5C107.45 37.1 104.55 39.2 102.15 41.6C99.75 44 97.75 47.2 96.25 51C94.75 54.9 93.65 59.5 93.05 64.9C92.35 70.5 92.05 77 92.05 84.5V111.6H130.15V129.6H92.05Z" fill="white"/>
+          <path d="M237.95 24.5L180.35 40.9V44L200.15 58.3V238.6L180.95 245.9V250.2H257.45V245.9L239.15 238.6V25.4L237.95 24.5Z" fill="white"/>
+          <path d="M362.85 242.3C352.65 267.3 343.35 285.3 334.65 296.5C326.05 307.7 316.55 313.3 306.15 313.3C297.05 313.3 290.25 311.2 285.85 306.9C281.45 302.6 279.35 297.6 279.35 291.7C279.35 289.1 279.95 286.6 281.05 284.2C282.15 281.9 283.65 279.8 285.65 278C287.55 276.2 289.75 274.7 292.15 273.6C294.55 272.5 297.15 271.9 299.75 271.9C305.65 271.9 310.45 273.2 314.25 275.7C318.05 278.2 321.95 281.8 325.95 286.5C327.35 284.7 328.95 282.5 330.65 280.1C332.35 277.7 334.15 275.1 335.85 272.5C337.55 269.9 339.05 267.3 340.45 264.9C341.75 262.5 342.85 260.4 343.65 258.8L345.15 255.4L290.65 124.1L272.35 116.2V111.9H351.25V116.2L333.25 124.1L363.45 207.9H364.95L392.05 126.3L375.95 116.2V111.9H428.65V116.2L409.75 126.9L362.85 242.3Z" fill="white"/>
+          <path d="M544.65 140.4C541.65 134.8 535.75 132 526.95 132C521.65 132 516.85 132.4 512.65 133.2C508.35 134 503.65 135.5 498.35 137.8V238.6L513.55 245.9V250.2H441.05V245.9L459.35 238.6V58.3L439.25 44V41L497.15 24.6L498.35 25.5V131.2L499.55 131.8C508.65 123.3 517.35 117.1 525.45 113.2C533.55 109.3 541.75 107.4 550.15 107.4C557.05 107.4 562.85 108.6 567.65 110.9C572.45 113.2 576.35 116.4 579.35 120.3C582.35 124.3 584.65 128.7 586.05 133.7C587.45 138.7 588.15 143.9 588.15 149.4V238.6L606.45 245.9V250.2H533.95V245.9L549.15 238.6V161.5C549.25 153 547.65 146 544.65 140.4Z" fill="white"/>
+          <path d="M728.65 181.2C728.65 171.7 728.05 163 726.85 155.2C725.65 147.4 723.75 140.7 721.25 135C718.75 129.3 715.45 125 711.55 121.9C707.55 118.9 702.85 117.3 697.35 117.3C691.85 117.3 687.15 118.8 683.15 121.9C679.15 124.9 675.95 129.3 673.45 135C670.95 140.7 669.05 147.4 667.85 155.2C666.65 163 666.05 171.7 666.05 181.2C666.05 190.7 666.65 199.4 667.85 207.2C669.05 215 670.95 221.7 673.45 227.4C675.95 233.1 679.25 237.4 683.15 240.5C687.15 243.5 691.85 245.1 697.35 245.1C702.85 245.1 707.55 243.6 711.55 240.5C715.55 237.5 718.75 233.1 721.25 227.4C723.75 221.7 725.65 215 726.85 207.2C728.05 199.4 728.65 190.7 728.65 181.2ZM770.35 181.1C770.35 190.2 768.75 199.2 765.45 208.1C762.25 216.9 757.45 224.9 751.15 231.9C744.85 238.9 737.05 244.5 727.65 248.8C718.35 253.1 707.55 255.2 695.35 255.2C683.15 255.2 672.55 253.2 663.55 249.1C654.55 245 647.15 239.6 641.35 232.8C635.55 226 631.25 218.1 628.45 209.2C625.65 200.3 624.15 190.9 624.15 181.2C624.15 172.1 625.75 163.1 629.05 154.2C632.25 145.4 637.05 137.5 643.35 130.6C649.65 123.7 657.45 118.1 666.85 113.8C676.15 109.5 686.95 107.4 699.15 107.4C711.35 107.4 721.95 109.4 730.95 113.5C739.95 117.6 747.35 122.9 753.15 129.6C758.95 136.3 763.25 144.1 766.05 153.1C768.95 162 770.35 171.3 770.35 181.1Z" fill="white"/>
+          <path d="M982.85 149.4C982.35 145.7 981.25 142.7 979.65 140.1C978.05 137.6 975.75 135.5 972.75 134C969.85 132.5 965.95 131.7 961.35 131.7C956.05 131.7 951.75 132.5 948.45 134C945.05 135.5 940.85 137.3 935.85 139.3V238.6L951.05 245.9V250.2H881.65V245.9L896.85 238.6V161.2C896.85 156.9 896.65 153 896.25 149.3C895.85 145.6 894.95 142.6 893.55 140C892.15 137.5 890.05 135.4 887.35 133.9C884.65 132.4 880.95 131.6 876.25 131.6C870.95 131.6 866.65 132.1 863.35 133C860.05 133.9 855.75 135.4 850.75 137.4V238.5L865.95 245.8V250.1H793.45V245.8L811.75 238.5V136.5L793.45 122.2V119.2L847.65 106.4L848.85 107.3L848.25 131.7L849.45 132.3C858.55 123.8 867.05 117.4 874.85 113.3C882.65 109.1 890.75 107.1 899.05 107.1C909.45 107.1 917.35 109.4 922.95 114.1C928.55 118.8 932.25 124.9 934.05 132.4L935.25 133C944.35 124.5 952.95 117.9 960.95 113.4C968.95 108.8 977.15 106.5 985.45 106.5C992.35 106.5 998.15 107.7 1002.85 110.2C1007.55 112.6 1011.35 115.8 1014.25 119.8C1017.15 123.8 1019.35 128.3 1020.65 133.4C1021.95 138.5 1022.65 143.8 1022.65 149.2V238.8L1040.95 246.1V250.4H968.35V246.1L983.55 238.8V161.4C983.55 157 983.35 153 982.85 149.4Z" fill="white"/>
+          <path d="M1157.45 161.6C1157.05 146.5 1154.85 135.3 1150.75 128.2C1146.65 121 1140.35 117.5 1131.85 117.5C1123.75 117.5 1117.05 121.8 1111.85 130.4C1106.65 139 1103.65 150.5 1102.85 165.1L1157.45 161.6ZM1102.65 173.7C1102.65 183 1103.25 191.4 1104.45 198.8C1105.65 206.2 1107.85 212.5 1111.15 217.7C1114.35 222.9 1118.75 226.9 1124.25 229.7C1129.75 232.5 1136.85 234 1145.55 234C1153.25 234 1160.65 233.3 1167.65 232C1174.65 230.7 1182.95 228.7 1192.45 226.1L1194.25 230.1C1185.15 237.2 1174.95 243.2 1163.75 247.9C1152.55 252.7 1142.15 255.1 1132.35 255.1C1121.35 255.1 1111.45 253.4 1102.65 249.9C1093.85 246.5 1086.35 241.6 1080.25 235.4C1074.15 229.2 1069.45 221.7 1066.25 213C1063.05 204.3 1061.35 194.6 1061.35 184.1C1061.35 173.1 1063.45 162.9 1067.55 153.5C1071.75 144.1 1077.15 135.9 1083.85 129.1C1090.55 122.3 1098.25 117 1106.95 113.1C1115.65 109.2 1124.65 107.3 1133.75 107.3C1144.35 107.3 1153.55 109 1161.45 112.3C1169.35 115.7 1175.85 120.3 1180.95 126.2C1186.05 132.1 1189.75 139.1 1192.25 147.2C1194.65 155.3 1195.85 164.2 1195.65 173.7H1102.65Z" fill="white"/>
+          <path d="M1332.35 208.8C1332.35 215.9 1330.75 222.3 1327.65 228C1324.45 233.7 1320.25 238.5 1315.05 242.6C1309.75 246.7 1303.75 249.7 1296.95 251.9C1290.15 254 1283.05 255.1 1275.75 255.1C1257.85 255.1 1241.95 252.4 1227.95 247.1L1227.05 205.4L1233.15 204.8C1238.65 212.3 1243.55 218.7 1247.95 223.8C1252.35 229 1256.45 233.1 1260.25 236.3C1264.15 239.5 1267.75 241.7 1271.25 243C1274.75 244.3 1278.45 245 1282.55 245C1288.65 245 1293.45 243.1 1296.85 239.2C1300.25 235.3 1302.05 230.3 1302.05 224.1C1302.05 220.2 1301.15 216.9 1299.35 214.1C1297.55 211.3 1295.05 208.9 1291.85 206.7C1288.65 204.5 1285.05 202.6 1281.05 200.9C1276.95 199.2 1272.85 197.4 1268.55 195.5C1263.65 193.5 1258.75 191.2 1253.75 188.8C1248.75 186.4 1244.35 183.5 1240.55 180.1C1236.65 176.8 1233.55 172.8 1231.15 168.1C1228.75 163.4 1227.45 157.8 1227.45 151.1C1227.45 145 1228.85 139.3 1231.75 134.1C1234.55 128.8 1238.45 124.2 1243.45 120.3C1248.45 116.3 1254.35 113.2 1261.25 110.9C1268.15 108.6 1275.75 107.4 1284.05 107.4C1287.05 107.4 1290.35 107.5 1293.75 107.8C1297.15 108.1 1300.75 108.5 1304.25 109C1307.85 109.5 1311.15 110 1314.15 110.6C1317.15 111.2 1319.85 111.9 1322.05 112.7L1322.95 150.3L1316.85 151.5C1312.15 145.4 1308.15 140.2 1304.65 135.8C1301.15 131.4 1297.95 127.9 1294.95 125.1C1291.95 122.4 1288.95 120.4 1285.95 119.2C1283.05 118 1279.75 117.4 1276.05 117.4C1270.15 117.4 1265.55 119.3 1262.35 123.2C1259.15 127.1 1257.45 131.4 1257.45 136.1C1257.45 140 1258.45 143.4 1260.35 146.2C1262.25 149.1 1264.85 151.6 1267.95 153.7C1271.05 155.9 1274.65 157.8 1278.75 159.5C1282.85 161.2 1286.95 163 1291.25 164.9C1296.15 166.9 1301.05 169.1 1306.05 171.4C1311.05 173.7 1315.45 176.6 1319.25 179.9C1323.15 183.2 1326.25 187.2 1328.65 191.8C1331.15 196.5 1332.35 202.2 1332.35 208.8Z" fill="white"/>
+          <path d="M1367.45 128.3C1367.45 126.9 1367.05 125.9 1366.35 125.2C1365.65 124.5 1364.75 124.1 1363.55 124L1361.75 123.9V132.6H1363.55C1364.75 132.6 1365.75 132.2 1366.35 131.4C1367.15 130.6 1367.45 129.6 1367.45 128.3ZM1373.65 127.3C1373.65 130.2 1371.75 132 1367.85 132.8V133.7C1369.45 133.9 1370.65 134.3 1371.35 134.9C1372.05 135.5 1372.55 136.4 1372.85 137.7C1373.25 139.3 1373.75 140.4 1374.25 141.1C1374.85 141.8 1375.75 142.2 1377.05 142.4V144H1371.65C1370.25 144 1369.15 143.6 1368.35 142.9C1367.55 142.2 1366.95 141.1 1366.55 139.7L1365.55 136.7C1365.25 135.8 1364.85 135.3 1364.35 135C1363.85 134.7 1363.05 134.6 1362.15 134.6H1361.75V141.4L1364.85 142.4V144H1351.75V142.4L1355.45 141.4V124.7L1351.75 123.5V121.9H1365.65C1368.35 121.9 1370.25 122.4 1371.65 123.5C1373.05 124.5 1373.65 125.8 1373.65 127.3ZM1363.65 152.7C1366.35 152.7 1368.75 152.2 1371.15 151.2C1373.45 150.2 1375.45 148.9 1377.15 147.2C1378.85 145.5 1380.15 143.5 1381.15 141.1C1382.05 138.7 1382.55 136.2 1382.55 133.4C1382.55 130.7 1382.05 128.1 1381.15 125.7C1380.25 123.3 1378.85 121.3 1377.15 119.6C1375.45 117.9 1373.45 116.5 1371.15 115.6C1368.85 114.6 1366.35 114.1 1363.65 114.1C1360.95 114.1 1358.35 114.6 1356.15 115.6C1353.85 116.6 1351.85 117.9 1350.15 119.6C1348.45 121.3 1347.15 123.3 1346.15 125.7C1345.25 128.1 1344.75 130.6 1344.75 133.4C1344.75 136.1 1345.25 138.7 1346.15 141.1C1347.05 143.5 1348.45 145.5 1350.15 147.2C1351.85 148.9 1353.85 150.3 1356.15 151.2C1358.35 152.2 1360.85 152.7 1363.65 152.7ZM1363.65 155C1360.55 155 1357.65 154.5 1355.05 153.4C1352.45 152.3 1350.15 150.8 1348.25 148.9C1346.35 147 1344.75 144.7 1343.75 142.1C1342.65 139.5 1342.15 136.6 1342.15 133.5C1342.15 130.4 1342.65 127.5 1343.75 124.9C1344.85 122.3 1346.35 120 1348.25 118.1C1350.15 116.2 1352.45 114.6 1355.05 113.6C1357.65 112.5 1360.55 112 1363.65 112C1366.75 112 1369.65 112.5 1372.25 113.6C1374.85 114.7 1377.15 116.2 1379.05 118.1C1380.95 120 1382.55 122.3 1383.55 124.9C1384.65 127.5 1385.15 130.4 1385.15 133.5C1385.15 136.6 1384.65 139.5 1383.55 142.1C1382.45 144.7 1380.95 147 1379.05 148.9C1377.15 150.8 1374.85 152.4 1372.25 153.4C1369.55 154.4 1366.75 155 1363.65 155Z" fill="white"/>
+        </svg>
+      </a>
+      <nav class="hidden lg:flex items-center gap-8 text-sm text-gray-200">
+        <button type="button" class="flex items-center gap-1 hover:text-white transition-colors">Solutions<svg class="w-3 h-3 opacity-70" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" class="flex items-center gap-1 hover:text-white transition-colors">By Role<svg class="w-3 h-3 opacity-70" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" class="flex items-center gap-1 hover:text-white transition-colors">Tools<svg class="w-3 h-3 opacity-70" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" class="flex items-center gap-1 hover:text-white transition-colors">Resources<svg class="w-3 h-3 opacity-70" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" class="flex items-center gap-1 hover:text-white transition-colors">Webinars<svg class="w-3 h-3 opacity-70" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" class="flex items-center gap-1 hover:text-white transition-colors">Customer Stories<svg class="w-3 h-3 opacity-70" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" class="flex items-center gap-1 hover:text-white transition-colors">Our Company<svg class="w-3 h-3 opacity-70" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </nav>
+      <div class="flex items-center gap-5 text-sm text-gray-200">
+        <a href="#" class="hidden sm:inline hover:text-white transition-colors">Partner Portal Login</a>
+        <a href="#" class="inline-flex items-center px-5 py-2 rounded-full bg-[#D9848B] hover:bg-[#CB7178] text-[#232226] text-sm font-medium transition-colors">Get Started</a>
+      </div>
+    </div>
+  </header>
+  <!-- HERO -->
+  <section class="relative overflow-hidden h-[520px] sm:h-[631px]" style="background:#0e0e10">
+    <picture>
+      <source media="(max-width: 767px)" srcset="assets/homebuyers/hero-mobile.avif" />
+      <img src="assets/homebuyers/hero.avif" alt="Couple and agent reviewing documents at a kitchen island" class="absolute inset-0 w-full h-full object-cover object-[70%_center] sm:object-center" />
+    </picture>
+    <div class="absolute inset-0 hidden sm:block" style="background:linear-gradient(90deg, rgba(10,10,11,0.95) 0%, rgba(10,10,11,0.75) 25%, rgba(10,10,11,0) 55%)"></div>
+    <div class="absolute inset-0 sm:hidden" style="background:linear-gradient(0deg, rgba(10,10,11,0.92) 0%, rgba(10,10,11,0.5) 55%, rgba(10,10,11,0) 100%)"></div>
+    <div class="absolute inset-0 flex items-end sm:items-center">
+      <div class="max-w-6xl mx-auto px-5 sm:px-8 w-full pb-10 sm:pb-0">
+        <div class="max-w-[520px]">
+          <h1 class="text-white text-[38px] sm:text-[52px] font-light leading-[1.2] mb-6">Buy your next home before selling. Move on your terms.</h1>
+          <p class="text-white text-base leading-snug mb-8 max-w-[500px]">No rushed sale. No temporary housing. No multiple moves. Powered by our network of loan officers and agent partners.</p>
+          <a href="#" class="inline-flex items-center px-8 py-4 rounded-full bg-[#D9848B] hover:bg-[#CB7178] text-[#232226] text-sm font-medium transition-colors">Contact Us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- BENEFITS -->
+  <section class="bg-white py-20">
+    <div class="max-w-4xl mx-auto px-5 sm:px-8 text-center mb-12">
+      <h2 class="text-[#232226] text-[34px] sm:text-[42px] font-normal leading-tight">Buy before you sell is a better way to move</h2>
+    </div>
+    <div class="max-w-6xl mx-auto px-5 sm:px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"><div class="rounded-2xl p-7" style="background:#F6F6F7"><span class="text-[#D9848B] text-sm font-semibold">01</span><h3 class="text-[#232226] text-xl font-medium leading-snug mt-3 mb-3">Move once, stress less</h3><p class="text-gray-500 text-[15px] leading-relaxed">Skip the temporary housing, storage and second move. Go straight from your old home to your new one.</p></div><div class="rounded-2xl p-7" style="background:#F6F6F7"><span class="text-[#D9848B] text-sm font-semibold">02</span><h3 class="text-[#232226] text-xl font-medium leading-snug mt-3 mb-3">Unlock real buying power</h3><p class="text-gray-500 text-[15px] leading-relaxed">Use your home equity before you sell, so you can qualify for and afford the home you really want.</p></div><div class="rounded-2xl p-7" style="background:#F6F6F7"><span class="text-[#D9848B] text-sm font-semibold">03</span><h3 class="text-[#232226] text-xl font-medium leading-snug mt-3 mb-3">Make a stronger offer</h3><p class="text-gray-500 text-[15px] leading-relaxed">Submit an offer without a home sale contingency, or a cash-like offer that stands out to sellers.</p></div><div class="rounded-2xl p-7" style="background:#F6F6F7"><span class="text-[#D9848B] text-sm font-semibold">04</span><h3 class="text-[#232226] text-xl font-medium leading-snug mt-3 mb-3">Sell at full market value</h3><p class="text-gray-500 text-[15px] leading-relaxed">List your old home after you move out for easy showings, optimal staging, and often a higher sale price.</p></div></div>
+  </section>
+  <!-- VIDEO TESTIMONIALS -->
+  <section class="bg-white pb-20">
+    <div class="max-w-5xl mx-auto px-5 sm:px-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div><div class="relative rounded-xl overflow-hidden"><img src="assets/homebuyers/video1.avif" alt="Carly & Kyle's story" class="w-full h-auto block" /><span class="absolute inset-0 flex items-center justify-center"><span class="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center"><svg class="w-6 h-6 ml-1" viewBox="0 0 24 24" fill="#232226"><path d="M7 4l13 8-13 8z"/></svg></span></span></div><p class="text-[#232226] text-lg font-medium mt-5">Carly & Kyle's story</p><p class="text-gray-500 text-[15px] leading-relaxed mt-2">Buy Before You Sell was the financial tool they wanted but didn't know existed until meeting Flyhomes.</p></div>
+      <div><div class="relative rounded-xl overflow-hidden"><img src="assets/homebuyers/video2.avif" alt="Nick and Heidi's Buy Before You Sell Journey" class="w-full h-auto block" /><span class="absolute inset-0 flex items-center justify-center"><span class="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center"><svg class="w-6 h-6 ml-1" viewBox="0 0 24 24" fill="#232226"><path d="M7 4l13 8-13 8z"/></svg></span></span></div><p class="text-[#232226] text-lg font-medium mt-5">Nick and Heidi's Buy Before You Sell Journey</p><p class="text-gray-500 text-[15px] leading-relaxed mt-2">“The costs were significantly lower than renting a house.”</p></div>
+    </div>
+  </section>
+  <!-- FOUR-STEP PROCESS -->
+  <section class="bg-white py-20">
+    <div class="max-w-4xl mx-auto px-5 sm:px-8 text-center mb-16">
+      <p class="text-[#232226] text-base mb-1">How the Flyhomes Buy Before You Sell process works</p>
+      <h2 class="text-[#232226] text-[34px] sm:text-[48px] font-normal leading-tight">A simple four-step process</h2>
+    </div>
+    <div class="max-w-[1320px] mx-auto px-5 sm:px-8 grid grid-cols-1 md:grid-cols-4 gap-y-10"><div><div class="step-chev flex items-start pt-5 pl-7 text-white text-[28px] font-light" style="background:linear-gradient(90deg,#3a2a30 0%,#D9848B 100%)">01</div><div class="pl-4 sm:pl-7 pr-4 pt-8"><h3 class="text-[#232226] text-[22px] font-normal leading-snug mb-4">Submit the current home for program approval</h3><p class="text-gray-500 text-[15px] leading-relaxed">Your loan officer works with Flyhomes to determine the right Buy Before You Sell solution for your situation.</p></div></div><div><div class="step-chev flex items-start pt-5 pl-7 text-white text-[28px] font-light" style="background:linear-gradient(90deg,#232226 0%,#4C7994 100%)">02</div><div class="pl-4 sm:pl-7 pr-4 pt-8"><h3 class="text-[#232226] text-[22px] font-normal leading-snug mb-4">Make a winning offer without a sales contingency</h3><p class="text-gray-500 text-[15px] leading-relaxed">Work with your chosen agent to submit a strong offer without a home sale contingency, or make a cash-like offer.</p></div></div><div><div class="step-chev flex items-start pt-5 pl-7 text-white text-[28px] font-light" style="background:linear-gradient(90deg,#232226 0%,#8a86a8 100%)">03</div><div class="pl-4 sm:pl-7 pr-4 pt-8"><h3 class="text-[#232226] text-[22px] font-normal leading-snug mb-4">Close on the new home and move once</h3><p class="text-gray-500 text-[15px] leading-relaxed">Close on your new home and move in directly.</p></div></div><div><div class="step-chev flex items-start pt-5 pl-7 text-white text-[28px] font-light" style="background:linear-gradient(90deg,#232226 0%,#4C7994 60%,#D9848B 100%)">04</div><div class="pl-4 sm:pl-7 pr-4 pt-8"><h3 class="text-[#232226] text-[22px] font-normal leading-snug mb-4">Sell the old home and repay the bridge loan, if any</h3><p class="text-gray-500 text-[15px] leading-relaxed">List your home after moving out, enabling seamless showings, optimal staging, and often a higher sale price.</p></div></div></div>
+  </section>
+  <!-- CALCULATOR (static mockup) -->
+  <section id="calculator" class="relative overflow-hidden" style="background:#232226">
+    <div class="absolute -top-10 left-0 w-[520px] h-[420px] rounded-full opacity-30" style="background:#D9848B;filter:blur(120px)"></div>
+    <div class="absolute -top-10 right-0 w-[520px] h-[420px] rounded-full opacity-25" style="background:#4C7994;filter:blur(120px)"></div>
+    <div class="relative max-w-7xl mx-auto px-5 sm:px-8 pt-16 pb-6 text-center">
+      <h2 class="text-white text-[34px] sm:text-[42px] font-normal leading-tight mb-2">See how DREAM<sup class="text-[0.4em] font-normal align-super">TM</sup> solutions solve your challenges</h2>
+      <p class="text-white/70 text-base">Answer a few quick questions and get an instant estimate.</p>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-5 sm:px-8 pb-20">
+      <div class="calculator-wrap">
+        <div class="calculator-grid">
+
+          <!-- LEFT: challenge pills + inputs -->
+          <div class="p-6 sm:p-8">
+            <p class="text-sm mb-3">
+              <span class="font-semibold text-[#232226]">What's getting in the way of your next move?</span>
+              <span class="text-gray-400">Select all that apply. Most buyers face more than one.</span>
+            </p>
+            <div id="lo-pills" class="grid grid-cols-2 gap-2.5 mb-6"></div>
+
+            <div class="h-px bg-gray-100 mb-6"></div>
+
+            <div class="calculator-fields">
+              <div>
+                <label for="lo-homeValue" class="scenario-form-label">Estimated Value of Your Current Home</label>
+                <div class="has-prefix relative">
+                  <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">$</span>
+                  <input id="lo-homeValue" type="text" inputmode="numeric" value="600,000" class="field-input scenario-form-field" />
+                </div>
+                <input id="lo-sl-homeValue" type="range" min="200000" max="2000000" step="10000" value="600000" class="w-full mt-3" />
+                <div class="flex justify-between text-[11px] text-gray-400 mt-0.5"><span>$200K</span><span>$2M</span></div>
+              </div>
+              <div>
+                <label for="lo-mortgage" class="scenario-form-label">Current Mortgage Balance</label>
+                <div class="has-prefix relative">
+                  <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">$</span>
+                  <input id="lo-mortgage" type="text" inputmode="numeric" value="155,000" class="field-input scenario-form-field" />
+                </div>
+                <input id="lo-sl-mortgage" type="range" min="0" max="2000000" step="10000" value="155000" class="w-full mt-3" />
+                <div class="flex justify-between text-[11px] text-gray-400 mt-0.5"><span>$0</span><span>$2M</span></div>
+              </div>
+              <div>
+                <label for="lo-newPrice" class="scenario-form-label">Price of the Home You Want to Buy</label>
+                <div class="has-prefix relative">
+                  <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">$</span>
+                  <input id="lo-newPrice" type="text" inputmode="numeric" value="650,000" class="field-input scenario-form-field" />
+                </div>
+                <input id="lo-sl-newPrice" type="range" min="200000" max="3000000" step="10000" value="650000" class="w-full mt-3" />
+                <div class="flex justify-between text-[11px] text-gray-400 mt-0.5"><span>$200K</span><span>$3M</span></div>
+              </div>
+              <div>
+                <label for="lo-assets" class="scenario-form-label">Cash and Liquid Assets Available</label>
+                <div class="has-prefix relative">
+                  <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">$</span>
+                  <input id="lo-assets" type="text" inputmode="numeric" value="40,000" class="field-input scenario-form-field" />
+                </div>
+                <input id="lo-sl-assets" type="range" min="0" max="2000000" step="10000" value="40000" class="w-full mt-3" />
+                <div class="flex justify-between text-[11px] text-gray-400 mt-0.5"><span>$0</span><span>$2M</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: results -->
+          <div class="calculator-results p-6 sm:p-8 flex flex-col gap-3" style="background:#FAFAFB">
+            <div class="calculator-card px-4 py-3.5">
+              <span class="text-white/60 text-[10px] font-semibold uppercase tracking-widest">Recommended</span>
+              <div id="lo-product-name" class="text-white text-base font-bold leading-snug mt-1">—</div>
+            </div>
+            <div class="calculator-card px-4 py-3.5">
+              <span class="text-white/60 text-[10px] font-semibold uppercase tracking-widest inline-flex items-center gap-1">
+                Est. Loan Amount
+                <span class="tip">
+                  <button type="button" class="text-white/40 hover:text-white/70 transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about estimated loan amount" tabindex="0">
+                    <svg class="w-3 h-3" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                  </button>
+                  <span class="tip-box tip-down tip-left normal-case">An estimate based on the numbers you entered. Your actual amount is confirmed after a quick evaluation.</span>
+                </span>
+              </span>
+              <div id="lo-loan-amount" class="text-white text-xl font-bold pop mt-1">—</div>
+            </div>
+            <div class="calculator-card px-4 py-3.5">
+              <div class="flex items-center justify-between">
+                <span class="text-white text-sm font-semibold">Estimated financial value</span>
+                <span id="lo-total-value" class="text-white text-sm font-bold">—</span>
+              </div>
+              <p class="text-white/80 text-xs font-medium mt-2 pt-2" style="border-top:1px solid rgba(255,255,255,0.15)">
+                Every <strong class="text-sm">$1</strong> you spend on Buy Before You Sell brings an estimated <span id="lo-roi-value" class="font-bold text-sm" style="color:#D9848B">—</span> in financial value. <span style="color:#D9848B">Beyond the numbers, you can move once and skip temporary housing.</span>
+                <span class="tip">
+                  <button onclick="event.stopPropagation()" class="text-white/40 hover:text-white/70 transition-colors focus-visible:ring-2 focus-visible:ring-white/60 rounded-full" aria-label="More info about estimated total value" tabindex="0" style="display:inline-flex;vertical-align:middle">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.65 10.55h-1.3V6.3h1.3v4.25zm0-5.55h-1.3V3.5h1.3V5z"/></svg>
+                  </button>
+                  <span class="tip-box tip-down tip-right">Illustrative estimate based on your inputs and adjustable assumptions. Not a guarantee of savings or return. Actual results vary.</span>
+                </span>
+              </p>
+            </div>
+            <a href="#" id="lo-full-calc-link" class="site-btn mt-1">
+              View Full Calculator for Details
+              <span class="dt-arrow"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </a>
+            <p class="text-gray-400 text-[11px] leading-snug text-center mt-1">Estimates only. Your loan officer will review your details with Flyhomes to confirm your exact numbers.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="bg-white py-20">
+    <div class="max-w-3xl mx-auto px-5 sm:px-8">
+      <h2 class="text-[#232226] text-[30px] sm:text-[36px] font-normal text-center mb-10">FAQs</h2>
+      <div class="divide-y divide-gray-200 border-t border-b border-gray-200"><details class="group py-5"><summary class="flex items-center justify-between gap-4"><span class="text-[#232226] text-base sm:text-lg">What problems can you solve for me?</span><span class="flex-shrink-0 w-7 h-7 rounded-full border flex items-center justify-center" style="border-color:#D9848B"><svg class="faq-chevron w-3 h-3 text-[#D9848B] transition-transform" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary><p class="text-gray-500 text-sm leading-relaxed mt-4 pr-10">Whether you can't qualify while carrying your existing mortgage, need additional down payment, or want to compete like a cash buyer, there's a solution for that. Flyhomes DREAM™ Solutions are built for real situations, not just the easy ones.</p></details><details class="group py-5"><summary class="flex items-center justify-between gap-4"><span class="text-[#232226] text-base sm:text-lg">How do I use Flyhomes' program?</span><span class="flex-shrink-0 w-7 h-7 rounded-full border flex items-center justify-center" style="border-color:#D9848B"><svg class="faq-chevron w-3 h-3 text-[#D9848B] transition-transform" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary><p class="text-gray-500 text-sm leading-relaxed mt-4 pr-10">Your agent or loan officer contacts Flyhomes, and we help select and guide the right solution for your situation from start to finish.</p></details><details class="group py-5"><summary class="flex items-center justify-between gap-4"><span class="text-[#232226] text-base sm:text-lg">What if my current home doesn't sell?</span><span class="flex-shrink-0 w-7 h-7 rounded-full border flex items-center justify-center" style="border-color:#D9848B"><svg class="faq-chevron w-3 h-3 text-[#D9848B] transition-transform" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary><p class="text-gray-500 text-sm leading-relaxed mt-4 pr-10">If your home doesn't sell within 180 days, Flyhomes purchases it at the agreed-upon contract price. We manage the resale and any net profits* go back to you. *Net profits are calculated as extra proceeds minus Flyhomes' transaction costs, which cover items such as closing costs, holding costs, and realtor commissions.</p></details><details class="group py-5"><summary class="flex items-center justify-between gap-4"><span class="text-[#232226] text-base sm:text-lg">What does it cost?</span><span class="flex-shrink-0 w-7 h-7 rounded-full border flex items-center justify-center" style="border-color:#D9848B"><svg class="faq-chevron w-3 h-3 text-[#D9848B] transition-transform" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary><p class="text-gray-500 text-sm leading-relaxed mt-4 pr-10">Fees vary by solution and are based on the loan amount, not the full home value. That difference alone can save you up to 80% compared to alternatives.</p></details></div></div></section>
+  <!-- LEARN MORE -->
+  <section class="bg-white pb-20"><div class="max-w-6xl mx-auto px-5 sm:px-8"><h2 class="text-[#232226] text-[30px] sm:text-[36px] font-normal text-center mb-10">Learn More</h2><div class="grid grid-cols-1 sm:grid-cols-3 gap-6"><div class="rounded-xl border border-gray-200 overflow-hidden"><img src="assets/homebuyers/learn1.avif" alt="" class="w-full h-[200px] object-cover block" /><div class="p-5"><p class="text-xs text-gray-400 mb-2">Insights</p><h3 class="text-[#232226] text-lg font-medium leading-snug mb-4">How to Buy a Home Without a Sale Contingency</h3><a href="#" class="inline-flex items-center px-5 py-2.5 rounded-full bg-[#D9848B] hover:bg-[#CB7178] text-[#232226] text-sm font-medium transition-colors">Read More</a></div></div><div class="rounded-xl border border-gray-200 overflow-hidden"><img src="assets/homebuyers/learn2.avif" alt="" class="w-full h-[200px] object-cover block" /><div class="p-5"><p class="text-xs text-gray-400 mb-2">Insights</p><h3 class="text-[#232226] text-lg font-medium leading-snug mb-4">How to buy a home: the complete guide</h3><a href="#" class="inline-flex items-center px-5 py-2.5 rounded-full bg-[#D9848B] hover:bg-[#CB7178] text-[#232226] text-sm font-medium transition-colors">Read More</a></div></div><div class="rounded-xl border border-gray-200 overflow-hidden"><img src="assets/homebuyers/learn3.avif" alt="" class="w-full h-[200px] object-cover block" /><div class="p-5"><p class="text-xs text-gray-400 mb-2">Video</p><h3 class="text-[#232226] text-lg font-medium leading-snug mb-4">Flyhomes solutions "opened up so many doors"</h3><a href="#" class="inline-flex items-center px-5 py-2.5 rounded-full bg-[#D9848B] hover:bg-[#CB7178] text-[#232226] text-sm font-medium transition-colors">Read More</a></div></div></div></div></section>
+  <!-- CLOSING CTA -->
+  <section style="background:#232226"><div class="max-w-3xl mx-auto px-5 sm:px-8 py-20 text-center"><h2 class="text-white text-[34px] sm:text-[42px] font-normal leading-tight mb-8">Ready to buy your next home on your terms?</h2><a href="#" class="inline-flex items-center px-6 py-3 rounded-full bg-[#D9848B] hover:bg-[#CB7178] text-[#232226] text-sm font-medium transition-colors">Contact Us</a></div></section>
+  <!-- ══ FOOTER ═══════════════════════════════════════════════════════════════ -->
+  <footer style="background:#232226">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8 pt-16 pb-10">
+      <p class="text-center text-white text-2xl mb-14" style="font-family:'Libre Franklin', serif">flyhomes</p>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-10 mb-14">
+        <div>
+          <h4 class="text-white text-sm font-semibold mb-4">Flyhomes DREAM&trade; Solutions</h4>
+          <ul class="space-y-3 text-sm text-gray-400">
+            <li><a href="#" class="hover:text-white transition-colors">DTI Buster</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Retire &amp; Downsize</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Equity for down payment</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">All-cash advantage</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Move with $0 out of pocket</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white text-sm font-semibold mb-4">About Us</h4>
+          <ul class="space-y-3 text-sm text-gray-400">
+            <li><a href="#" class="hover:text-white transition-colors">Our Company</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">News &amp; Press Releases</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Marketing Resources</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Customer Stories</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white text-sm font-semibold mb-4">Tools</h4>
+          <ul class="space-y-3 text-sm text-gray-400">
+            <li><a href="#" class="hover:text-white transition-colors">Buy Before You Sell Calculator</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Scenario Form - Loan officer</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Scenario Form - Agent</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">FAQs</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Licensing/product availability</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white text-sm font-semibold mb-4">Other</h4>
+          <ul class="space-y-3 text-sm text-gray-400">
+            <li><a href="#" class="hover:text-white transition-colors">Business Disclosures</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Terms of Use</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">California Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10 pt-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-xs text-gray-500 leading-relaxed">
+        <div>
+          <p class="mb-3">Flyhomes Mortgage, LLC is a wholly-owned subsidiary of Flyhomes, Inc. Flyhomes Mortgage, LLC is an Equal Housing Lender.</p>
+          <p class="mb-3">NMLS: #1733272. For full licensing information, visit NMLS Consumer Access.</p>
+          <p><a href="#" class="underline hover:text-gray-300">NY Standard Operating Procedures</a></p>
+          <p><a href="#" class="underline hover:text-gray-300">NY State Fair Housing Notice</a></p>
+        </div>
+        <div class="space-y-3">
+          <p>TREC: Info about <a href="#" class="underline hover:text-gray-300">Consumer Protection Notice</a>, <a href="#" class="underline hover:text-gray-300">Texas Mortgage Company Compliant/Recovery Fund Notice</a></p>
+          <p><a href="#" class="underline hover:text-gray-300">NMLS Consumer Access</a></p>
+          <p><a href="#" class="underline hover:text-gray-300">Affiliated Business Arrangement Disclosure</a></p>
+          <p><a href="#" class="underline hover:text-gray-300">Do not sell or share my personal information</a></p>
+          <p><a href="#" class="underline hover:text-gray-300">Licensing and Disclosures</a></p>
+        </div>
+        <div>
+          <p class="mb-3">By searching you agree to the <a href="#" class="underline hover:text-gray-300">Terms of Use</a>, <a href="#" class="underline hover:text-gray-300">Privacy Policy</a> and <a href="#" class="underline hover:text-gray-300">California Privacy Policy</a>.</p>
+          <p>California DRE #02012110, NMLS #1733272</p>
+        </div>
+      </div>
+      <div class="border-t border-white/10 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-gray-500">&copy; Flyhomes 2026, Flyhomes is a registered trademark of Flyhomes, Inc.</p>
+        <div class="flex items-center gap-4 text-gray-400">
+          <a href="#" aria-label="Facebook" class="hover:text-white transition-colors"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12a10 10 0 10-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0022 12z"/></svg></a>
+          <a href="#" aria-label="Instagram" class="hover:text-white transition-colors"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 2 .3 2.4.5.6.2 1 .5 1.4 1 .4.4.7.8 1 1.4.2.5.4 1.2.5 2.4.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.3 2-.5 2.4-.2.6-.5 1-1 1.4-.4.4-.8.7-1.4 1-.5.2-1.2.4-2.4.5-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-2-.3-2.4-.5-.6-.2-1-.5-1.4-1-.4-.4-.7-.8-1-1.4-.2-.5-.4-1.2-.5-2.4C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.3-2 .5-2.4.2-.6.5-1 1-1.4.4-.4.8-.7 1.4-1 .5-.2 1.2-.4 2.4-.5C8.4 2.2 8.8 2.2 12 2.2zM12 0C8.7 0 8.3 0 7 .1c-1.3.1-2.2.3-3 .6-.8.3-1.5.7-2.2 1.4C1.1 2.8.7 3.5.4 4.3c-.3.8-.5 1.7-.6 3C-.2 8.7-.2 9.1-.2 12.4s0 3.7.1 5c.1 1.3.3 2.2.6 3 .3.8.7 1.5 1.4 2.2.7.7 1.4 1.1 2.2 1.4.8.3 1.7.5 3 .6 1.3.1 1.7.1 5 .1s3.7 0 5-.1c1.3-.1 2.2-.3 3-.6.8-.3 1.5-.7 2.2-1.4.7-.7 1.1-1.4 1.4-2.2.3-.8.5-1.7.6-3 .1-1.3.1-1.7.1-5s0-3.7-.1-5c-.1-1.3-.3-2.2-.6-3-.3-.8-.7-1.5-1.4-2.2C21.2 1.1 20.5.7 19.7.4c-.8-.3-1.7-.5-3-.6C15.7 0 15.3 0 12 0z"/><circle cx="12" cy="12" r="3.2"/></svg></a>
+          <a href="#" aria-label="LinkedIn" class="hover:text-white transition-colors"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5V9h3zM6.5 7.7A1.7 1.7 0 118.2 6a1.7 1.7 0 01-1.7 1.7zM19 19h-3v-4.9c0-1.2 0-2.7-1.6-2.7s-1.9 1.3-1.9 2.6V19h-3V9h2.9v1.3a3.1 3.1 0 012.8-1.5c3 0 3.6 2 3.6 4.5z"/></svg></a>
+          <a href="#" aria-label="X" class="hover:text-white transition-colors"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.9 2H22l-7.2 8.3L23 22h-6.6l-5.2-6.8L5.2 22H2l7.7-8.9L1.5 2h6.8l4.7 6.2zM17.7 20h1.8L7.4 3.9H5.5z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- ══ CALCULATOR SCRIPT ════════════════════════════════════════════════════
+       Ports index.html's actual product-selection rule engine (CHALLENGES,
+       syncStateFromChallenges, applyRule3Gating, calc) rather than hardcoding
+       one product like dti-buster.html's simpler widget — this page lets the
+       visitor pick their own challenge combination, so the recommended
+       product must resolve the same way the full calculator would. State
+       dropdowns / statesDiffer (Rule 5) and forceCashOffer are out of scope
+       for this compact widget and stay permanently off. ── -->
+  <script>
+    const lo$ = id => document.getElementById(id);
+    const loParseVal = str => parseInt((str || '').replace(/[^\d]/g, '')) || 0;
+    const loFmtNum   = n => Math.round(n).toLocaleString();
+    const loFmtMoney = n => n <= 0 ? '$0' : `$${Math.round(n).toLocaleString()}`;
+
+    const LO_CHALLENGES = [
+      { id: 'dti',      label: 'My current mortgage is capping my approval' },
+      { id: 'cash',     label: 'My offers keep losing to cash buyers' },
+      { id: 'equity',   label: 'My cash is locked in my current home' },
+      { id: 'downsize', label: "I want to downsize, ideally without a new mortgage" },
+    ];
+    const loSelected = new Set(['equity']);
+
+    const LOS = {
+      homeValue: 600_000, mortgage: 155_000, newPrice: 650_000, assets: 40_000,
+      downsize: false, noCash_base: false, cashIntent: false, gbc_base: false,
+      naturalIsCC: false, noCash: false, cash: false, gbc: false,
+    };
+
+    function loSyncStateFromChallenges() {
+      const isDownsize        = loSelected.has('downsize');
+      const isCrossCollateral = (loSelected.has('equity') && loSelected.has('cash')) || isDownsize;
+      LOS.downsize    = isDownsize;
+      LOS.noCash_base = isCrossCollateral;
+      LOS.cashIntent  = loSelected.has('cash') && !isCrossCollateral;
+      LOS.gbc_base    = loSelected.has('dti')  && !isCrossCollateral;
+    }
+
+    function loApplyRule3Gating() {
+      let isRule3CC = false;
+      if (LOS.cashIntent && LOS.newPrice > 0) {
+        const projectedFinalLTV = (LOS.newPrice + LOS.mortgage - LOS.homeValue * 0.9) / LOS.newPrice;
+        isRule3CC = projectedFinalLTV <= 0.75;
+        if (!isRule3CC) {
+          const cashEligible = LOS.assets >= LOS.newPrice * 0.05;
+          if (!cashEligible) {
+            const ccCltv    = (LOS.newPrice + LOS.homeValue) * 0.75 - LOS.mortgage;
+            const ccMaxLoan = Math.max(0, Math.min(LOS.newPrice * 1.05, ccCltv));
+            if (ccMaxLoan + LOS.assets >= LOS.newPrice) isRule3CC = true;
+          }
+        }
+      }
+      LOS.naturalIsCC = LOS.noCash_base || isRule3CC;
+      LOS.noCash = LOS.naturalIsCC;
+      LOS.cash   = LOS.cashIntent && !isRule3CC;
+      LOS.gbc    = isRule3CC ? false : LOS.gbc_base;
+    }
+
+    function loCalc() {
+      const { homeValue, mortgage, newPrice, assets, cash, noCash } = LOS;
+      let maxLoan, solutionName;
+      if (noCash) {
+        const ccCltv = (newPrice + homeValue) * 0.75 - mortgage;
+        maxLoan = Math.max(0, Math.min(newPrice * 1.05, ccCltv));
+        solutionName = LOS.downsize ? 'Retire & Downsize' : 'Move with $0 out of pocket';
+      } else if (cash && assets >= newPrice * 0.05) {
+        maxLoan = Math.max(0, newPrice * 0.95);
+        solutionName = 'All-Cash Advantage';
+      } else {
+        maxLoan = Math.max(0, homeValue * 0.75 * 0.9 - mortgage);
+        solutionName = 'Equity for Down Payment';
+      }
+      return { maxLoan, solutionName };
+    }
+
+    function loCalcSavings() {
+      const { newPrice, homeValue, cash, noCash } = LOS;
+      const isCash    = cash || noCash;
+      const cashDisc  = isCash ? newPrice * 0.035 : 0;
+      const staged    = Math.max(0, homeValue * 0.05 - 3500);
+      const hpa       = newPrice * 0.04 * (60 / 30) / 12;
+      const movingFee = homeValue * 0.003 + 500;
+      const housing   = homeValue * 0.006 * (60 / 30);
+      const storage   = (150 + homeValue * 0.0002) * (60 / 30);
+      return cashDisc + staged + hpa + movingFee + housing + storage;
+    }
+
+    // Mirrors index.html's getGbcFee() (§5C GBC Fee Matrix).
+    function loGetGbcFee(homeValue, isBundle) {
+      let standaloneFee, bundleCredit;
+      if      (homeValue <= 500_000)   { standaloneFee = 2_500;  bundleCredit = 0;     }
+      else if (homeValue <= 750_000)   { standaloneFee = 3_500;  bundleCredit = 1_000; }
+      else if (homeValue <= 1_000_000) { standaloneFee = 5_000;  bundleCredit = 2_500; }
+      else if (homeValue <= 1_500_000) { standaloneFee = 7_500;  bundleCredit = 2_500; }
+      else if (homeValue <= 2_000_000) { standaloneFee = 10_000; bundleCredit = 2_500; }
+      else { return 0; } // >$2M exception — not reachable, sliders cap at $2M
+      return isBundle ? standaloneFee - bundleCredit : standaloneFee;
+    }
+
+    // Estimated Cost total — mirrors index.html's calc() (§5A/§5B/§5D: origination fee + broker
+    // fee + GBC fee + accrued interest). Needed only to derive the "Every $1 you spend..." ratio
+    // below the Estimated Total Value figure — not shown as its own line item on this widget.
+    // Uses this widget's own LOS.gbc flag for whether the GBC fee applies (see CLAUDE.md for a
+    // known drift between this flag and index.html's fixed/current GBC-inclusion logic).
+    function loCalcCost(maxLoan) {
+      const { homeValue, mortgage, newPrice, cash, noCash, assets } = LOS;
+      let originationRate, brokerFee;
+      if (noCash) {
+        const ltvAcq = newPrice > 0 ? maxLoan / newPrice : 0;
+        originationRate = ltvAcq > 0.90 ? 0.015 : 0.010;
+        brokerFee = maxLoan * 0.01;
+      } else if (cash && assets >= newPrice * 0.05) {
+        const ltv = newPrice > 0 ? maxLoan / newPrice : 0;
+        originationRate = ltv > 0.90 ? 0.015 : 0.010;
+        brokerFee = maxLoan * 0.01;
+      } else {
+        originationRate = mortgage > 0 ? 0.025 : 0.02;
+        brokerFee = maxLoan * 0.005;
+      }
+      const originationFee  = maxLoan * originationRate;
+      const gbcFee           = LOS.gbc ? loGetGbcFee(homeValue, true) : 0;
+      const accruedInterest  = maxLoan * 0.0999 * (60 / 365);
+      return originationFee + brokerFee + gbcFee + accruedInterest;
+    }
+
+    function loRenderPills() {
+      const wrap = lo$('lo-pills');
+      wrap.innerHTML = '';
+      LO_CHALLENGES.forEach(c => {
+        const active = loSelected.has(c.id);
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `pill ${active ? 'active' : ''} flex items-center justify-center gap-1.5 px-3 py-2 rounded-full border text-[13px] text-center xl:whitespace-nowrap`;
+        btn.innerHTML = (active
+          ? '<svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 12 12" fill="none"><path d="M2 6l2.5 2.5L10 3" stroke="#4C7994" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+          : '') + c.label;
+        btn.addEventListener('click', () => {
+          loSelected.has(c.id) ? loSelected.delete(c.id) : loSelected.add(c.id);
+          loRenderPills();
+          loRender();
+        });
+        wrap.appendChild(btn);
+      });
+    }
+
+    function loRender() {
+      loSyncStateFromChallenges();
+      loApplyRule3Gating();
+
+      const noneSelected = loSelected.size === 0;
+      const dtiOnly       = loSelected.size === 1 && loSelected.has('dti');
+      const isCrossCollat = LOS.noCash;
+      const showGBC       = !noneSelected && !isCrossCollat;
+
+      let roi = null;
+      if (noneSelected) {
+        lo$('lo-product-name').textContent = 'Select an option above';
+        lo$('lo-loan-amount').textContent  = '—';
+        lo$('lo-total-value').textContent  = '—';
+      } else if (dtiOnly) {
+        lo$('lo-product-name').textContent = 'DTI Buster';
+        lo$('lo-loan-amount').textContent  = '—'; // GBC is a contract, not a loan — no loan amount to show
+        const totalValue = loCalcSavings();
+        lo$('lo-total-value').textContent  = loFmtMoney(totalValue);
+        // DTI-only uses the standalone GBC fee as its cost basis — no Flyhomes loan is present
+        // to bundle against (mirrors index.html's g-roi-sentence).
+        const costTotal = loGetGbcFee(LOS.homeValue, false);
+        roi = costTotal > 0 ? (totalValue / costTotal).toFixed(2) : null;
+      } else {
+        const { maxLoan, solutionName } = loCalc();
+        lo$('lo-product-name').innerHTML = solutionName + (showGBC ? '<br>DTI Buster' : '');
+        lo$('lo-loan-amount').textContent  = loFmtMoney(maxLoan);
+        const totalValue = loCalcSavings();
+        lo$('lo-total-value').textContent  = loFmtMoney(totalValue);
+        const costTotal = loCalcCost(maxLoan);
+        roi = costTotal > 0 ? (totalValue / costTotal).toFixed(2) : null;
+      }
+      lo$('lo-roi-value').textContent = roi === null ? '—' : `$${roi}`;
+
+      const payload = { v: 1, selected: Array.from(loSelected), currentState: '', buyingState: '',
+        homeValue: LOS.homeValue, mortgage: LOS.mortgage, newPrice: LOS.newPrice, assets: LOS.assets };
+      const hash = encodeURIComponent(btoa(JSON.stringify(payload)));
+      lo$('lo-full-calc-link').href = `index.html#s=${hash}`;
+    }
+
+    function loBindField(inputId, sliderId, key) {
+      const inp = lo$(inputId), sl = lo$(sliderId);
+      inp.addEventListener('input', () => { LOS[key] = loParseVal(inp.value); sl.value = LOS[key]; loRender(); });
+      inp.addEventListener('blur',  () => { LOS[key] = loParseVal(inp.value); inp.value = loFmtNum(LOS[key]); sl.value = LOS[key]; loRender(); });
+      sl.addEventListener('input',  () => { LOS[key] = parseInt(sl.value); inp.value = loFmtNum(LOS[key]); loRender(); });
+    }
+    loBindField('lo-homeValue', 'lo-sl-homeValue', 'homeValue');
+    loBindField('lo-mortgage',  'lo-sl-mortgage',  'mortgage');
+    loBindField('lo-newPrice',  'lo-sl-newPrice',  'newPrice');
+    loBindField('lo-assets',    'lo-sl-assets',    'assets');
+
+    loRenderPills();
+    loRender();
+  </script>
+</body>
+</html>
